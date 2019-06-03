@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`can load data for component 1`] = `
+Object {
+  "componentRenderPath": "test[0]",
+  "data": Object {
+    "loaded": true,
+    "result": 3,
+  },
+  "dataDefinition": Object {
+    "dataArg": "Foo",
+  },
+  "length": 3,
+}
+`;

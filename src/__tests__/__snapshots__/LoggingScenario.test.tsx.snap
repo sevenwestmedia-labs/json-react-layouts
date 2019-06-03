@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`can render a composition with a content area through the registrar 1`] = `
+Array [
+  "{\\"compositions\\":[{\\"type\\":\\"test-composition\\"}]}, \\"Rendering page\\"",
+  "{\\"componentRenderPath\\":\\"homepage[0-test-composition]\\",\\"type\\":\\"test-composition\\"}, \\"Rendering composition\\"",
+  "{\\"componentRenderPath\\":\\"homepage[0-test-composition]/main\\",\\"components\\":[{\\"type\\":\\"test\\"},{\\"type\\":\\"nested-composition\\"}]}, \\"Rendering content area\\"",
+  "{\\"componentRenderPath\\":\\"homepage[0-test-composition]/main[1]/nested:test-composition\\",\\"type\\":\\"test-composition\\"}, \\"Rendering composition\\"",
+  "{\\"componentRenderPath\\":\\"homepage[0-test-composition]/main[1]/nested:test-composition/main\\",\\"components\\":[{\\"type\\":\\"test\\"}]}, \\"Rendering content area\\"",
+]
+`;

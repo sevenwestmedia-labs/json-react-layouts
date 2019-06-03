@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "sourceMap": true,
+        "target": "ES5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "removeComments": true,
+        "strict": true,
+        "sourceRoot": "/",
+        "noEmit": true,
+        "jsx": "react",
+        "noUnusedParameters": true,
+        "noUnusedLocals": true,
+        "declaration": true,
+        "lib": ["dom", "es5", "es2015.promise"],
+        "importHelpers": true
+    },
+    "exclude": ["node_modules", "dist"]
+}
