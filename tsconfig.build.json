@@ -6,5 +6,12 @@
 
         "noEmit": false
     },
-    "exclude": ["node_modules", "./tests", "./src/*.spec.ts", "dist", "example"]
+    "exclude": [
+        "node_modules",
+        "./tests",
+        "./src/*.spec.ts",
+        "src/TypeSafetyTestFixtures",
+        "dist",
+        "example"
+    ]
 }

@@ -9,7 +9,7 @@ import {
     testCompositionRegistration,
     testComponentWithDataRegistration,
     TestComponentWithData,
-} from '../testComponents'
+} from './testComponents'
 import { CompositionRegistrar } from '../CompositionRegistrar'
 import { RouteBuilder } from '../RouteBuilder'
 import { ComponentRenderer } from '../ComponentRenderer'
@@ -70,7 +70,7 @@ it('can load data for component', async () => {
             <compositionRegisrar.ContentAreaRenderer
                 componentRenderPath="test"
                 contentArea={[
-                    { type: 'test-with-data', props: { dataDefinition: { dataArg: 'Foo' } } },
+                    { type: 'test-with-data', props: { dataDefinitionArgs: { dataArg: 'Foo' } } },
                 ]}
                 routeBuilder={routeBuilder}
                 loadDataServices={{}}

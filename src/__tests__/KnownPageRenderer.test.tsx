@@ -10,7 +10,7 @@ import {
     TestComponent,
     TestComponent2,
     TestComposition,
-} from '../testComponents'
+} from './testComponents'
 import { CompositionRegistrar } from '../CompositionRegistrar'
 import { RouteBuilder } from '../RouteBuilder'
 import { consoleLogger } from 'typescript-log'

@@ -32,10 +32,10 @@ export function createRegisterableComponentWithData<
     type: TType,
     dataDefinition: DataDefinition<TConfig, TData, LoadDataServices>,
     render: RenderFunction<
-        TProps & ComponentState<TData> & { dataDefinition: TConfig },
+        TProps & ComponentState<TData> & { dataDefinitionArgs: TConfig },
         LoadDataServices
     >,
-): ComponentRegistration<TType, TProps & { dataDefinition: TConfig }, LoadDataServices> {
+): ComponentRegistration<TType, TProps & { dataDefinitionArgs: TConfig }, LoadDataServices> {
     // This is quite a complex transform which can't be modelled in typescript.
     //
     // The dataDefinition which is passed to this object is hidden from the types returned

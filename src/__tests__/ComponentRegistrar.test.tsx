@@ -7,7 +7,7 @@ import {
     testComponentWithPropsRegistration,
     TestComponentWithProps,
     testCompositionRegistration,
-} from '../testComponents'
+} from './testComponents'
 import { CompositionRegistrar } from '../CompositionRegistrar'
 import { RouteBuilder } from '../RouteBuilder'
 import { consoleLogger } from 'typescript-log'
@@ -32,9 +32,7 @@ it('can get a component to render with props', () => {
     const compositionRegistrar = CompositionRegistrar.create(registrar).registerComposition(
         testCompositionRegistration,
     )
-    const routeBuilder = new RouteBuilder(compositionRegistrar, new DataLoaderResources(), {
-        loadComponent: () => Promise.resolve({}),
-    })
+    const routeBuilder = new RouteBuilder(compositionRegistrar, new DataLoaderResources())
     const title = 'testTitle'
 
     const registeredComponent = registrar.get('testWithTitleProp').render
