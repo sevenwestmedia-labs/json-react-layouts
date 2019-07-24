@@ -7,8 +7,9 @@ import { RouteBuilder } from './RouteBuilder'
 
 export type Props<
     TCompositions extends CompositionInformation<any, TComponents, any, any>,
-    TComponents extends ComponentInformation<any>,
-    LoadDataServices
+    TComponents extends ComponentInformation<any> & MiddlwareProps,
+    LoadDataServices,
+    MiddlwareProps extends {}
 > = {
     compositions: TCompositions[]
     renderPathPrefix?: string
@@ -17,11 +18,12 @@ export type Props<
 
 export function createPageRenderer<
     TCompositions extends CompositionInformation<any, TComponents, any, any>,
-    TComponents extends ComponentInformation<any>,
-    LoadDataServices
+    TComponents extends ComponentInformation<any> & MiddlewareProps,
+    LoadDataServices,
+    MiddlewareProps extends {}
 >(
-    routeBuilder: RouteBuilder<TCompositions, TComponents, LoadDataServices>,
-): React.FC<Props<TCompositions, TComponents, LoadDataServices>> {
+    routeBuilder: RouteBuilder<TCompositions, TComponents, LoadDataServices, MiddlewareProps>,
+): React.FC<Props<TCompositions, TComponents, LoadDataServices, MiddlewareProps>> {
     return function PageRenderer({ loadDataServices, renderPathPrefix, compositions }) {
         routeBuilder.compositionRegistrar.componentRegistrar.logger.debug(
             {

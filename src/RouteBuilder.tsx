@@ -11,15 +11,16 @@ import { DataLoaderActions } from 'react-ssr-data-loader/dist/data-loader'
  */
 export class RouteBuilder<
     TCompositions extends CompositionInformation<any, TComponents, any, any>,
-    TComponents extends ComponentInformation<any>,
-    LoadDataServices
+    TComponents extends ComponentInformation<any> & TMiddlewareProps,
+    LoadDataServices,
+    TMiddlewareProps extends {}
 > {
     _compositionType!: TCompositions
-    _componentType!: TComponents
+    _componentType!: TComponents & TMiddlewareProps
     _contentAreaType!: TComponents[]
 
     PageRenderer: React.FC<
-        Props<TCompositions, TComponents, LoadDataServices>
+        Props<TCompositions, TComponents, LoadDataServices, TMiddlewareProps>
     > = createPageRenderer(this)
     ComponentDataLoader: React.ReactType<
         DataLoaderProps<
@@ -35,7 +36,8 @@ export class RouteBuilder<
         public compositionRegistrar: CompositionRegistrar<
             TCompositions,
             TComponents,
-            LoadDataServices
+            LoadDataServices,
+            TMiddlewareProps
         >,
         resources: DataLoaderResources<LoadDataServices>,
     ) {
@@ -48,7 +50,7 @@ export class RouteBuilder<
         )
     }
 
-    component(component: TComponents) {
+    component(component: TComponents & TMiddlewareProps) {
         return component
     }
 

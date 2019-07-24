@@ -4,7 +4,7 @@ import {
     ComponentInformation,
     Errors,
     ComponentRegistrar,
-    createRegisterableComponent,
+    componentFactory,
 } from './ComponentRegistrar'
 import { RouteBuilder } from './RouteBuilder'
 
@@ -25,9 +25,15 @@ export function createRegisterableComposition<TContentAreas extends string, TPro
     ): CompositionRegistration<TType, TContentAreas, TProps> => ({ type, render })
 }
 
-export interface CompositionRenderProps<TContentAreas, TProps> {
+export interface CompositionRenderProps<TContentAreas, TProps, TLoadDataServices> {
     contentAreas: { [key in keyof TContentAreas]: React.ReactElement<any> }
     props: TProps
+
+    /** Allows a middleware to be specified for component rendering */
+    renderCompositionMiddleware?: (
+        props: CompositionRenderProps<TContentAreas, TProps, TLoadDataServices>,
+        next: RenderFunction<any, TLoadDataServices>,
+    ) => React.ReactElement<any> | false | null
 }
 
 export interface CompositionInformation<
@@ -46,11 +52,9 @@ export interface CompositionRegistration<TType, TContentAreas extends string, TP
     render: CompositionRenderFunction<TContentAreas, TProps>
 }
 
-export type RenderFunction<
-    Features extends string,
-    T extends ComponentInformation<Features, TProps>,
-    TProps = T['props']
-> = (props: TProps) => React.ReactElement<any>
+export type RenderFunction<T extends ComponentInformation<any, TProps>, TProps = T['props']> = (
+    props: TProps,
+) => React.ReactElement<any>
 export type CompositionRenderFunction<TContentAreas extends string, TProps> = (renderProps: {
     props: TProps
     contentAreas: { [key in TContentAreas]: React.ReactElement<any> }
@@ -64,18 +68,29 @@ export interface NestedCompositionProps {
 export class CompositionRegistrar<
     TCompositions extends CompositionInformation<any, any, any>,
     TComponents extends ComponentInformation<any>,
-    TLoadDataServices
+    TLoadDataServices,
+    TMiddlewareProps extends {}
 > {
     /** Static constructor function due to type inference */
-    static create<TRegisteredComponents extends ComponentInformation<any>, LoadDataServices>(
-        componentRegistrar: ComponentRegistrar<LoadDataServices, TRegisteredComponents>,
+    static create<
+        TRegisteredComponents extends ComponentInformation<any>,
+        LoadDataServices,
+        MiddlewareProps extends {}
+    >(
+        componentRegistrar: ComponentRegistrar<
+            LoadDataServices,
+            TRegisteredComponents,
+            MiddlewareProps
+        >,
     ) {
         const registrar = new CompositionRegistrar<
             never,
             | TRegisteredComponents
             | ComponentInformation<'nested-composition', NestedCompositionProps>,
-            LoadDataServices
+            LoadDataServices,
+            MiddlewareProps
         >(componentRegistrar as any)
+        const { createRegisterableComponent } = componentFactory<LoadDataServices>()
 
         // Nested compositions, we register a composition renderer as a component
         registrar.componentRegistrar.register(
@@ -131,7 +146,8 @@ export class CompositionRegistrar<
         | Exclude<TCompositions, never>
         | CompositionInformation<TType, TComponents, TContentAreas, TProps>,
         TComponents,
-        TLoadDataServices
+        TLoadDataServices,
+        TMiddlewareProps
     > {
         if (this.registeredCompositions[registration.type]) {
             throw new Error(`${registration.type} has already been registered`)
@@ -145,7 +161,12 @@ export class CompositionRegistrar<
     }
 
     CompositionRenderer: React.FC<
-        CompositionRendererProps<TCompositions, TComponents, TLoadDataServices>
+        CompositionRendererProps<
+            TCompositions,
+            TComponents & TMiddlewareProps,
+            TLoadDataServices,
+            TMiddlewareProps
+        >
     > = (props): React.ReactElement<any> | null => {
         /**
          * The ContentAreaRenderer componentRenderPaths need to append `/[contentArea key]'
@@ -172,7 +193,7 @@ export class CompositionRegistrar<
             )
             return acc
         }, {})
-        const compositionProps: CompositionRenderProps<any, any> = {
+        const compositionProps: CompositionRenderProps<any, any, TLoadDataServices> = {
             contentAreas,
             props: props.compositionInformation.props,
         }
@@ -181,7 +202,7 @@ export class CompositionRegistrar<
     }
 
     ContentAreaRenderer: React.FC<
-        ContentAreaRendererProps<TCompositions, TComponents, TLoadDataServices>
+        ContentAreaRendererProps<TCompositions, TComponents & TMiddlewareProps, TLoadDataServices>
     > = (props): React.ReactElement<any> => {
         const componentRenderPath = getContentAreaRenderPath({
             renderPath: props.componentRenderPath,
@@ -203,17 +224,20 @@ export class CompositionRegistrar<
         return (
             <React.Fragment>
                 {props.contentArea.map((item, index) => {
+                    const { type, props: componentProps, ...middlewareProps } = item
                     return (
                         <ComponentRenderer
+                            {...middlewareProps}
                             key={`${item.type}-${index}`}
-                            type={item.type}
+                            type={type}
                             routeBuilder={props.routeBuilder}
                             componentRegistrar={this.componentRegistrar}
                             componentProps={{
-                                ...item.props,
+                                ...componentProps,
                                 componentRenderPath: `${componentRenderPath}[${index}]`,
                             }}
                             loadDataServices={props.loadDataServices}
+                            renderComponentMiddleware={this.componentRegistrar.componentMiddleware}
                         />
                     )
                 })}
@@ -224,12 +248,13 @@ export class CompositionRegistrar<
 
 export interface CompositionRendererProps<
     TCompositions extends CompositionInformation<any, any, any>,
-    TComponents extends ComponentInformation<any>,
-    LoadDataServices
+    TComponents extends ComponentInformation<any> & TMiddlewareProps,
+    LoadDataServices,
+    TMiddlewareProps extends {}
 > {
     componentRenderPath: string
     compositionInformation: CompositionInformation<any, TComponents, any>
-    routeBuilder: RouteBuilder<TCompositions, TComponents, LoadDataServices>
+    routeBuilder: RouteBuilder<TCompositions, TComponents, LoadDataServices, TMiddlewareProps>
     loadDataServices: LoadDataServices
 }
 
@@ -240,6 +265,6 @@ export interface ContentAreaRendererProps<
 > {
     componentRenderPath: string
     contentArea: TComponents[]
-    routeBuilder: RouteBuilder<TCompositions, TComponents, LoadDataServices>
+    routeBuilder: RouteBuilder<TCompositions, TComponents, LoadDataServices, any>
     loadDataServices: LoadDataServices
 }

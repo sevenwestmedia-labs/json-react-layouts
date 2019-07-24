@@ -1,10 +1,9 @@
 import React from 'react'
-import {
-    createRegisterableComponent,
-    createRegisterableComponentWithData,
-} from '../ComponentRegistrar'
+import { componentFactory } from '../ComponentRegistrar'
 import { DataDefinition } from '../DataLoading'
 import { createRegisterableComposition } from '../CompositionRegistrar'
+
+const { createRegisterableComponent, createRegisterableComponentWithData } = componentFactory<{}>()
 
 // Test Component
 export const TestComponent: React.FC<{}> = () => <div>Test component</div>

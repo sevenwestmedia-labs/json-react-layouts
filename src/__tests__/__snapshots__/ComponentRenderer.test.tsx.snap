@@ -7,7 +7,7 @@ Object {
     "loaded": true,
     "result": 3,
   },
-  "dataDefinition": Object {
+  "dataDefinitionArgs": Object {
     "dataArg": "Foo",
   },
   "length": 3,

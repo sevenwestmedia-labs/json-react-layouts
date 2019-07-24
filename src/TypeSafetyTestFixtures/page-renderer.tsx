@@ -1,6 +1,6 @@
 import React from 'react'
 import { ComponentRegistrar } from '../ComponentRegistrar'
-import { testComponentRegistration, testCompositionRegistration } from '../testComponents'
+import { testComponentRegistration, testCompositionRegistration } from '../__tests__/testComponents'
 import { CompositionRegistrar } from '../CompositionRegistrar'
 import { RouteBuilder } from '../RouteBuilder'
 import { consoleLogger } from 'typescript-log'

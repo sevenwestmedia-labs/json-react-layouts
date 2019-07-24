@@ -1,14 +1,23 @@
 import React from 'react'
-import { ComponentRegistrar, RenderFunctionServices } from './ComponentRegistrar'
+import { ComponentRegistrar, RenderFunctionServices, RenderFunction } from './ComponentRegistrar'
 import { RouteBuilder } from './RouteBuilder'
 import { ComponentState } from './DataLoading'
 
-export interface Props<LoadDataServices> {
+export type ComponentRendererMiddleware<TLoadDataServices> = (
+    props: Props<TLoadDataServices>,
+    services: RenderFunctionServices<TLoadDataServices>,
+    next: RenderFunction<any, TLoadDataServices>,
+) => React.ReactElement<any> | false | null
+
+export interface Props<TLoadDataServices> {
     type: string
-    routeBuilder: RouteBuilder<any, any, any>
-    componentRegistrar: ComponentRegistrar<LoadDataServices, any>
-    componentProps: { componentRenderPath: string; dataDefinition?: any; [props: string]: any }
-    loadDataServices: LoadDataServices
+    routeBuilder: RouteBuilder<any, any, any, any>
+    componentRegistrar: ComponentRegistrar<TLoadDataServices, any>
+    componentProps: { componentRenderPath: string; dataDefinitionsArg?: any; [props: string]: any }
+    loadDataServices: TLoadDataServices
+
+    /** Allows a middleware to be specified for component rendering */
+    renderComponentMiddleware?: ComponentRendererMiddleware<TLoadDataServices>
 }
 
 export const ComponentRenderer: React.FC<Props<any>> = props => {
@@ -24,37 +33,44 @@ export const ComponentRenderer: React.FC<Props<any>> = props => {
         routeBuilder: props.routeBuilder,
     }
 
-    if (componentDataDefinition) {
-        return (
-            <props.routeBuilder.ComponentDataLoader
-                componentRegistrar={props.componentRegistrar}
-                componentRenderPath={props.componentProps.componentRenderPath}
-                dataDefinition={componentDataDefinition}
-                dataDefinitionArgs={props.componentProps.dataDefinition}
-                renderData={renderProps => {
-                    if (!renderProps.lastAction.success) {
-                        // We have failed to load data, use error boundaries
-                        // to send error back up and render error page
-                        throw renderProps.lastAction.error
-                    }
+    function render() {
+        if (componentDataDefinition) {
+            return (
+                <props.routeBuilder.ComponentDataLoader
+                    componentRegistrar={props.componentRegistrar}
+                    componentRenderPath={props.componentProps.componentRenderPath}
+                    dataDefinition={componentDataDefinition}
+                    dataDefinitionArgs={props.componentProps.dataDefinitionArgs}
+                    renderData={renderProps => {
+                        if (!renderProps.lastAction.success) {
+                            // We have failed to load data, use error boundaries
+                            // to send error back up and render error page
+                            throw renderProps.lastAction.error
+                        }
 
-                    const data: ComponentState<any> = renderProps.data.hasData
-                        ? { data: { loaded: true, result: renderProps.data.result } }
-                        : { data: { loaded: false } }
+                        const data: ComponentState<any> = renderProps.data.hasData
+                            ? { data: { loaded: true, result: renderProps.data.result } }
+                            : { data: { loaded: false } }
 
-                    return (
-                        component.render(
-                            {
-                                ...props.componentProps,
-                                ...data,
-                            },
-                            componentServices,
-                        ) || null
-                    )
-                }}
-            />
-        )
+                        return (
+                            component.render(
+                                {
+                                    ...props.componentProps,
+                                    ...data,
+                                },
+                                componentServices,
+                            ) || null
+                        )
+                    }}
+                />
+            )
+        }
+        return component.render(props.componentProps, componentServices) || null
     }
-    return component.render(props.componentProps, componentServices) || null
+
+    if (props.renderComponentMiddleware) {
+        return props.renderComponentMiddleware(props, componentServices, render) || null
+    }
+    return render()
 }
 ComponentRenderer.displayName = 'ComponentRenderer'

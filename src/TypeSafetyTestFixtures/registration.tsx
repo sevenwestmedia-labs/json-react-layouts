@@ -3,7 +3,7 @@ import {
     testComponentRegistration,
     testComponent2Registration,
     testCompositionRegistration,
-} from '../testComponents'
+} from '../__tests__/testComponents'
 import { CompositionRegistrar } from '../CompositionRegistrar'
 import { consoleLogger } from 'typescript-log'
 
