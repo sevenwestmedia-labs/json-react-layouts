@@ -3,12 +3,14 @@
 exports[`can load data for component 1`] = `
 Object {
   "componentRenderPath": "test[0]",
-  "data": Object {
-    "loaded": true,
-    "result": 3,
-  },
-  "dataDefinitionArgs": Object {
-    "dataArg": "Foo",
+  "dataProps": Object {
+    "data": Object {
+      "dataDefinitionArgs": Object {
+        "dataArg": "Foo",
+      },
+      "loaded": true,
+      "result": 3,
+    },
   },
   "length": 3,
 }

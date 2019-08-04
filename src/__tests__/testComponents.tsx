@@ -30,11 +30,12 @@ const lengthCalculatorDataDefinition: DataDefinition<{ dataArg: string }, number
 export const testComponentWithDataRegistration = createRegisterableComponentWithData(
     'test-with-data',
     lengthCalculatorDataDefinition,
-    props => {
+    (props, data) => {
         return (
             <TestComponentWithData
-                length={props.data.loaded ? props.data.result : undefined}
+                length={data.loaded ? data.result : undefined}
                 {...props}
+                {...{ dataProps: { data } }}
             />
         )
     },
