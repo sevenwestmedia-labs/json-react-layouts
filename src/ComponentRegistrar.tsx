@@ -92,17 +92,29 @@ export class ComponentRegistrar<
     private registeredComponents: {
         [key: string]: ComponentRegistration<any, any, TLoadDataServices>
     } = {}
-    private _componentMiddleware?: ComponentRendererMiddlewareRegistration<
+    private _componentMiddlewares: ComponentRendererMiddlewareRegistration<
         TLoadDataServices,
         TMiddlewareProps
-    >
+    >[] = []
+
     public get componentMiddleware():
         | ComponentRendererMiddlewareRegistration<TLoadDataServices, TMiddlewareProps>
         | undefined {
-        return this._componentMiddleware
+        const pipeline = (
+            props: Props<TLoadDataServices> & TMiddlewareProps,
+            services: RenderFunctionServices<TLoadDataServices>,
+            ...steps: ComponentRendererMiddlewareRegistration<TLoadDataServices, TMiddlewareProps>[]
+        ): React.ReactElement<any> | false | null => {
+            const [step, ...next] = steps
+            return step ? step(props, services, () => pipeline(props, services, ...next)) : null
+        }
+
+        return (props, services, next) => {
+            return pipeline(props, services, ...this._componentMiddlewares, next)
+        }
     }
 
-    constructor(public logger: Logger) {}
+    constructor(public logger: Logger = noopLogger()) {}
 
     isRegistered = (type: TComponents['type']) => {
         return this.registeredComponents[type] !== undefined
@@ -159,16 +171,8 @@ export class ComponentRegistrar<
         TComponents,
         TMiddlewareProps & TRegistrationMiddlewareProps
     > {
-        // Figure out how to compose middlewares
-        // if (this.componentMiddleware) {
-        //     const previousMiddleware = this.componentMiddleware
-
-        //     this.componentMiddleware = (props: any, next) => {
-        //         return componentMiddleware(props, previousMiddleware)
-        // }
-
         // This cast is safe because we are correctly typing the return type
-        this._componentMiddleware = componentMiddleware as any
+        this._componentMiddlewares.push(componentMiddleware as any)
 
         return this as any
     }
