@@ -1,7 +1,7 @@
 import React from 'react'
-import { Logger } from 'typescript-log'
+import { Logger, noopLogger } from 'typescript-log'
 
-import { DataDefinition, ComponentState } from './DataLoading'
+import { DataDefinition, ComponentState, MaybeLoaded } from './DataLoading'
 import { RouteBuilder } from './RouteBuilder'
 import { Props } from './ComponentRenderer'
 
@@ -30,10 +30,11 @@ export function componentFactory<TLoadDataServices>() {
         >(
             type: TType,
             dataDefinition: DataDefinition<TConfig, TData, TLoadDataServices>,
-            render: RenderFunction<
-                TProps & ComponentState<TData> & { dataDefinitionArgs: TConfig },
-                TLoadDataServices
-            >,
+            render: (
+                props: TProps,
+                dataProps: MaybeLoaded<TData> & { dataDefinitionArgs: TConfig },
+                services: RenderFunctionServices<TLoadDataServices>,
+            ) => React.ReactElement<any> | false | null,
         ): ComponentRegistration<
             TType,
             TProps & { dataDefinitionArgs: TConfig },
@@ -44,7 +45,14 @@ export function componentFactory<TLoadDataServices>() {
             // The dataDefinition which is passed to this object is hidden from the types returned
             // The content area renderer has a data loader which will look for this property
             // Then use the loadData function
-            const registrationWithData: any = { type, render, dataDefinition }
+            const normalRender: RenderFunction<
+                TProps & ComponentState<TData> & { dataDefinitionArgs: TConfig },
+                TLoadDataServices
+            > = ({ data, dataDefinitionArgs, ...rest }, services) => {
+                return render(rest as any, { ...data, dataDefinitionArgs }, services)
+            }
+
+            const registrationWithData: any = { type, render: normalRender, dataDefinition }
             // Once the data is loaded it will be passed to the render function on the
             // data prop, which will be typed as LoadedData<TData>
 
