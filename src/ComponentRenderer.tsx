@@ -1,23 +1,28 @@
 import React from 'react'
-import { ComponentRegistrar, RenderFunctionServices, RenderFunction } from './ComponentRegistrar'
+import {
+    ComponentRegistrar,
+    RenderFunctionServices,
+    ComponentRendererMiddleware,
+} from './ComponentRegistrar'
 import { RouteBuilder } from './RouteBuilder'
 import { ComponentState } from './DataLoading'
 
-export type ComponentRendererMiddleware<TLoadDataServices> = (
-    props: Props<TLoadDataServices>,
-    services: RenderFunctionServices<TLoadDataServices>,
-    next: RenderFunction<any, TLoadDataServices>,
-) => React.ReactElement<any> | false | null
+export interface ComponentProps {
+    componentRenderPath: string
+    dataDefinitionsArg?: any
+    [props: string]: any
+}
 
 export interface Props<TLoadDataServices> {
     type: string
     routeBuilder: RouteBuilder<any, any, any, any>
     componentRegistrar: ComponentRegistrar<TLoadDataServices, any>
-    componentProps: { componentRenderPath: string; dataDefinitionsArg?: any; [props: string]: any }
+    componentProps: ComponentProps
+    middlewareProps: { [props: string]: any }
     loadDataServices: TLoadDataServices
 
     /** Allows a middleware to be specified for component rendering */
-    renderComponentMiddleware?: ComponentRendererMiddleware<TLoadDataServices>
+    renderComponentMiddleware?: ComponentRendererMiddleware<TLoadDataServices, any>
 }
 
 export const ComponentRenderer: React.FC<Props<any>> = props => {
@@ -69,7 +74,14 @@ export const ComponentRenderer: React.FC<Props<any>> = props => {
     }
 
     if (props.renderComponentMiddleware) {
-        return props.renderComponentMiddleware(props, componentServices, render) || null
+        return (
+            props.renderComponentMiddleware(
+                props.componentProps,
+                props.middlewareProps,
+                componentServices,
+                render,
+            ) || null
+        )
     }
     return render()
 }

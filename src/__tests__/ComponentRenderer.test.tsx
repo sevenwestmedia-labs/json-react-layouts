@@ -32,6 +32,7 @@ it('can render simple test component', () => {
         <ComponentRenderer
             type="test"
             componentProps={{ componentRenderPath: '/' }}
+            middlewareProps={{}}
             routeBuilder={routeBuilder}
             componentRegistrar={registrar}
             loadDataServices={{}}
@@ -46,6 +47,7 @@ it('can render simple component with renderProps', () => {
         <ComponentRenderer
             type="testWithTitleProp"
             componentProps={{ title: testTitle, componentRenderPath: '/' }}
+            middlewareProps={{}}
             routeBuilder={routeBuilder}
             componentRegistrar={registrar}
             loadDataServices={{}}

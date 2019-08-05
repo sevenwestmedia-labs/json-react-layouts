@@ -21,9 +21,9 @@ it('can hook component middleware', () => {
     let middlewareNext: any
     const registrar = new ComponentRegistrar(logger)
         .register(testComponentWithPropsRegistration)
-        .registerMiddleware((props: { skipRender?: boolean }, _, next) => {
+        .registerMiddleware((_, mp: { skipRender?: boolean }, __, next) => {
             middlewareCalled = true
-            middlewareProps = props
+            middlewareProps = mp
             middlewareNext = next
 
             return null
@@ -63,7 +63,7 @@ it('can hook multiple component middleware', () => {
     let middleware2Next: any
     const registrar = new ComponentRegistrar(logger)
         .register(testComponentWithPropsRegistration)
-        .registerMiddleware((props: { skipRender?: boolean }, services, next) => {
+        .registerMiddleware((props, _: { skipRender?: boolean }, services, next) => {
             middlewareCalled = true
             if (middleware2Called) {
                 throw new Error('middlewares called out of order')
@@ -72,9 +72,9 @@ it('can hook multiple component middleware', () => {
             return next(props, services)
         })
 
-        .registerMiddleware((props: { skipRender2?: boolean }, _, next) => {
+        .registerMiddleware((_, middlewareProps: { skipRender2?: boolean }, __, next) => {
             middleware2Called = true
-            middleware2Props = props
+            middleware2Props = middlewareProps
             middleware2Next = next
 
             return null

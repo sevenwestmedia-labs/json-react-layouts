@@ -3,7 +3,7 @@ import { Logger, noopLogger } from 'typescript-log'
 
 import { DataDefinition, ComponentState, MaybeLoaded } from './DataLoading'
 import { RouteBuilder } from './RouteBuilder'
-import { Props } from './ComponentRenderer'
+import { ComponentProps } from './ComponentRenderer'
 
 export interface ComponentRegistration<TType extends string, TProps extends {}, LoadDataServices> {
     type: TType
@@ -94,31 +94,45 @@ export const Errors = {
 export class ComponentRegistrar<
     TLoadDataServices extends {},
     TComponents extends ComponentInformation<any> = never,
-    TMiddlewareProps extends {} = {}
+    TMiddlewareProps extends object = {}
 > {
     // the internal collection of registered components
     private registeredComponents: {
         [key: string]: ComponentRegistration<any, any, TLoadDataServices>
     } = {}
-    private _componentMiddlewares: ComponentRendererMiddlewareRegistration<
+    private _componentMiddlewares: ComponentRendererMiddleware<
         TLoadDataServices,
         TMiddlewareProps
     >[] = []
 
-    public get componentMiddleware():
-        | ComponentRendererMiddlewareRegistration<TLoadDataServices, TMiddlewareProps>
-        | undefined {
+    public get componentMiddleware(): ComponentRendererMiddleware<
+        TLoadDataServices,
+        TMiddlewareProps
+    > {
         const pipeline = (
-            props: Props<TLoadDataServices> & TMiddlewareProps,
+            props: ComponentProps,
+            middlewareProps: TMiddlewareProps,
             services: RenderFunctionServices<TLoadDataServices>,
-            ...steps: ComponentRendererMiddlewareRegistration<TLoadDataServices, TMiddlewareProps>[]
+            ...steps: ComponentRendererMiddleware<TLoadDataServices, TMiddlewareProps>[]
         ): React.ReactElement<any> | false | null => {
             const [step, ...next] = steps
-            return step ? step(props, services, () => pipeline(props, services, ...next)) : null
+            return step
+                ? step(props, middlewareProps, services, () =>
+                      pipeline(props, middlewareProps, services, ...next),
+                  )
+                : null
         }
 
-        return (props, services, next) => {
-            return pipeline(props, services, ...this._componentMiddlewares, next)
+        return (props, middlewareProps, services, next) => {
+            return pipeline(
+                props,
+                middlewareProps,
+                services,
+                ...this._componentMiddlewares,
+                (cp, mp, s) => {
+                    return next({ ...cp, ...mp }, s)
+                },
+            )
         }
     }
 
@@ -169,8 +183,8 @@ export class ComponentRegistrar<
         return this as any
     }
 
-    registerMiddleware<TRegistrationMiddlewareProps>(
-        componentMiddleware: ComponentRendererMiddlewareRegistration<
+    registerMiddleware<TRegistrationMiddlewareProps extends object>(
+        componentMiddleware: ComponentRendererMiddleware<
             TLoadDataServices,
             TRegistrationMiddlewareProps
         >,
@@ -186,8 +200,9 @@ export class ComponentRegistrar<
     }
 }
 
-export type ComponentRendererMiddlewareRegistration<TLoadDataServices, TMiddlewareProps> = (
-    props: Props<TLoadDataServices> & TMiddlewareProps,
+export type ComponentRendererMiddleware<TLoadDataServices, TMiddlewareProps extends object> = (
+    componentProps: ComponentProps,
+    middlewareProps: TMiddlewareProps,
     services: RenderFunctionServices<TLoadDataServices>,
     next: RenderFunction<any, TLoadDataServices>,
 ) => React.ReactElement<any> | false | null

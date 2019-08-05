@@ -227,7 +227,6 @@ export class CompositionRegistrar<
                     const { type, props: componentProps, ...middlewareProps } = item
                     return (
                         <ComponentRenderer
-                            {...middlewareProps}
                             key={`${item.type}-${index}`}
                             type={type}
                             routeBuilder={props.routeBuilder}
@@ -236,6 +235,7 @@ export class CompositionRegistrar<
                                 ...componentProps,
                                 componentRenderPath: `${componentRenderPath}[${index}]`,
                             }}
+                            middlewareProps={middlewareProps}
                             loadDataServices={props.loadDataServices}
                             renderComponentMiddleware={this.componentRegistrar.componentMiddleware}
                         />
