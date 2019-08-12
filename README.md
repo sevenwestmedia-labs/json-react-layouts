@@ -1,6 +1,6 @@
-# React Pages
+# React json page layout
 
-React pages enables registration of components and layouts (called compositions) to open up the possibilities of pages where the layout is driven by data.
+React json page layout enables registration of components and layouts (called compositions) to open up the possibilities of pages where the layout is driven by data.
 
 ## Why
 
