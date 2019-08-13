@@ -1,9 +1,8 @@
 import React from 'react'
 import { componentFactory } from '../ComponentRegistrar'
-import { DataDefinition } from '../DataLoading'
 import { createRegisterableComposition } from '../CompositionRegistrar'
 
-const { createRegisterableComponent, createRegisterableComponentWithData } = componentFactory<{}>()
+const { createRegisterableComponent } = componentFactory<{}>()
 
 // Test Component
 export const TestComponent: React.FC<{}> = () => <div>Test component</div>
@@ -18,28 +17,6 @@ export const TestComponent2: React.FC<{}> = () => <div>Test component 2</div>
 export const testComponent2Registration = createRegisterableComponent('test2', () => (
     <TestComponent2 />
 ))
-
-// Test component with data
-export const TestComponentWithData: React.FC<{ length: number | undefined }> = ({ length }) => (
-    <div>{length ? `Length: ${length}` : 'Loading'}</div>
-)
-
-const lengthCalculatorDataDefinition: DataDefinition<{ dataArg: string }, number, {}> = {
-    loadData: props => new Promise(resolve => setTimeout(() => resolve(props.dataArg.length))),
-}
-export const testComponentWithDataRegistration = createRegisterableComponentWithData(
-    'test-with-data',
-    lengthCalculatorDataDefinition,
-    (props, data) => {
-        return (
-            <TestComponentWithData
-                length={data.loaded ? data.result : undefined}
-                {...props}
-                {...{ dataProps: { data } }}
-            />
-        )
-    },
-)
 
 // Test Component With props
 export interface TestProps {

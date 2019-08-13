@@ -6,20 +6,17 @@ import {
     testCompositionRegistration,
     TestComponentWithProps,
 } from './testComponents'
-import { consoleLogger } from 'typescript-log'
 import { configure, mount } from 'enzyme'
 import { CompositionRegistrar } from '../CompositionRegistrar'
 import { RouteBuilder } from '../RouteBuilder'
-import { DataLoaderResources } from 'react-ssr-data-loader'
 
 configure({ adapter: new Adapter() })
-const logger = consoleLogger()
 
 it('can hook component middleware', () => {
     let middlewareCalled: any
     let middlewareProps: any
     let middlewareNext: any
-    const registrar = new ComponentRegistrar(logger)
+    const registrar = new ComponentRegistrar()
         .register(testComponentWithPropsRegistration)
         .registerMiddleware((_, mp: { skipRender?: boolean }, __, next) => {
             middlewareCalled = true
@@ -33,7 +30,7 @@ it('can hook component middleware', () => {
         testCompositionRegistration,
     )
 
-    const routeBuilder = new RouteBuilder(compositionRegistrar, new DataLoaderResources())
+    const routeBuilder = new RouteBuilder(compositionRegistrar)
 
     mount(
         <compositionRegistrar.ContentAreaRenderer
@@ -61,7 +58,7 @@ it('can hook multiple component middleware', () => {
     let middleware2Called: any
     let middleware2Props: any
     let middleware2Next: any
-    const registrar = new ComponentRegistrar(logger)
+    const registrar = new ComponentRegistrar()
         .register(testComponentWithPropsRegistration)
         .registerMiddleware((props, _: { skipRender?: boolean }, services, next) => {
             middlewareCalled = true
@@ -69,7 +66,7 @@ it('can hook multiple component middleware', () => {
                 throw new Error('middlewares called out of order')
             }
 
-            return next(props, services)
+            return next(props, _, services)
         })
 
         .registerMiddleware((_, middlewareProps: { skipRender2?: boolean }, __, next) => {
@@ -84,7 +81,7 @@ it('can hook multiple component middleware', () => {
         testCompositionRegistration,
     )
 
-    const routeBuilder = new RouteBuilder(compositionRegistrar, new DataLoaderResources())
+    const routeBuilder = new RouteBuilder(compositionRegistrar)
 
     mount(
         <compositionRegistrar.ContentAreaRenderer

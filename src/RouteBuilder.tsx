@@ -1,9 +1,6 @@
 import { ComponentInformation } from './ComponentRegistrar'
 import { CompositionInformation, CompositionRegistrar } from './CompositionRegistrar'
 import { createPageRenderer, Props } from './PageRenderer'
-import { ComponentState, LoadArguments } from './DataLoading'
-import { DataLoaderResources, DataLoaderProps } from 'react-ssr-data-loader'
-import { DataLoaderActions } from 'react-ssr-data-loader/dist/data-loader'
 
 /**
  * This class is simply used to get better typescript completion and errors targeted to where they occur
@@ -22,14 +19,6 @@ export class RouteBuilder<
     PageRenderer: React.FC<
         Props<TCompositions, TComponents, LoadDataServices, TMiddlewareProps>
     > = createPageRenderer(this)
-    ComponentDataLoader: React.ReactType<
-        DataLoaderProps<
-            ComponentState<any>,
-            DataLoaderActions<{}, ComponentState<any>>,
-            LoadArguments<LoadDataServices>
-        > &
-            LoadArguments<LoadDataServices>
-    >
 
     // Expects a composition registrar to be passed in
     constructor(
@@ -39,16 +28,7 @@ export class RouteBuilder<
             LoadDataServices,
             TMiddlewareProps
         >,
-        resources: DataLoaderResources<LoadDataServices>,
-    ) {
-        this.ComponentDataLoader = resources.registerResource<any, LoadArguments<LoadDataServices>>(
-            'component-data-loader',
-            params => {
-                return params.dataDefinition.loadData(params.dataDefinitionArgs, params)
-            },
-            ['componentRenderPath', 'dataDefinitionArgs'],
-        )
-    }
+    ) {}
 
     component(component: TComponents & TMiddlewareProps) {
         return component

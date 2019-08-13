@@ -4,15 +4,14 @@ import { testComponentRegistration, testCompositionRegistration } from '../__tes
 import { CompositionRegistrar } from '../CompositionRegistrar'
 import { RouteBuilder } from '../RouteBuilder'
 import { consoleLogger } from 'typescript-log'
-import { DataLoaderResources } from 'react-ssr-data-loader/dist'
 
 const logger = consoleLogger()
-const registrar = new ComponentRegistrar(logger).register(testComponentRegistration)
+const registrar = new ComponentRegistrar().register(testComponentRegistration)
 const compositionRegistrar = CompositionRegistrar.create(registrar).registerComposition(
     testCompositionRegistration,
 )
 
-const routeBuilder = new RouteBuilder(compositionRegistrar, new DataLoaderResources<{}>())
+const routeBuilder = new RouteBuilder(compositionRegistrar)
 
 // Should not compile
 // @ts-ignore

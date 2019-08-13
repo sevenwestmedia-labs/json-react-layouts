@@ -1,14 +1,13 @@
 import React from 'react'
 import { Logger, noopLogger } from 'typescript-log'
 
-import { DataDefinition, ComponentState, MaybeLoaded } from './DataLoading'
 import { RouteBuilder } from './RouteBuilder'
-import { ComponentProps } from './ComponentRenderer'
+import { ComponentProps, ComponentRenderer } from './ComponentRenderer'
+import { CompositionRegistrar } from './CompositionRegistrar'
 
 export interface ComponentRegistration<TType extends string, TProps extends {}, LoadDataServices> {
     type: TType
     render: RenderFunction<TProps, LoadDataServices>
-    dataDefinition?: DataDefinition<any, any, LoadDataServices>
 }
 
 export function componentFactory<TLoadDataServices>() {
@@ -19,46 +18,6 @@ export function componentFactory<TLoadDataServices>() {
             render: RenderFunction<TProps, TLoadDataServices>,
         ): ComponentRegistration<TType, TProps, TLoadDataServices> {
             return { type, render }
-        },
-
-        /** Helper function to create the registration with data (to infer types) */
-        createRegisterableComponentWithData<
-            TType extends string,
-            TProps extends {},
-            TConfig extends {},
-            TData
-        >(
-            type: TType,
-            dataDefinition: DataDefinition<TConfig, TData, TLoadDataServices>,
-            render: (
-                props: TProps,
-                dataProps: MaybeLoaded<TData> & { dataDefinitionArgs: TConfig },
-                services: RenderFunctionServices<TLoadDataServices>,
-            ) => React.ReactElement<any> | false | null,
-        ): ComponentRegistration<
-            TType,
-            TProps & { dataDefinitionArgs: TConfig },
-            TLoadDataServices
-        > {
-            // This is quite a complex transform which can't be modelled in typescript.
-            //
-            // The dataDefinition which is passed to this object is hidden from the types returned
-            // The content area renderer has a data loader which will look for this property
-            // Then use the loadData function
-            const normalRender: RenderFunction<
-                TProps & ComponentState<TData> & { dataDefinitionArgs: TConfig },
-                TLoadDataServices
-            > = ({ data, dataDefinitionArgs, ...rest }, services) => {
-                return render(rest as any, { ...data, dataDefinitionArgs }, services)
-            }
-
-            const registrationWithData: any = { type, render: normalRender, dataDefinition }
-            // Once the data is loaded it will be passed to the render function on the
-            // data prop, which will be typed as LoadedData<TData>
-
-            // The route info looks like this:
-            // { type: TType, props: TProps & { dataDefinition: TData } }
-            return registrationWithData
         },
     }
 }
@@ -130,7 +89,7 @@ export class ComponentRegistrar<
                 services,
                 ...this._componentMiddlewares,
                 (cp, mp, s) => {
-                    return next({ ...cp, ...mp }, s)
+                    return next(cp, mp, s)
                 },
             )
         }
@@ -140,17 +99,6 @@ export class ComponentRegistrar<
 
     isRegistered = (type: TComponents['type']) => {
         return this.registeredComponents[type] !== undefined
-    }
-
-    /**
-     * Returns the data definition for the given component
-     */
-    getDataDefinition = (type: TComponents['type']) => {
-        const foundComponent = this.registeredComponents[type]
-        if (!foundComponent) {
-            return undefined
-        }
-        return foundComponent.dataDefinition
     }
 
     /**
@@ -198,11 +146,61 @@ export class ComponentRegistrar<
 
         return this as any
     }
+
+    createRenderer(): React.FC<{
+        components: TComponents[]
+        loadDataServices: TLoadDataServices
+    }> {
+        const compositionRegistrar = CompositionRegistrar.create(this as any)
+        const routeBuilder = new RouteBuilder(compositionRegistrar) as any
+
+        const ComponentsRenderer: React.FC<{
+            components: TComponents[]
+            loadDataServices: TLoadDataServices
+        }> = ({ components, loadDataServices }) => {
+            return (
+                <React.Fragment>
+                    {components.map((item, index) => {
+                        const { type, props: componentProps, ...middlewareProps } = item
+                        return (
+                            <ComponentRenderer
+                                key={`${item.type}-${index}`}
+                                type={type}
+                                routeBuilder={routeBuilder}
+                                componentRegistrar={this as any}
+                                componentProps={{
+                                    ...componentProps,
+                                    componentRenderPath: `[${index}]`,
+                                }}
+                                middlewareProps={middlewareProps}
+                                loadDataServices={loadDataServices}
+                                renderComponentMiddleware={this.componentMiddleware}
+                            />
+                        )
+                    })}
+                </React.Fragment>
+            )
+        }
+        ComponentsRenderer.displayName = 'ComponentsRenderer'
+
+        return ComponentsRenderer
+    }
 }
+
+// const Renderer = new ComponentRegistrar().createRenderer()
+
+// <Renderer components={[]}
+
+/** The render function for components, converts the route props into a react component */
+export type MiddlwareHandler<TProps, TMiddlewareProps extends object, LoadDataServices> = (
+    props: TProps,
+    middlewareProps: TMiddlewareProps,
+    services: RenderFunctionServices<LoadDataServices>,
+) => React.ReactElement<any> | false | null
 
 export type ComponentRendererMiddleware<TLoadDataServices, TMiddlewareProps extends object> = (
     componentProps: ComponentProps,
     middlewareProps: TMiddlewareProps,
     services: RenderFunctionServices<TLoadDataServices>,
-    next: RenderFunction<any, TLoadDataServices>,
+    next: MiddlwareHandler<ComponentProps, TMiddlewareProps, TLoadDataServices>,
 ) => React.ReactElement<any> | false | null

@@ -5,9 +5,8 @@ import {
     testCompositionRegistration,
 } from '../__tests__/testComponents'
 import { CompositionRegistrar } from '../CompositionRegistrar'
-import { consoleLogger } from 'typescript-log'
 
-const registrar = new ComponentRegistrar(consoleLogger()).register(testComponentRegistration)
+const registrar = new ComponentRegistrar().register(testComponentRegistration)
 
 // Cannot get un-registered type - example
 registrar.get('test2')

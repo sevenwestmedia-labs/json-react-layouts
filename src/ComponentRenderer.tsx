@@ -5,11 +5,9 @@ import {
     ComponentRendererMiddleware,
 } from './ComponentRegistrar'
 import { RouteBuilder } from './RouteBuilder'
-import { ComponentState } from './DataLoading'
 
 export interface ComponentProps {
     componentRenderPath: string
-    dataDefinitionsArg?: any
     [props: string]: any
 }
 
@@ -31,45 +29,12 @@ export const ComponentRenderer: React.FC<Props<any>> = props => {
         return null
     }
 
-    const componentDataDefinition = props.componentRegistrar.getDataDefinition(props.type)
-
     const componentServices: RenderFunctionServices<any> = {
         loadDataServices: props.loadDataServices,
         routeBuilder: props.routeBuilder,
     }
 
     function render() {
-        if (componentDataDefinition) {
-            return (
-                <props.routeBuilder.ComponentDataLoader
-                    componentRegistrar={props.componentRegistrar}
-                    componentRenderPath={props.componentProps.componentRenderPath}
-                    dataDefinition={componentDataDefinition}
-                    dataDefinitionArgs={props.componentProps.dataDefinitionArgs}
-                    renderData={renderProps => {
-                        if (!renderProps.lastAction.success) {
-                            // We have failed to load data, use error boundaries
-                            // to send error back up and render error page
-                            throw renderProps.lastAction.error
-                        }
-
-                        const data: ComponentState<any> = renderProps.data.hasData
-                            ? { data: { loaded: true, result: renderProps.data.result } }
-                            : { data: { loaded: false } }
-
-                        return (
-                            component.render(
-                                {
-                                    ...props.componentProps,
-                                    ...data,
-                                },
-                                componentServices,
-                            ) || null
-                        )
-                    }}
-                />
-            )
-        }
         return component.render(props.componentProps, componentServices) || null
     }
 

@@ -1,6 +1,5 @@
 import React from 'react'
 import { configure, mount } from 'enzyme'
-import { DataProvider, DataLoaderResources } from 'react-ssr-data-loader'
 import Adapter from 'enzyme-adapter-react-16'
 import { Logger } from 'typescript-log'
 import { ComponentRegistrar } from '../ComponentRegistrar'
@@ -40,31 +39,28 @@ it('can render a composition with a content area through the registrar', () => {
         componentRegistrar,
     ).registerComposition(testCompositionRegistration)
 
-    const resources = new DataLoaderResources<{}>()
-    const routeBuilder = new RouteBuilder(compositionRegistrar, resources)
+    const routeBuilder = new RouteBuilder(compositionRegistrar)
 
     mount(
-        <DataProvider resources={resources} globalProps={{}}>
-            <routeBuilder.PageRenderer
-                loadDataServices={{}}
-                compositions={[
-                    {
-                        type: 'test-composition',
-                        props: {},
-                        contentAreas: {
-                            main: [
-                                { type: 'test', props: {} },
-                                routeBuilder.nestedComposition({
-                                    type: 'test-composition',
-                                    props: {},
-                                    contentAreas: { main: [{ type: 'test', props: {} }] },
-                                }),
-                            ],
-                        },
+        <routeBuilder.PageRenderer
+            loadDataServices={{}}
+            compositions={[
+                {
+                    type: 'test-composition',
+                    props: {},
+                    contentAreas: {
+                        main: [
+                            { type: 'test', props: {} },
+                            routeBuilder.nestedComposition({
+                                type: 'test-composition',
+                                props: {},
+                                contentAreas: { main: [{ type: 'test', props: {} }] },
+                            }),
+                        ],
                     },
-                ]}
-            />
-        </DataProvider>,
+                },
+            ]}
+        />,
     )
 
     expect(logMessages).toMatchSnapshot()

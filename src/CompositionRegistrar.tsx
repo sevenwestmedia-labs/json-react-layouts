@@ -9,7 +9,6 @@ import {
 import { RouteBuilder } from './RouteBuilder'
 
 import { ComponentRenderer } from './ComponentRenderer'
-import { getContentAreaRenderPath } from './helpers'
 
 /** Creates a registerable composition, it is a two step process due to TypeScript limitations
  *
@@ -204,16 +203,9 @@ export class CompositionRegistrar<
     ContentAreaRenderer: React.FC<
         ContentAreaRendererProps<TCompositions, TComponents & TMiddlewareProps, TLoadDataServices>
     > = (props): React.ReactElement<any> => {
-        const componentRenderPath = getContentAreaRenderPath({
-            renderPath: props.componentRenderPath,
-            components: props.contentArea,
-            componentRegistrar: this.componentRegistrar,
-            loadDataServices: props.loadDataServices,
-        })
-
         this.componentRegistrar.logger.debug(
             {
-                componentRenderPath,
+                componentRenderPath: props.componentRenderPath,
                 components: props.contentArea.map(component => ({
                     type: component.type,
                 })),
@@ -233,7 +225,7 @@ export class CompositionRegistrar<
                             componentRegistrar={this.componentRegistrar}
                             componentProps={{
                                 ...componentProps,
-                                componentRenderPath: `${componentRenderPath}[${index}]`,
+                                componentRenderPath: `${props.componentRenderPath}[${index}]`,
                             }}
                             middlewareProps={middlewareProps}
                             loadDataServices={props.loadDataServices}

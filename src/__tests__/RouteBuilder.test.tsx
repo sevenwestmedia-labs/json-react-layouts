@@ -6,20 +6,16 @@ import {
 } from './testComponents'
 import { RouteBuilder } from '../RouteBuilder'
 import { CompositionRegistrar } from '../CompositionRegistrar'
-import { consoleLogger } from 'typescript-log'
-import { DataLoaderResources } from 'react-ssr-data-loader/dist'
-
-const logger = consoleLogger()
 
 it('can create a component instance', () => {
-    const componentRegistrar = new ComponentRegistrar(logger)
+    const componentRegistrar = new ComponentRegistrar()
         .register(testComponentRegistration)
         .register(testComponent2Registration)
     const compositionRegistrar = CompositionRegistrar.create(
         componentRegistrar,
     ).registerComposition(testCompositionRegistration)
 
-    const routeBuilder = new RouteBuilder(compositionRegistrar, new DataLoaderResources())
+    const routeBuilder = new RouteBuilder(compositionRegistrar)
 
     routeBuilder.component({
         type: 'test',
@@ -28,13 +24,13 @@ it('can create a component instance', () => {
 })
 
 it('can register nested compositions', () => {
-    const componentRegistrar = new ComponentRegistrar(logger)
+    const componentRegistrar = new ComponentRegistrar()
         .register(testComponentRegistration)
         .register(testComponent2Registration)
     const compositionRegistrar = CompositionRegistrar.create(
         componentRegistrar,
     ).registerComposition(testCompositionRegistration)
-    const routeBuilder = new RouteBuilder(compositionRegistrar, new DataLoaderResources())
+    const routeBuilder = new RouteBuilder(compositionRegistrar)
 
     routeBuilder.nestedComposition({
         type: 'test-composition',
@@ -44,13 +40,13 @@ it('can register nested compositions', () => {
 })
 
 it('can create a content area instance', () => {
-    const componentRegistrar = new ComponentRegistrar(logger)
+    const componentRegistrar = new ComponentRegistrar()
         .register(testComponentRegistration)
         .register(testComponent2Registration)
     const compositionRegistrar = CompositionRegistrar.create(
         componentRegistrar,
     ).registerComposition(testCompositionRegistration)
-    const routeBuilder = new RouteBuilder(compositionRegistrar, new DataLoaderResources())
+    const routeBuilder = new RouteBuilder(compositionRegistrar)
 
     routeBuilder.contentArea(
         routeBuilder.component({
@@ -65,13 +61,13 @@ it('can create a content area instance', () => {
 })
 
 it('can create a composition instance', () => {
-    const componentRegistrar = new ComponentRegistrar(logger)
+    const componentRegistrar = new ComponentRegistrar()
         .register(testComponentRegistration)
         .register(testComponent2Registration)
     const compositionRegistrar = CompositionRegistrar.create(
         componentRegistrar,
     ).registerComposition(testCompositionRegistration)
-    const routeBuilder = new RouteBuilder(compositionRegistrar, new DataLoaderResources())
+    const routeBuilder = new RouteBuilder(compositionRegistrar)
 
     routeBuilder.composition({
         type: 'test-composition',
@@ -92,13 +88,13 @@ it('can create a composition instance', () => {
 })
 
 it('can create a page instance', () => {
-    const componentRegistrar = new ComponentRegistrar(logger)
+    const componentRegistrar = new ComponentRegistrar()
         .register(testComponentRegistration)
         .register(testComponent2Registration)
     const compositionRegistrar = CompositionRegistrar.create(
         componentRegistrar,
     ).registerComposition(testCompositionRegistration)
-    const routeBuilder = new RouteBuilder(compositionRegistrar, new DataLoaderResources())
+    const routeBuilder = new RouteBuilder(compositionRegistrar)
 
     routeBuilder.page(
         routeBuilder.composition({

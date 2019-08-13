@@ -1,6 +1,6 @@
-# React json page layout
+# React playout
 
-React json page layout enables registration of components and layouts (called compositions) to open up the possibilities of pages where the layout is driven by data.
+React playout enables registration of components and layouts (called compositions) to open up the possibilities of pages where the layout is driven by data.
 
 ## Why
 
@@ -95,4 +95,44 @@ The route builder is the main type you will deal with, it has helpers to create 
 
 ```ts
 const routeBuilder = new RouteBuilder(compositionRegistrar)
+```
+
+## Middleware
+
+React playout allows you to add middlewares around component rendering, this makes it really easy to add capabilities to all components being rendered. This could be feature toggling, data loading and pretty much anything you can think of.
+
+For example, if you wanted to expose a skip render property on all components you could write a middleware which looked like this:
+
+```ts
+const componentRegistrar = new ComponentRegistrar()
+    .register(...)
+    .registerMiddleware((componentProps, middlewareProps: { skipRender?: boolean }, services, next) => {
+        if (middlewareProps.skipRender) {
+            return null
+        }
+
+        return next(componentProps, middlewareProps, services)
+    })
+```
+
+## FAQ
+
+### What happens if I just want to render components (without compositions)
+
+You can create a renderer which just renders components from the component registrar.
+
+```tsx
+const componentRegistrar = new ComponentRegistrar<{}>()
+    .register(....)
+
+const ComponentsRenderer = componentRegistrar.createRenderer()
+
+const wrapper = mount(
+    <ComponentsRenderer
+        components={[
+            { type: '...', props: ... }
+        ]}
+        loadDataServices={{}}
+    />,
+)
 ```

@@ -1,51 +1,6 @@
 import { ComponentInformation, ComponentRegistrar } from './ComponentRegistrar'
 import { NestedCompositionProps, CompositionInformation } from './CompositionRegistrar'
 
-export function getContentAreaRenderPath<LoadDataServices>(params: {
-    renderPath: string
-    components: Array<ComponentInformation<any, any>>
-    componentRegistrar: ComponentRegistrar<any, any>
-    loadDataServices: LoadDataServices
-}) {
-    const { renderPath, components, loadDataServices, componentRegistrar } = params
-    const cacheKey = getContentAreaCacheKeyModifier({
-        components: components as any,
-        componentRegistrar,
-        loadDataServices,
-    })
-
-    const result = `${cacheKey ? `${cacheKey}/${renderPath}` : renderPath}`
-    return result
-}
-
-function getContentAreaCacheKeyModifier<LoadDataServices>(params: {
-    componentRegistrar: ComponentRegistrar<any, any>
-    components: Array<{
-        type: string
-        props: { dataDefinition?: { type: string } }
-    }>
-    loadDataServices: LoadDataServices
-}) {
-    const { components } = params
-    let cacheKey: Array<string> = []
-
-    for (let i = 0; i < components.length; i++) {
-        const component = components[i]
-
-        const dataDefinition = params.componentRegistrar.getDataDefinition(component.type)
-
-        if (dataDefinition && dataDefinition.getCacheKey) {
-            const componentRouteDataConfig = component.props.dataDefinition
-            const cacheKeyModifier = dataDefinition.getCacheKey(
-                componentRouteDataConfig,
-                params.loadDataServices,
-            )
-            cacheKey.push(cacheKeyModifier)
-        }
-    }
-    return distinct(cacheKey).join('-')
-}
-
 export interface RouteDataIdInfo {
     path: string
     subpath: string
@@ -160,12 +115,7 @@ function contentAreas<LoadDataServices>(
 
     const components = composition.contentAreas[contentAreaKey]
 
-    const path = getContentAreaRenderPath({
-        renderPath: `${getRouteDataId(routeDataOptions)}/${contentAreaKey}`,
-        components,
-        componentRegistrar,
-        loadDataServices,
-    })
+    const path = `${getRouteDataId(routeDataOptions)}/${contentAreaKey}`
 
     return [
         {
