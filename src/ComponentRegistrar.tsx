@@ -10,18 +10,6 @@ export interface ComponentRegistration<TType extends string, TProps extends {}, 
     render: RenderFunction<TProps, LoadDataServices>
 }
 
-export function componentFactory<TLoadDataServices>() {
-    return {
-        /** Helper function to create the registration (to infer types) */
-        createRegisterableComponent<TType extends string, TProps extends {}>(
-            type: TType,
-            render: RenderFunction<TProps, TLoadDataServices>,
-        ): ComponentRegistration<TType, TProps, TLoadDataServices> {
-            return { type, render }
-        },
-    }
-}
-
 /** A component definition inside route definitions */
 export interface ComponentInformation<TType, TProps = {}> {
     type: TType
@@ -48,7 +36,7 @@ export const Errors = {
  * Allows regisration of components to render in composition content areas in
  * a type safe way
  *
- * @example ComponentRegistrar.register(myComponentRegistration)
+ * @example new ComponentRegistrar().register(myComponentRegistration)
  */
 export class ComponentRegistrar<
     TLoadDataServices extends {},

@@ -1,5 +1,6 @@
-import { componentFactory, ComponentRegistrar } from './ComponentRegistrar'
+import { ComponentRegistrar } from './ComponentRegistrar'
 import { RouteBuilder } from './RouteBuilder'
 import { CompositionRegistrar } from './CompositionRegistrar'
+import { getRegistrationCreators } from './get-registration-creators'
 
-export { componentFactory, RouteBuilder, ComponentRegistrar, CompositionRegistrar }
+export { getRegistrationCreators, RouteBuilder, ComponentRegistrar, CompositionRegistrar }

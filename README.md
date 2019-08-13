@@ -19,7 +19,7 @@ React pages makes it easier to solve all the cross cutting concerns which pop up
 Once we have registered a `header`, `blog-entry` and `ad` component, our page definition could look like this:
 
 ```tsx
-const definition = routeBuilder.page([
+const definition = routeBuilder.compositions([
     type: '50-50-layout',
     contentAreas: {
 
@@ -72,7 +72,13 @@ They could also be called layouts, they have content areas which can contain com
 
 The first step is to create a component registration. It needs a key, which you can use in the route definitions when rendering.
 
+To ensure your components have the correct type for the component services getting the createRegistration functions is a two step process. This is due to limitations in TypeScripts generic arguments where you cannot mix specified and inferred generics.
+
 ```ts
+const { createRegisterableComponent, createRegisterableComposition } = getRegistrationCreators<
+    MyServices
+>()
+
 export const myComponentRegistration = createRegisterableComponent('component-key', () => (
     <MyComponent />
 ))
@@ -95,6 +101,88 @@ The route builder is the main type you will deal with, it has helpers to create 
 
 ```ts
 const routeBuilder = new RouteBuilder(compositionRegistrar)
+```
+
+## Types information
+
+When you have lot's of components TypeScript may just give up type checking, so the route builder has a number of helpers to help keep things type safe and narrow down any typing errors.
+
+### Helper functions
+
+These functions just return what you pass them, but are useful to narrow a compilation error down.
+
+These two examples are the same
+
+```ts
+// Example 1
+const definition = routeBuilder.compositions([ // This is where your compilation error will be
+    type: '50-50-layout',
+    contentAreas: {
+        left: [
+            {
+                type: 'header',
+                props: {
+                    tet: 'My page header' // This is wrong
+                }
+            },
+            { type: 'blog-entry', props: { id: 1 } }
+        ],=
+        right: [
+            { type: 'ad', props: { size: 'mrec' } }
+        ]
+    }
+])
+
+// Example 2
+const definition = routeBuilder.compositions([
+    type: '50-50-layout',
+    contentAreas: {
+        left: [
+            routeBuilder.component({ // This is where your compilation error will be
+                type: 'header',
+                props: {
+                    tet: 'My page header' // This is wrong
+                }
+            }),
+            { type: 'blog-entry', props: { id: 1 } }
+        ],
+        right: [
+            { type: 'ad', props: { size: 'mrec' }
+        ]
+    }
+])
+```
+
+As you can see, you can use the helper functions to narrow type errors. They are also handy for extracting components into multiple variables.
+
+```ts
+const header = routeBuilder.component({
+    type: 'header',
+    props: {
+        text: 'My page header',
+    },
+})
+```
+
+### Type helpers
+
+If you do not want to use the helper functions you can use the type helpers to get the type aliases for your component/composition types. These properties do not have values, they are just available to use the `typeof` keyword.
+
+```ts
+const header: typeof routeBuilder._componentType = {
+    type: 'header',
+    props: {
+        text: 'My page header',
+    },
+}
+
+const header: typeof routeBuilder._compositionType = {
+    type: '50-50-layout',
+    contentAreas: {
+        left: [],
+        right: [],
+    },
+}
 ```
 
 ## Middleware

@@ -42,7 +42,7 @@ it('can render a composition with a content area through the registrar', () => {
     const routeBuilder = new RouteBuilder(compositionRegistrar)
 
     mount(
-        <routeBuilder.PageRenderer
+        <routeBuilder.CompositionsRenderer
             loadDataServices={{}}
             compositions={[
                 {

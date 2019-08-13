@@ -4,25 +4,12 @@ import {
     ComponentInformation,
     Errors,
     ComponentRegistrar,
-    componentFactory,
+    RenderFunction,
 } from './ComponentRegistrar'
 import { RouteBuilder } from './RouteBuilder'
 
 import { ComponentRenderer } from './ComponentRenderer'
-
-/** Creates a registerable composition, it is a two step process due to TypeScript limitations
- *
- * First createRegisterableComponent<'main'|'sidebar'>() creates a registration function
- * for a composition with two content areas, main and sidebar.
- * Second call that registration function to create the registration.
- */
-
-export function createRegisterableComposition<TContentAreas extends string, TProps extends {}>() {
-    return <TType extends string>(
-        type: TType,
-        render: CompositionRenderFunction<TContentAreas, TProps>,
-    ): CompositionRegistration<TType, TContentAreas, TProps> => ({ type, render })
-}
+import { getRegistrationCreators } from './get-registration-creators'
 
 export interface CompositionRenderProps<TContentAreas, TProps, TLoadDataServices> {
     contentAreas: { [key in keyof TContentAreas]: React.ReactElement<any> }
@@ -51,9 +38,6 @@ export interface CompositionRegistration<TType, TContentAreas extends string, TP
     render: CompositionRenderFunction<TContentAreas, TProps>
 }
 
-export type RenderFunction<T extends ComponentInformation<any, TProps>, TProps = T['props']> = (
-    props: TProps,
-) => React.ReactElement<any>
 export type CompositionRenderFunction<TContentAreas extends string, TProps> = (renderProps: {
     props: TProps
     contentAreas: { [key in TContentAreas]: React.ReactElement<any> }
@@ -89,7 +73,7 @@ export class CompositionRegistrar<
             LoadDataServices,
             MiddlewareProps
         >(componentRegistrar as any)
-        const { createRegisterableComponent } = componentFactory<LoadDataServices>()
+        const { createRegisterableComponent } = getRegistrationCreators<LoadDataServices>()
 
         // Nested compositions, we register a composition renderer as a component
         registrar.componentRegistrar.register(

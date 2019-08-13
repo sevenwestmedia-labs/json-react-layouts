@@ -1,8 +1,7 @@
 import React from 'react'
-import { componentFactory } from '../ComponentRegistrar'
-import { createRegisterableComposition } from '../CompositionRegistrar'
+import { getRegistrationCreators } from '..'
 
-const { createRegisterableComponent } = componentFactory<{}>()
+const { createRegisterableComponent, createRegisterableComposition } = getRegistrationCreators<{}>()
 
 // Test Component
 export const TestComponent: React.FC<{}> = () => <div>Test component</div>

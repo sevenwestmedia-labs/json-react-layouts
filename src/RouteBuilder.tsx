@@ -1,6 +1,9 @@
 import { ComponentInformation } from './ComponentRegistrar'
 import { CompositionInformation, CompositionRegistrar } from './CompositionRegistrar'
-import { createPageRenderer, Props } from './PageRenderer'
+import { createCompositionsRenderer, Props } from './CompositionsRenderer'
+
+// TODO Route builder is a poor name for this.
+// It's more the API once you have finished registering everything and you want to use it..
 
 /**
  * This class is simply used to get better typescript completion and errors targeted to where they occur
@@ -16,9 +19,9 @@ export class RouteBuilder<
     _componentType!: TComponents & TMiddlewareProps
     _contentAreaType!: TComponents[]
 
-    PageRenderer: React.FC<
+    CompositionsRenderer: React.FC<
         Props<TCompositions, TComponents, LoadDataServices, TMiddlewareProps>
-    > = createPageRenderer(this)
+    > = createCompositionsRenderer(this)
 
     // Expects a composition registrar to be passed in
     constructor(
@@ -52,7 +55,7 @@ export class RouteBuilder<
         return composition
     }
 
-    page(...compositions: TCompositions[]): TCompositions[] {
+    compositions(...compositions: TCompositions[]): TCompositions[] {
         return compositions
     }
 }

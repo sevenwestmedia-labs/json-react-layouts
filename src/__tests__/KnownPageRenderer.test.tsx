@@ -26,7 +26,7 @@ it('can render a composition with a content area through the registrar', () => {
 
     const routeBuilder = new RouteBuilder(compositionRegistrar)
     const wrapper = mount(
-        <routeBuilder.PageRenderer
+        <routeBuilder.CompositionsRenderer
             loadDataServices={{}}
             compositions={[
                 {
@@ -63,7 +63,7 @@ it('can render a nested composition', () => {
 
     const routeBuilder = new RouteBuilder(compositionRegistrar)
     const wrapper = mount(
-        <routeBuilder.PageRenderer
+        <routeBuilder.CompositionsRenderer
             loadDataServices={{}}
             compositions={[
                 {

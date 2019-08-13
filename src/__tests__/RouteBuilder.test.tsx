@@ -96,7 +96,7 @@ it('can create a page instance', () => {
     ).registerComposition(testCompositionRegistration)
     const routeBuilder = new RouteBuilder(compositionRegistrar)
 
-    routeBuilder.page(
+    routeBuilder.compositions(
         routeBuilder.composition({
             type: 'test-composition',
             props: {},

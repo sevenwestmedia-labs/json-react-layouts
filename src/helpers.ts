@@ -133,7 +133,7 @@ function contentAreas<LoadDataServices>(
     ]
 }
 
-export type ContentAreaData = {
+export interface ContentAreaData {
     renderPath: string
     contentArea: Array<ComponentInformation<any, any>>
 }

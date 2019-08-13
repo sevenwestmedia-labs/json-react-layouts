@@ -16,7 +16,7 @@ export type Props<
     loadDataServices: LoadDataServices
 }
 
-export function createPageRenderer<
+export function createCompositionsRenderer<
     TCompositions extends CompositionInformation<any, TComponents, any, any>,
     TComponents extends ComponentInformation<any> & MiddlewareProps,
     LoadDataServices,
@@ -24,7 +24,7 @@ export function createPageRenderer<
 >(
     routeBuilder: RouteBuilder<TCompositions, TComponents, LoadDataServices, MiddlewareProps>,
 ): React.FC<Props<TCompositions, TComponents, LoadDataServices, MiddlewareProps>> {
-    return function PageRenderer({ loadDataServices, renderPathPrefix, compositions }) {
+    return function CompositionsRenderer({ loadDataServices, renderPathPrefix, compositions }) {
         routeBuilder.compositionRegistrar.componentRegistrar.logger.debug(
             {
                 renderPathPrefix,
@@ -32,7 +32,7 @@ export function createPageRenderer<
                     type: composition.type,
                 })),
             },
-            'Rendering page',
+            'Rendering compositions',
         )
 
         return (
