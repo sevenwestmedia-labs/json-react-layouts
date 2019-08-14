@@ -1,6 +1,6 @@
-# React playout
+# JSON React layouts
 
-React playout enables registration of components and layouts (called compositions) to open up the possibilities of pages where the layout is driven by data.
+JSON React layouts enables registration of components and layouts (called compositions) to open up the possibilities of pages where the layout is driven by data.
 
 ## Why
 
