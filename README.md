@@ -19,7 +19,7 @@ React pages makes it easier to solve all the cross cutting concerns which pop up
 Once we have registered a `header`, `blog-entry` and `ad` component, our page definition could look like this:
 
 ```tsx
-const definition = routeBuilder.compositions([
+const definition = layout.compositions([
     type: '50-50-layout',
     contentAreas: {
 
@@ -51,7 +51,7 @@ const definition = routeBuilder.compositions([
 
 // Now we can get react-pages to render that definition:
 
-<routeBuilder.PageRenderer
+<layout.CompositionsRenderer
     compositions={definition}
 />
 ```
@@ -68,7 +68,7 @@ They could also be called layouts, they have content areas which can contain com
 
 ## Getting started
 
-### Registering components
+### Registering components & compositions
 
 The first step is to create a component registration. It needs a key, which you can use in the route definitions when rendering.
 
@@ -83,24 +83,19 @@ export const myComponentRegistration = createRegisterableComponent('component-ke
     <MyComponent />
 ))
 
-// Create your `ComponentRegistrar` then register your components.
-const componentRegistrar = new ComponentRegistrar().register(myComponentRegistration)
-```
-
-### Registering compositions
-
-```ts
-const compositionRegistrar = CompositionRegistrar.create(componentRegistrar).registerComposition(
-    testCompositionRegistration,
-)
-```
-
-### Create the route builder
-
-The route builder is the main type you will deal with, it has helpers to create type safe type definitions then render those definitions.
-
-```ts
-const routeBuilder = new RouteBuilder(compositionRegistrar)
+// Create your `LayoutRegistration` then register your components
+const layout = new LayoutRegistration()
+    .registerComponents(registrar =>
+        registrar
+            .registerComponent(myComponentRegistration)
+            .registerComponent(myComponentRegistration2),
+    )
+    // Then compositions
+    .registerCompositions(registrar =>
+        registrar
+            .registerComposition(testCompositionRegistration)
+            .registerComposition(testCompositionRegistration2),
+    )
 ```
 
 ## Types information
@@ -115,7 +110,7 @@ These two examples are the same
 
 ```ts
 // Example 1
-const definition = routeBuilder.compositions([ // This is where your compilation error will be
+const definition = layout.compositions([ // This is where your compilation error will be
     type: '50-50-layout',
     contentAreas: {
         left: [
@@ -134,11 +129,11 @@ const definition = routeBuilder.compositions([ // This is where your compilation
 ])
 
 // Example 2
-const definition = routeBuilder.compositions([
+const definition = layout.compositions([
     type: '50-50-layout',
     contentAreas: {
         left: [
-            routeBuilder.component({ // This is where your compilation error will be
+            layout.component({ // This is where your compilation error will be
                 type: 'header',
                 props: {
                     tet: 'My page header' // This is wrong
@@ -156,7 +151,7 @@ const definition = routeBuilder.compositions([
 As you can see, you can use the helper functions to narrow type errors. They are also handy for extracting components into multiple variables.
 
 ```ts
-const header = routeBuilder.component({
+const header = layout.component({
     type: 'header',
     props: {
         text: 'My page header',
@@ -169,14 +164,14 @@ const header = routeBuilder.component({
 If you do not want to use the helper functions you can use the type helpers to get the type aliases for your component/composition types. These properties do not have values, they are just available to use the `typeof` keyword.
 
 ```ts
-const header: typeof routeBuilder._componentType = {
+const header: typeof layout._componentType = {
     type: 'header',
     props: {
         text: 'My page header',
     },
 }
 
-const header: typeof routeBuilder._compositionType = {
+const header: typeof layout._compositionType = {
     type: '50-50-layout',
     contentAreas: {
         left: [],
@@ -192,15 +187,19 @@ React playout allows you to add middlewares around component rendering, this mak
 For example, if you wanted to expose a skip render property on all components you could write a middleware which looked like this:
 
 ```ts
-const componentRegistrar = new ComponentRegistrar()
-    .register(...)
-    .registerMiddleware((componentProps, middlewareProps: { skipRender?: boolean }, services, next) => {
-        if (middlewareProps.skipRender) {
-            return null
-        }
+new LayoutRegistration().registerComponents(registrar =>
+    registrar
+        .registerComponent(myComponentRegistration)
+        .registerMiddleware(
+            (componentProps, middlewareProps: { skipRender?: boolean }, services, next) => {
+                if (middlewareProps.skipRender) {
+                    return null
+                }
 
-        return next(componentProps, middlewareProps, services)
-    })
+                return next(componentProps, middlewareProps, services)
+            },
+        ),
+)
 ```
 
 ## FAQ
@@ -210,17 +209,11 @@ const componentRegistrar = new ComponentRegistrar()
 You can create a renderer which just renders components from the component registrar.
 
 ```tsx
-const componentRegistrar = new ComponentRegistrar<{}>()
-    .register(....)
-
-const ComponentsRenderer = componentRegistrar.createRenderer()
+const ComponentsRenderer = new LayoutRegistration()
+    .registerComponents(registrar => registrar.registerComponent(myComponentRegistration))
+    .createComponentsRenderer()
 
 const wrapper = mount(
-    <ComponentsRenderer
-        components={[
-            { type: '...', props: ... }
-        ]}
-        loadDataServices={{}}
-    />,
+    <ComponentsRenderer components={[{ type: '...', props: {} }]} services={{}} />,
 )
 ```

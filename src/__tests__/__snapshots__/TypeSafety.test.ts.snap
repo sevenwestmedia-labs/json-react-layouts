@@ -1,13 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`component-library/__App/component-rendering: Typescript expected failures 1`] = `
-"src/TypeSafetyTestFixtures/page-renderer.tsx(24,17): error TS2322: Type 'string' is not assignable to type '\\"test-composition\\"'.
-src/TypeSafetyTestFixtures/page-renderer.tsx(39,17): error TS2322: Type 'string' is not assignable to type '\\"test-composition\\"'.
-src/TypeSafetyTestFixtures/page-renderer.tsx(41,42): error TS2322: Type 'string' is not assignable to type '\\"nested-composition\\" | \\"test\\"'.
-src/TypeSafetyTestFixtures/registration.tsx(13,15): error TS2345: Argument of type '\\"test2\\"' is not assignable to parameter of type '\\"test\\"'.
-src/TypeSafetyTestFixtures/route-builder-components.tsx(17,5): error TS2322: Type '\\"missing\\"' is not assignable to type '\\"nested-composition\\" | \\"test\\"'.
-src/TypeSafetyTestFixtures/route-builder-components.tsx(23,5): error TS2322: Type '\\"missing\\"' is not assignable to type '\\"nested-composition\\" | \\"test\\"'.
-src/TypeSafetyTestFixtures/route-builder-components.tsx(28,28): error TS2322: Type '\\"missing\\"' is not assignable to type '\\"test-composition\\"'.
-src/TypeSafetyTestFixtures/route-builder-components.tsx(28,56): error TS2741: Property 'main' is missing in type '{}' but required in type '{ main: (ComponentInformation<\\"nested-composition\\", NestedCompositionProps> | ComponentInformation<\\"test\\", {}>)[]; }'.
+"src/TypeSafetyTestFixtures/page-renderer.tsx(18,17): error TS2322: Type 'string' is not assignable to type '\\"test-composition\\"'.
+src/TypeSafetyTestFixtures/page-renderer.tsx(32,17): error TS2322: Type 'string' is not assignable to type '\\"test-composition\\"'.
+src/TypeSafetyTestFixtures/page-renderer.tsx(34,42): error TS2322: Type 'string' is not assignable to type '\\"nested-composition\\" | \\"test\\"'.
+src/TypeSafetyTestFixtures/route-builder-components.tsx(10,5): error TS2322: Type '\\"missing\\"' is not assignable to type '\\"nested-composition\\" | \\"test\\"'.
+src/TypeSafetyTestFixtures/route-builder-components.tsx(16,5): error TS2322: Type '\\"missing\\"' is not assignable to type '\\"nested-composition\\" | \\"test\\"'.
+src/TypeSafetyTestFixtures/route-builder-components.tsx(21,22): error TS2322: Type '\\"missing\\"' is not assignable to type '\\"test-composition\\"'.
+src/TypeSafetyTestFixtures/route-builder-components.tsx(21,50): error TS2741: Property 'main' is missing in type '{}' but required in type '{ main: (ComponentInformation<\\"nested-composition\\", NestedCompositionProps> | ComponentInformation<\\"test\\", {}>)[]; }'.
 "
 `;
