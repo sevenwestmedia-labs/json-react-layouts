@@ -4,23 +4,23 @@ import {
     RenderFunctionServices,
     ComponentRendererMiddleware,
 } from './ComponentRegistrar'
-import { RouteBuilder } from './RouteBuilder'
+import { LayoutApi } from './RouteBuilder'
 
 export interface ComponentProps {
     componentRenderPath: string
     [props: string]: any
 }
 
-export interface Props<TLoadDataServices> {
+export interface Props<Services> {
     type: string
-    routeBuilder: RouteBuilder<any, any, any, any>
-    componentRegistrar: ComponentRegistrar<TLoadDataServices, any>
+    layoutApi: LayoutApi<any, any, any, any>
+    componentRegistrar: ComponentRegistrar<Services, any, any>
     componentProps: ComponentProps
     middlewareProps: { [props: string]: any }
-    loadDataServices: TLoadDataServices
+    services: Services
 
     /** Allows a middleware to be specified for component rendering */
-    renderComponentMiddleware?: ComponentRendererMiddleware<TLoadDataServices, any>
+    renderComponentMiddleware?: ComponentRendererMiddleware<Services, any>
 }
 
 export const ComponentRenderer: React.FC<Props<any>> = props => {
@@ -30,24 +30,33 @@ export const ComponentRenderer: React.FC<Props<any>> = props => {
     }
 
     const componentServices: RenderFunctionServices<any> = {
-        loadDataServices: props.loadDataServices,
-        routeBuilder: props.routeBuilder,
+        services: props.services,
+        layout: props.layoutApi,
     }
 
     function render() {
-        return component.render(props.componentProps, componentServices) || null
+        const rendered = component.render(props.componentProps, componentServices) || null
+        if (rendered === undefined) {
+            debugger
+        }
+        return rendered
     }
 
     if (props.renderComponentMiddleware) {
-        return (
+        const middlewareRender =
             props.renderComponentMiddleware(
                 props.componentProps,
                 props.middlewareProps,
                 componentServices,
                 render,
             ) || null
-        )
+
+        if (middlewareRender === undefined) {
+            debugger
+        }
+        return middlewareRender
     }
+
     return render()
 }
 ComponentRenderer.displayName = 'ComponentRenderer'

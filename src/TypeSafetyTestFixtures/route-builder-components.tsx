@@ -1,26 +1,21 @@
-import { ComponentRegistrar } from '../ComponentRegistrar'
 import { testComponentRegistration, testCompositionRegistration } from '../__tests__/testComponents'
-import { CompositionRegistrar } from '../CompositionRegistrar'
-import { RouteBuilder } from '../RouteBuilder'
+import { LayoutRegistration } from '../LayoutRegistration'
 
-const registrar = new ComponentRegistrar().register(testComponentRegistration)
-const compositionRegistrar = CompositionRegistrar.create(registrar).registerComposition(
-    testCompositionRegistration,
-)
-
-const routeBuilder = new RouteBuilder(compositionRegistrar)
+const layout = new LayoutRegistration()
+    .registerComponents(registrar => registrar.registerComponent(testComponentRegistration))
+    .registerCompositions(registrar => registrar.registerComposition(testCompositionRegistration))
 
 // Should not compile
-routeBuilder.component({
+layout.component({
     type: 'missing',
     props: {},
 })
 
 // Should not compile
-routeBuilder.contentArea({
+layout.contentArea({
     type: 'missing',
     props: {},
 })
 
 // Should not compile
-routeBuilder.composition({ type: 'missing', props: {}, contentAreas: {} })
+layout.composition({ type: 'missing', props: {}, contentAreas: {} })

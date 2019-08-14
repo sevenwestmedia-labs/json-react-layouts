@@ -1,10 +1,21 @@
 export {
-    ComponentRegistrar,
     ComponentRendererMiddleware,
     RenderFunctionServices,
     RenderFunction,
     ComponentRegistration,
+    ComponentInformation,
+    MiddlwareHandler,
 } from './ComponentRegistrar'
-export { RouteBuilder } from './RouteBuilder'
-export { CompositionRegistrar } from './CompositionRegistrar'
+
+export { LayoutApi, CompositionRenderer } from './RouteBuilder'
+export {
+    CompositionInformation,
+    CompositionRegistration,
+    CompositionRenderFunction,
+    CompositionRenderProps,
+    CompositionRendererProps,
+    NestedCompositionProps,
+    ContentAreaRendererProps,
+} from './CompositionRegistrar'
 export { getRegistrationCreators } from './get-registration-creators'
+export { LayoutRegistration } from './LayoutRegistration'

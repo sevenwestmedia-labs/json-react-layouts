@@ -2,23 +2,17 @@ import React from 'react'
 import { ComponentRegistrar } from '../ComponentRegistrar'
 import { testComponentRegistration, testCompositionRegistration } from '../__tests__/testComponents'
 import { CompositionRegistrar } from '../CompositionRegistrar'
-import { RouteBuilder } from '../RouteBuilder'
 import { consoleLogger } from 'typescript-log'
+import { LayoutRegistration } from '../LayoutRegistration'
 
-const logger = consoleLogger()
-const registrar = new ComponentRegistrar().register(testComponentRegistration)
-const compositionRegistrar = CompositionRegistrar.create(registrar).registerComposition(
-    testCompositionRegistration,
-)
-
-const routeBuilder = new RouteBuilder(compositionRegistrar)
+const layout = new LayoutRegistration()
+    .registerComponents(registrar => registrar.registerComponent(testComponentRegistration))
+    .registerCompositions(registrar => registrar.registerComposition(testCompositionRegistration))
 
 // Should not compile
 // @ts-ignore
 const _el = (
-    <routeBuilder.PageRenderer
-        log={logger}
-        loadDataServices={{}}
+    <layout.CompositionsRenderer
         compositions={[
             {
                 type: 'test-composition2',
@@ -32,8 +26,7 @@ const _el = (
 // Should not compile
 // @ts-ignore
 const _el2 = (
-    <routeBuilder.PageRenderer
-        log={logger}
+    <layout.CompositionsRenderer
         compositions={[
             {
                 type: 'test-composition',
