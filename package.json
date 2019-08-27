@@ -1,11 +1,14 @@
 {
     "name": "json-react-layouts",
-    "version": "1.0.0",
-    "main": "dist/index.js",
-    "typings": "dist/index.d.ts",
+    "version": "0.0.1-semantic-release",
+    "main": "dist/cjs/index.js",
+    "module": "dist/esm/index.js",
+    "sideEffects": false,
     "license": "MIT",
     "scripts": {
-        "build": "tsc -p ./tsconfig.build.json",
+        "build:commonjs": "tsc -p ./tsconfig.build.json --outDir ./dist/cjs --module commonjs",
+        "build:esm": "tsc -p ./tsconfig.build.json --outDir ./dist/esm --module es2015",
+        "build": "yarn build:commonjs && yarn build:esm",
         "lint": "eslint --ext .js,.ts .",
         "test": "jest",
         "verify": "yarn build && yarn test && yarn lint"
