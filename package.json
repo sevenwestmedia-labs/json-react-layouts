@@ -6,7 +6,9 @@
     "license": "MIT",
     "scripts": {
         "build": "tsc -p ./tsconfig.build.json",
-        "test": "jest"
+        "lint": "eslint --ext .js,.ts .",
+        "test": "jest",
+        "verify": "yarn build && yarn test && yarn lint"
     },
     "jest": {
         "transform": {
@@ -21,23 +23,24 @@
     },
     "devDependencies": {
         "@types/cross-spawn": "^6.0.0",
-        "@types/enzyme": "^3.9.3",
+        "@types/enzyme": "^3.10.3",
         "@types/enzyme-adapter-react-16": "^1.0.5",
-        "@types/jest": "^24.0.13",
-        "@types/node": "^12.0.4",
-        "@types/react": "^16.8.19",
+        "@types/jest": "^24.0.18",
+        "@types/node": "^10.14.16",
+        "@types/react": "^16.9.2",
         "cross-spawn": "^6.0.5",
         "enzyme": "^3.10.0",
         "enzyme-adapter-react-16": "^1.14.0",
-        "jest": "^24.8.0",
-        "react": "^16.8.6",
-        "react-dom": "^16.8.6",
+        "jest": "^24.9.0",
+        "react": "^16.9.0",
+        "react-dom": "^16.9.0",
         "ts-jest": "^24.0.2",
         "tslib": "^1.10.0",
-        "typescript": "^3.5.3"
+        "typescript": "^3.5.3",
+        "eslint": "^5.16.0",
+        "eslint-config-wanews": "^1.0.1"
     },
     "dependencies": {
-        "react-ssr-data-loader": "^1.0.1",
         "typescript-log": "^1.1.0"
     }
 }
