@@ -10,7 +10,9 @@
     "exclude": [
         "node_modules",
         "./tests",
+        "./src/__tests__",
         "./src/*.spec.ts",
+        "./src/*.test.ts",
         "src/TypeSafetyTestFixtures",
         "dist",
         "example"
