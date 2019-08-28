@@ -31,17 +31,22 @@
         "@types/jest": "^24.0.18",
         "@types/node": "^10.14.16",
         "@types/react": "^16.9.2",
+        "@typescript-eslint/eslint-plugin": "^2.0.0",
+        "@typescript-eslint/parser": "^2.0.0",
         "cross-spawn": "^6.0.5",
         "enzyme": "^3.10.0",
         "enzyme-adapter-react-16": "^1.14.0",
+        "eslint": "^6.2.2",
+        "eslint-config-prettier": "^6.1.0",
+        "eslint-config-wanews": "^2.0.0",
+        "eslint-plugin-react": "^7.14.3",
+        "eslint-plugin-react-hooks": "^2.0.1",
         "jest": "^24.9.0",
         "react": "^16.9.0",
         "react-dom": "^16.9.0",
         "ts-jest": "^24.0.2",
         "tslib": "^1.10.0",
-        "typescript": "^3.5.3",
-        "eslint": "^5.16.0",
-        "eslint-config-wanews": "^1.0.1"
+        "typescript": "^3.5.3"
     },
     "dependencies": {
         "typescript-log": "^1.1.0"
