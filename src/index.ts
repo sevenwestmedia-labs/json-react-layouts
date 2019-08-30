@@ -5,6 +5,7 @@ export {
     ComponentRegistration,
     ComponentInformation,
     MiddlwareHandler,
+    ComponentRegistrar,
 } from './ComponentRegistrar'
 
 export { LayoutApi, CompositionRenderer } from './RouteBuilder'
@@ -16,6 +17,7 @@ export {
     CompositionRendererProps,
     NestedCompositionProps,
     ContentAreaRendererProps,
+    CompositionRegistrar,
 } from './CompositionRegistrar'
 export { getRegistrationCreators } from './get-registration-creators'
 export { LayoutRegistration } from './LayoutRegistration'
