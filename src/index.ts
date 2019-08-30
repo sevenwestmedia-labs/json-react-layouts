@@ -19,3 +19,10 @@ export {
 } from './CompositionRegistrar'
 export { getRegistrationCreators } from './get-registration-creators'
 export { LayoutRegistration } from './LayoutRegistration'
+
+export {
+    flatMap,
+    isNestedComposition,
+    getComponentsInCompositions,
+    ContentAreaData,
+} from './helpers'
