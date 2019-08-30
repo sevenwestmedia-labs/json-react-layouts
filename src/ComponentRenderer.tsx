@@ -7,6 +7,7 @@ import {
 import { LayoutApi } from './RouteBuilder'
 
 export interface ComponentProps {
+    componentType: string
     componentRenderPath: string
     [props: string]: any
 }

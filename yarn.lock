@@ -4394,8 +4394,8 @@ typescript-log@^1.1.1:
   resolved "https://registry.yarnpkg.com/typescript-log/-/typescript-log-1.1.1.tgz#36952d41d135a92b24f0ed87c3ea8f49dd7aeb8e"
   integrity sha512-BEP3PcTcaKTDOy/36qcoF+mgVfTjz70E0Z4+fxt+WEDsNSMXbb8gDJU7W16AWnjqaVY9naMm5WyLbqQ5cb9PoA==
 
-typescript@^3.6.2:
-  version "3.6.2"
+typescript@^3.5.3:
+  version "3.5.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.6.2.tgz#105b0f1934119dde543ac8eb71af3a91009efe54"
   integrity sha512-lmQ4L+J6mnu3xweP8+rOrUwzmN+MRAj7TgtJtDaXE5PMyX2kCrklhg3rvOsOIfNeAWMQWO2F1GPc1kMD2vLAfw==
 
