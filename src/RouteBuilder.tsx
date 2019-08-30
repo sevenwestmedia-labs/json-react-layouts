@@ -101,6 +101,7 @@ export class LayoutApi<
                             componentRegistrar={this.compositionRegistrar.componentRegistrar}
                             componentProps={{
                                 ...componentProps,
+                                componentType: item.type,
                                 componentRenderPath: `${props.componentRenderPath}[${index}]`,
                             }}
                             middlewareProps={middlewareProps}

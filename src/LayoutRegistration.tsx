@@ -8,7 +8,6 @@ import {
 import { LayoutApi } from './RouteBuilder'
 import { getRegistrationCreators } from './get-registration-creators'
 import { Logger, noopLogger } from 'typescript-log'
-import { CompositionRenderer } from './RouteBuilder'
 import { ComponentRenderer } from './ComponentRenderer'
 
 export class LayoutRegistration<Services = {}> {
@@ -79,6 +78,7 @@ export class LayoutCompositionRegistration<
                                 componentRegistrar={this.componentRegistrar}
                                 componentProps={{
                                     ...componentProps,
+                                    componentType: item.type,
                                     componentRenderPath: `[${index}]`,
                                 }}
                                 middlewareProps={middlewareProps}
@@ -122,13 +122,6 @@ export class LayoutCompositionRegistration<
         Services,
         ComponentMiddlewares
     > {
-        let CompositionRenderer: CompositionRenderer<
-            Components | NestedComponentInfo,
-            Compositions,
-            Services,
-            ComponentMiddlewares
-        >
-
         const { createRegisterableComponent } = getRegistrationCreators<Services>()
 
         const registrarWithNestedComposition = this.componentRegistrar.registerComponent(
@@ -170,7 +163,7 @@ export class LayoutCompositionRegistration<
         >
 
         const layout = new LayoutApi(unmaskedCompositionRegistrar)
-        CompositionRenderer = layout.CompositionRenderer
+        const CompositionRenderer = layout.CompositionRenderer
         return layout
     }
 }
