@@ -1,6 +1,6 @@
 # JSON React layouts
 
-[![Build Status](https://travis-ci.com/sevenwestmedia-labs/json-react-layouts.svg?branch=master)](https://travis-ci.com/sevenwestmedia-labs/json-react-layouts)
+[![Build Status](https://travis-ci.com/sevenwestmedia-labs/json-react-layouts.svg?branch=master)](https://travis-ci.com/sevenwestmedia-labs/json-react-layouts) [![Greenkeeper badge](https://badges.greenkeeper.io/sevenwestmedia-labs/json-react-layouts.svg)](https://greenkeeper.io/)
 
 JSON React layouts enables registration of components and layouts (called compositions) to open up the possibilities of pages where the layout is driven by data.
 
