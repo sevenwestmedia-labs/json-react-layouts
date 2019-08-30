@@ -53,7 +53,7 @@ it('can hook multiple component middleware', () => {
     let middleware2Called: any
     let middleware2Props: any
     let middleware2Next: any
-    const ComponentRenderer = new LayoutRegistration()
+    const ComponentsRenderer = new LayoutRegistration()
         .registerComponents(registrar =>
             registrar
                 .registerComponent(testComponentWithPropsRegistration)
@@ -77,7 +77,7 @@ it('can hook multiple component middleware', () => {
         .createComponentsRenderer()
 
     mount(
-        <ComponentRenderer
+        <ComponentsRenderer
             components={[
                 { type: 'testWithTitleProp', props: { title: 'test' }, skipRender2: true },
             ]}

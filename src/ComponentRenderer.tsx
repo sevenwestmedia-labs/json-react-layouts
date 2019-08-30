@@ -36,9 +36,7 @@ export const ComponentRenderer: React.FC<Props<any>> = props => {
 
     function render() {
         const rendered = component.render(props.componentProps, componentServices) || null
-        if (rendered === undefined) {
-            debugger
-        }
+
         return rendered
     }
 
@@ -51,9 +49,6 @@ export const ComponentRenderer: React.FC<Props<any>> = props => {
                 render,
             ) || null
 
-        if (middlewareRender === undefined) {
-            debugger
-        }
         return middlewareRender
     }
 
