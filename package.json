@@ -46,7 +46,7 @@
         "react-dom": "^16.9.0",
         "ts-jest": "^24.0.2",
         "tslib": "^1.10.0",
-        "typescript": "^3.5.3"
+        "typescript": "3.5.3"
     },
     "dependencies": {
         "typescript-log": "^1.1.1"
