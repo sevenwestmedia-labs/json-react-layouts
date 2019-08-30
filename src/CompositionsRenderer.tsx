@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { getRouteDataId } from './helpers'
+import { getComponentPath } from './helpers'
 import { ComponentInformation } from './ComponentRegistrar'
 import { CompositionInformation } from './CompositionRegistrar'
 import { LayoutApi } from './RouteBuilder'
@@ -39,8 +39,7 @@ export function createCompositionsRenderer<
         return (
             <React.Fragment>
                 {compositions.map((composition, index) => {
-                    const componentRenderPath = getRouteDataId({
-                        path: location.pathname,
+                    const componentRenderPath = getComponentPath({
                         subpath: composition.type,
                         index,
                         prefix: renderPathPrefix,
