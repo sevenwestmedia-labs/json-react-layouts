@@ -35,8 +35,11 @@ export const ComponentRenderer: React.FC<Props<any>> = props => {
         layout: props.layoutApi,
     }
 
-    function render() {
-        const rendered = component.render(props.componentProps, componentServices) || null
+    // A middleware may call next with props, we should use them
+    function render(middlewareComponentProps?: ComponentProps) {
+        const rendered =
+            component.render(middlewareComponentProps || props.componentProps, componentServices) ||
+            null
 
         return rendered
     }

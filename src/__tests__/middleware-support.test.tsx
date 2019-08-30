@@ -95,8 +95,14 @@ it('can hook multiple component middleware', () => {
     expect(middleware2ComponentProps).toMatchObject({ additional: true })
 
     // Verify next() will actually render the component
-    const renderOutput = mount(middleware2Next())
+    const renderOutput1 = mount(middleware2Next())
+
+    expect(renderOutput1.find(TestComponentWithProps).length).toBe(1)
+    expect(renderOutput1.text()).toContain('test')
+
+    // Verify next() will actually render the component
+    const renderOutput = mount(middleware2Next({ title: 'Override' }))
 
     expect(renderOutput.find(TestComponentWithProps).length).toBe(1)
-    expect(renderOutput.text()).toContain('test')
+    expect(renderOutput.text()).toContain('Override')
 })
