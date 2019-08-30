@@ -1,9 +1,8 @@
 import React from 'react'
 import { Logger, noopLogger } from 'typescript-log'
 
-import { RouteBuilder } from './RouteBuilder'
-import { ComponentProps, ComponentRenderer } from './ComponentRenderer'
-import { CompositionRegistrar } from './CompositionRegistrar'
+import { ComponentProps } from './ComponentRenderer'
+import { LayoutApi } from './RouteBuilder'
 
 export interface ComponentRegistration<TType extends string, TProps extends {}, LoadDataServices> {
     type: TType
@@ -16,15 +15,15 @@ export interface ComponentInformation<TType, TProps = {}> {
     props: TProps
 }
 
-export interface RenderFunctionServices<LoadDataServices> {
-    routeBuilder: RouteBuilder<any, any, any, any>
-    loadDataServices: LoadDataServices
+export interface RenderFunctionServices<Services> {
+    layout: LayoutApi<any, any, any, any>
+    services: Services
 }
 
 /** The render function for components, converts the route props into a react component */
-export type RenderFunction<TProps, LoadDataServices> = (
+export type RenderFunction<TProps, Services> = (
     props: TProps,
-    services: RenderFunctionServices<LoadDataServices>,
+    services: RenderFunctionServices<Services>,
 ) => React.ReactElement<any> | false | null
 
 // Collection of errors that can be thrown by the ComponentRegistrar
@@ -104,11 +103,15 @@ export class ComponentRegistrar<
     }
 
     /** used to register another component using ComponentRegistration<TType, TProps> */
-    register<TType extends string, TProps extends {}>(
+    registerComponent<TType extends string, TProps extends {}>(
         registration: ComponentRegistration<TType, TProps, TLoadDataServices>,
-    ): ComponentRegistrar<
-        TLoadDataServices,
-        Exclude<TComponents, never> | ComponentInformation<TType, TProps>
+    ): Pick<
+        ComponentRegistrar<
+            TLoadDataServices,
+            Exclude<TComponents, never> | ComponentInformation<TType, TProps>,
+            TMiddlewareProps
+        >,
+        'registerComponent' | 'registerMiddleware'
     > {
         if (this.registeredComponents[registration.type]) {
             throw new Error(`${registration.type} has already been registered`)
@@ -133,45 +136,6 @@ export class ComponentRegistrar<
         this._componentMiddlewares.push(componentMiddleware as any)
 
         return this as any
-    }
-
-    createRenderer(): React.FC<{
-        components: TComponents[]
-        loadDataServices: TLoadDataServices
-    }> {
-        const compositionRegistrar = CompositionRegistrar.create(this as any)
-        const routeBuilder = new RouteBuilder(compositionRegistrar) as any
-
-        const ComponentsRenderer: React.FC<{
-            components: TComponents[]
-            loadDataServices: TLoadDataServices
-        }> = ({ components, loadDataServices }) => {
-            return (
-                <React.Fragment>
-                    {components.map((item, index) => {
-                        const { type, props: componentProps, ...middlewareProps } = item
-                        return (
-                            <ComponentRenderer
-                                key={`${item.type}-${index}`}
-                                type={type}
-                                routeBuilder={routeBuilder}
-                                componentRegistrar={this as any}
-                                componentProps={{
-                                    ...componentProps,
-                                    componentRenderPath: `[${index}]`,
-                                }}
-                                middlewareProps={middlewareProps}
-                                loadDataServices={loadDataServices}
-                                renderComponentMiddleware={this.componentMiddleware}
-                            />
-                        )
-                    })}
-                </React.Fragment>
-            )
-        }
-        ComponentsRenderer.displayName = 'ComponentsRenderer'
-
-        return ComponentsRenderer
     }
 }
 

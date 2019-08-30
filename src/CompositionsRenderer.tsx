@@ -3,29 +3,30 @@ import React from 'react'
 import { getRouteDataId } from './helpers'
 import { ComponentInformation } from './ComponentRegistrar'
 import { CompositionInformation } from './CompositionRegistrar'
-import { RouteBuilder } from './RouteBuilder'
+import { LayoutApi } from './RouteBuilder'
+import { Logger } from 'typescript-log'
 
 export type Props<
+    TComponents extends ComponentInformation<any>,
     TCompositions extends CompositionInformation<any, TComponents, any, any>,
-    TComponents extends ComponentInformation<any> & MiddlwareProps,
-    LoadDataServices,
-    MiddlwareProps extends {}
+    Services
 > = {
     compositions: TCompositions[]
     renderPathPrefix?: string
-    loadDataServices: LoadDataServices
+    services: Services
 }
 
 export function createCompositionsRenderer<
+    TComponents extends ComponentInformation<any>,
     TCompositions extends CompositionInformation<any, TComponents, any, any>,
-    TComponents extends ComponentInformation<any> & MiddlewareProps,
-    LoadDataServices,
+    Services,
     MiddlewareProps extends {}
 >(
-    routeBuilder: RouteBuilder<TCompositions, TComponents, LoadDataServices, MiddlewareProps>,
-): React.FC<Props<TCompositions, TComponents, LoadDataServices, MiddlewareProps>> {
-    return function CompositionsRenderer({ loadDataServices, renderPathPrefix, compositions }) {
-        routeBuilder.compositionRegistrar.componentRegistrar.logger.debug(
+    layoutApi: LayoutApi<TComponents, TCompositions, Services, MiddlewareProps>,
+    logger: Logger,
+): React.FC<Props<TComponents, TCompositions, Services>> {
+    return function CompositionsRenderer({ services, renderPathPrefix, compositions }) {
+        logger.debug(
             {
                 renderPathPrefix,
                 compositions: compositions.map(composition => ({
@@ -44,13 +45,14 @@ export function createCompositionsRenderer<
                         index,
                         prefix: renderPathPrefix,
                     })
+
                     return (
-                        <routeBuilder.compositionRegistrar.CompositionRenderer
+                        <layoutApi.CompositionRenderer
                             key={componentRenderPath}
                             componentRenderPath={componentRenderPath}
                             compositionInformation={composition}
-                            routeBuilder={routeBuilder}
-                            loadDataServices={loadDataServices}
+                            layoutApi={layoutApi}
+                            services={services}
                         />
                     )
                 })}

@@ -2,14 +2,12 @@ import React from 'react'
 import { configure, mount } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import { Logger } from 'typescript-log'
-import { ComponentRegistrar } from '../ComponentRegistrar'
 import {
     testComponentRegistration,
     testComponent2Registration,
     testCompositionRegistration,
 } from './testComponents'
-import { CompositionRegistrar } from '../CompositionRegistrar'
-import { RouteBuilder } from '../RouteBuilder'
+import { LayoutRegistration } from '../LayoutRegistration'
 
 configure({ adapter: new Adapter() })
 
@@ -32,18 +30,19 @@ it('can render a composition with a content area through the registrar', () => {
         warn: addToLog,
     }
 
-    const componentRegistrar = new ComponentRegistrar(logger)
-        .register(testComponentRegistration)
-        .register(testComponent2Registration)
-    const compositionRegistrar = CompositionRegistrar.create(
-        componentRegistrar,
-    ).registerComposition(testCompositionRegistration)
-
-    const routeBuilder = new RouteBuilder(compositionRegistrar)
+    const layout = new LayoutRegistration(logger)
+        .registerComponents(registrar =>
+            registrar
+                .registerComponent(testComponentRegistration)
+                .registerComponent(testComponent2Registration),
+        )
+        .registerCompositions(registrar =>
+            registrar.registerComposition(testCompositionRegistration),
+        )
 
     mount(
-        <routeBuilder.CompositionsRenderer
-            loadDataServices={{}}
+        <layout.CompositionsRenderer
+            services={{}}
             compositions={[
                 {
                     type: 'test-composition',
@@ -51,7 +50,7 @@ it('can render a composition with a content area through the registrar', () => {
                     contentAreas: {
                         main: [
                             { type: 'test', props: {} },
-                            routeBuilder.nestedComposition({
+                            layout.nestedComposition({
                                 type: 'test-composition',
                                 props: {},
                                 contentAreas: { main: [{ type: 'test', props: {} }] },
