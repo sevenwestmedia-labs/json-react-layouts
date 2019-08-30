@@ -1,5 +1,7 @@
 # JSON React layouts
 
+[![Build Status](https://travis-ci.com/sevenwestmedia-labs/json-react-layouts.svg?branch=master)](https://travis-ci.com/sevenwestmedia-labs/json-react-layouts)
+
 JSON React layouts enables registration of components and layouts (called compositions) to open up the possibilities of pages where the layout is driven by data.
 
 ## Why
