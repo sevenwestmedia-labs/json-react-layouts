@@ -52,6 +52,7 @@ it('can hook multiple component middleware', () => {
     let middlewareCalled: any
     let middleware2Called: any
     let middleware2Props: any
+    let middleware2ComponentProps: any
     let middleware2Next: any
     const ComponentsRenderer = new LayoutRegistration()
         .registerComponents(registrar =>
@@ -63,16 +64,19 @@ it('can hook multiple component middleware', () => {
                         throw new Error('middlewares called out of order')
                     }
 
-                    return next(props, _, services)
+                    return next({ ...props, additional: true }, _, services)
                 })
 
-                .registerMiddleware((_, middlewareProps: { skipRender2?: boolean }, __, next) => {
-                    middleware2Called = true
-                    middleware2Props = middlewareProps
-                    middleware2Next = next
+                .registerMiddleware(
+                    (componentProps, middlewareProps: { skipRender2?: boolean }, __, next) => {
+                        middleware2Called = true
+                        middleware2ComponentProps = componentProps
+                        middleware2Props = middlewareProps
+                        middleware2Next = next
 
-                    return null
-                }),
+                        return null
+                    },
+                ),
         )
         .createComponentsRenderer()
 
@@ -88,6 +92,7 @@ it('can hook multiple component middleware', () => {
     expect(middlewareCalled).toBe(true)
     expect(middleware2Called).toBe(true)
     expect(middleware2Props).toMatchObject({ skipRender2: true })
+    expect(middleware2ComponentProps).toMatchObject({ additional: true })
 
     // Verify next() will actually render the component
     const renderOutput = mount(middleware2Next())

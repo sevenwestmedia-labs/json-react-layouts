@@ -46,10 +46,9 @@ export class ComponentRegistrar<
     private registeredComponents: {
         [key: string]: ComponentRegistration<any, any, TLoadDataServices>
     } = {}
-    private _componentMiddlewares: ComponentRendererMiddleware<
-        TLoadDataServices,
-        TMiddlewareProps
-    >[] = []
+    private _componentMiddlewares: Array<
+        ComponentRendererMiddleware<TLoadDataServices, TMiddlewareProps>
+    > = []
 
     public get componentMiddleware(): ComponentRendererMiddleware<
         TLoadDataServices,
@@ -59,12 +58,12 @@ export class ComponentRegistrar<
             props: ComponentProps,
             middlewareProps: TMiddlewareProps,
             services: RenderFunctionServices<TLoadDataServices>,
-            ...steps: ComponentRendererMiddleware<TLoadDataServices, TMiddlewareProps>[]
+            ...steps: Array<ComponentRendererMiddleware<TLoadDataServices, TMiddlewareProps>>
         ): React.ReactElement<any> | false | null => {
             const [step, ...next] = steps
             return step
-                ? step(props, middlewareProps, services, () =>
-                      pipeline(props, middlewareProps, services, ...next),
+                ? step(props, middlewareProps, services, (stepProps, stepMiddlewareProps) =>
+                      pipeline(stepProps, stepMiddlewareProps, services, ...next),
                   )
                 : null
         }
@@ -138,10 +137,6 @@ export class ComponentRegistrar<
         return this as any
     }
 }
-
-// const Renderer = new ComponentRegistrar().createRenderer()
-
-// <Renderer components={[]}
 
 /** The render function for components, converts the route props into a react component */
 export type MiddlwareHandler<TProps, TMiddlewareProps extends object, LoadDataServices> = (
