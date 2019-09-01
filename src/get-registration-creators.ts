@@ -1,18 +1,16 @@
 import { CompositionRenderFunction, CompositionRegistration } from './CompositionRegistrar'
 import { ComponentRegistration, RenderFunction } from './ComponentRegistrar'
 
-// TODO This probably needs a better name
-
 /**
  * @example const { createRegisterableComponent, createRegisterableComposition } = getRegistrationCreators<MyServices>()
  */
-export function getRegistrationCreators<TLoadDataServices>() {
+export function getRegistrationCreators<Services>() {
     return {
         /** Helper function to create the registration (to infer types) */
-        createRegisterableComponent<TType extends string, TProps extends {}>(
-            type: TType,
-            render: RenderFunction<TProps, TLoadDataServices>,
-        ): ComponentRegistration<TType, TProps, TLoadDataServices> {
+        createRegisterableComponent<ComponentType extends string, ComponentProps extends {}>(
+            type: ComponentType,
+            render: RenderFunction<ComponentProps, Services>,
+        ): ComponentRegistration<ComponentType, ComponentProps, Services> {
             return { type, render }
         },
 
@@ -22,11 +20,14 @@ export function getRegistrationCreators<TLoadDataServices>() {
          * for a composition with two content areas, main and sidebar.
          * Second call that registration function to create the registration.
          */
-        createRegisterableComposition<TContentAreas extends string, TProps extends {}>() {
-            return <TType extends string>(
-                type: TType,
-                render: CompositionRenderFunction<TContentAreas, TProps>,
-            ): CompositionRegistration<TType, TContentAreas, TProps> => ({ type, render })
+        createRegisterableComposition<ContentAreas extends string, CompositionProps extends {}>() {
+            return <CompositionType extends string>(
+                type: CompositionType,
+                render: CompositionRenderFunction<ContentAreas, CompositionProps>,
+            ): CompositionRegistration<CompositionType, ContentAreas, CompositionProps> => ({
+                type,
+                render,
+            })
         },
     }
 }
