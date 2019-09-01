@@ -5,7 +5,7 @@ import {
     CompositionInformation,
     NestedCompositionProps,
 } from './CompositionRegistrar'
-import { LayoutApi } from './RouteBuilder'
+import { LayoutApi } from './LayoutApi'
 import { getRegistrationCreators } from './get-registration-creators'
 import { Logger, noopLogger } from 'typescript-log'
 import { ComponentRenderer } from './ComponentRenderer'
@@ -43,22 +43,26 @@ type NestedComponentInfo = ComponentInformation<'nested-composition', NestedComp
 
 export class LayoutCompositionRegistration<
     Components extends ComponentInformation<any>,
-    ComponentMiddlewares extends {},
+    ComponentMiddlewaresProps extends {},
     Services
 > {
     constructor(
-        private componentRegistrar: ComponentRegistrar<Services, Components, ComponentMiddlewares>,
+        private componentRegistrar: ComponentRegistrar<
+            Services,
+            Components,
+            ComponentMiddlewaresProps
+        >,
     ) {}
 
     /** Returns a components renderer component which can render a list of components */
     createComponentsRenderer(): React.FC<{
-        components: Array<Components & ComponentMiddlewares>
+        components: Array<Components & ComponentMiddlewaresProps>
         services: Services
     }> {
         const layoutApi = this.registerCompositions(registrar => registrar) as any
 
         interface ComponentsRendererProps {
-            components: Array<Components & ComponentMiddlewares>
+            components: Array<Components & ComponentMiddlewaresProps>
             services: Services
         }
 
@@ -103,7 +107,7 @@ export class LayoutCompositionRegistration<
                 CompositionRegistrar<
                     Components | ComponentInformation<'nested-composition', NestedCompositionProps>,
                     Services,
-                    ComponentMiddlewares
+                    ComponentMiddlewaresProps
                 >,
                 'registerComposition'
             >,
@@ -111,7 +115,7 @@ export class LayoutCompositionRegistration<
             CompositionRegistrar<
                 Components | ComponentInformation<'nested-composition', NestedCompositionProps>,
                 Services,
-                ComponentMiddlewares,
+                ComponentMiddlewaresProps,
                 Exclude<Compositions, never>
             >,
             'registerComposition'
@@ -120,7 +124,7 @@ export class LayoutCompositionRegistration<
         Components | NestedComponentInfo,
         Exclude<Compositions, never>,
         Services,
-        ComponentMiddlewares
+        ComponentMiddlewaresProps
     > {
         const { createRegisterableComponent } = getRegistrationCreators<Services>()
 
@@ -138,11 +142,8 @@ export class LayoutCompositionRegistration<
                         <CompositionRenderer
                             compositionInformation={props.composition}
                             componentRenderPath={`${props.componentRenderPath}/nested:${props.composition.type}`}
-                            services={services.services}
-                            // Think of this as a late bound type, right now it is invalid
-                            // (no compositions registered), but the routebuilder cannot be constructed
-                            // if this is the case
-                            layoutApi={services.layout as any}
+                            services={services}
+                            layoutApi={layout}
                         />
                     )
                 },
@@ -151,14 +152,14 @@ export class LayoutCompositionRegistration<
         const registrar = new CompositionRegistrar<
             Components | NestedComponentInfo,
             Services,
-            ComponentMiddlewares
+            ComponentMiddlewaresProps
         >(registrarWithNestedComposition as any)
 
         // We use the mast to limit the API the end user sees, cast back to full compositionRegistrar
         const unmaskedCompositionRegistrar = registerCallback(registrar) as CompositionRegistrar<
             Components | ComponentInformation<'nested-composition', NestedCompositionProps>,
             Services,
-            ComponentMiddlewares,
+            ComponentMiddlewaresProps,
             Exclude<Compositions, never>
         >
 

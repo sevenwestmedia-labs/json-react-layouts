@@ -2,28 +2,32 @@ import React from 'react'
 import { Logger, noopLogger } from 'typescript-log'
 
 import { ComponentProps } from './ComponentRenderer'
-import { LayoutApi } from './RouteBuilder'
+import { LayoutApi } from './LayoutApi'
 
-export interface ComponentRegistration<TType extends string, TProps extends {}, LoadDataServices> {
-    type: TType
-    render: RenderFunction<TProps, LoadDataServices>
+export interface ComponentRegistration<
+    ComponentType extends string,
+    ComponentProps extends {},
+    Services
+> {
+    type: ComponentType
+    render: RenderFunction<ComponentProps, Services>
 }
 
 /** A component definition inside route definitions */
-export interface ComponentInformation<TType, TProps = {}> {
-    type: TType
-    props: TProps
+export interface ComponentInformation<ComponentType, ComponentProps = {}> {
+    type: ComponentType
+    props: ComponentProps
 }
 
-export interface RenderFunctionServices<Services> {
+export interface MiddlwareServices<Services> {
     layout: LayoutApi<any, any, any, any>
     services: Services
 }
 
 /** The render function for components, converts the route props into a react component */
-export type RenderFunction<TProps, Services> = (
-    props: TProps,
-    services: RenderFunctionServices<Services>,
+export type RenderFunction<ComponentProps, Services> = (
+    props: ComponentProps,
+    services: Services,
 ) => React.ReactElement<any> | false | null
 
 // Collection of errors that can be thrown by the ComponentRegistrar
@@ -38,27 +42,29 @@ export const Errors = {
  * @example new ComponentRegistrar().register(myComponentRegistration)
  */
 export class ComponentRegistrar<
-    TLoadDataServices extends {},
-    TComponents extends ComponentInformation<any> = never,
-    TMiddlewareProps extends object = {}
+    Services extends {},
+    Components extends ComponentInformation<any> = never,
+    ComponentMiddlewaresProps extends object = {}
 > {
+    static displayName = 'ComponentRegistrar'
+
     // the internal collection of registered components
     private registeredComponents: {
-        [key: string]: ComponentRegistration<any, any, TLoadDataServices>
+        [key: string]: ComponentRegistration<any, any, Services>
     } = {}
     private _componentMiddlewares: Array<
-        ComponentRendererMiddleware<TLoadDataServices, TMiddlewareProps>
+        ComponentRendererMiddleware<Services, ComponentMiddlewaresProps>
     > = []
 
     public get componentMiddleware(): ComponentRendererMiddleware<
-        TLoadDataServices,
-        TMiddlewareProps
+        Services,
+        ComponentMiddlewaresProps
     > {
         const pipeline = (
             props: ComponentProps,
-            middlewareProps: TMiddlewareProps,
-            services: RenderFunctionServices<TLoadDataServices>,
-            ...steps: Array<ComponentRendererMiddleware<TLoadDataServices, TMiddlewareProps>>
+            middlewareProps: ComponentMiddlewaresProps,
+            services: MiddlwareServices<Services>,
+            ...steps: Array<ComponentRendererMiddleware<Services, ComponentMiddlewaresProps>>
         ): React.ReactElement<any> | false | null => {
             const [step, ...next] = steps
             return step
@@ -83,7 +89,7 @@ export class ComponentRegistrar<
 
     constructor(public logger: Logger = noopLogger()) {}
 
-    isRegistered = (type: TComponents['type']) => {
+    isRegistered = (type: Components['type']) => {
         return this.registeredComponents[type] !== undefined
     }
 
@@ -91,7 +97,7 @@ export class ComponentRegistrar<
      * expects the type from T to be passed in as a parameter, from this we
      * can retrieve the render function associated with the component
      */
-    get = (type: TComponents['type']) => {
+    get = (type: Components['type']) => {
         const foundComponent = this.registeredComponents[type]
         if (!foundComponent && process.env.NODE_ENV !== 'production') {
             // continue rendering in production only. otherwise throw, this is so the site does not crash
@@ -103,12 +109,12 @@ export class ComponentRegistrar<
 
     /** used to register another component using ComponentRegistration<TType, TProps> */
     registerComponent<TType extends string, TProps extends {}>(
-        registration: ComponentRegistration<TType, TProps, TLoadDataServices>,
+        registration: ComponentRegistration<TType, TProps, Services>,
     ): Pick<
         ComponentRegistrar<
-            TLoadDataServices,
-            Exclude<TComponents, never> | ComponentInformation<TType, TProps>,
-            TMiddlewareProps
+            Services,
+            Exclude<Components, never> | ComponentInformation<TType, TProps>,
+            ComponentMiddlewaresProps
         >,
         'registerComponent' | 'registerMiddleware'
     > {
@@ -122,14 +128,11 @@ export class ComponentRegistrar<
     }
 
     registerMiddleware<TRegistrationMiddlewareProps extends object>(
-        componentMiddleware: ComponentRendererMiddleware<
-            TLoadDataServices,
-            TRegistrationMiddlewareProps
-        >,
+        componentMiddleware: ComponentRendererMiddleware<Services, TRegistrationMiddlewareProps>,
     ): ComponentRegistrar<
-        TLoadDataServices,
-        TComponents,
-        TMiddlewareProps & TRegistrationMiddlewareProps
+        Services,
+        Components,
+        ComponentMiddlewaresProps & TRegistrationMiddlewareProps
     > {
         // This cast is safe because we are correctly typing the return type
         this._componentMiddlewares.push(componentMiddleware as any)
@@ -142,12 +145,12 @@ export class ComponentRegistrar<
 export type MiddlwareHandler<TProps, TMiddlewareProps extends object, LoadDataServices> = (
     props: TProps,
     middlewareProps: TMiddlewareProps,
-    services: RenderFunctionServices<LoadDataServices>,
+    services: MiddlwareServices<LoadDataServices>,
 ) => React.ReactElement<any> | false | null
 
 export type ComponentRendererMiddleware<TLoadDataServices, TMiddlewareProps extends object> = (
     componentProps: ComponentProps,
     middlewareProps: TMiddlewareProps,
-    services: RenderFunctionServices<TLoadDataServices>,
+    services: MiddlwareServices<TLoadDataServices>,
     next: MiddlwareHandler<ComponentProps, TMiddlewareProps, TLoadDataServices>,
 ) => React.ReactElement<any> | false | null
