@@ -19,7 +19,7 @@ export function getRegistrars<
     >
 } {
     return {
-        componentRegistrar: (layout as any).compositionRegistrar.compositionRegistrar,
+        componentRegistrar: (layout as any).compositionRegistrar.componentRegistrar,
         compositionRegistrar: (layout as any).compositionRegistrar,
     }
 }
