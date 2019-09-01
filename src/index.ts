@@ -1,6 +1,8 @@
+export { getRegistrars } from './get-registrars'
+
 export {
     ComponentRendererMiddleware,
-    MiddlwareServices as RenderFunctionServices,
+    MiddlwareServices,
     RenderFunction,
     ComponentRegistration,
     ComponentInformation,
