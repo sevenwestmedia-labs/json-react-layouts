@@ -1,10 +1,10 @@
 import React from 'react'
 import {
     ComponentRegistrar,
-    RenderFunctionServices,
+    MiddlwareServices,
     ComponentRendererMiddleware,
 } from './ComponentRegistrar'
-import { LayoutApi } from './RouteBuilder'
+import { LayoutApi } from './LayoutApi'
 
 export interface ComponentProps {
     componentType: string
@@ -12,7 +12,7 @@ export interface ComponentProps {
     [props: string]: any
 }
 
-export interface Props<Services> {
+export interface ComponentRendererProps<Services> {
     type: string
     layoutApi: LayoutApi<any, any, any, any>
     componentRegistrar: ComponentRegistrar<Services, any, any>
@@ -24,13 +24,13 @@ export interface Props<Services> {
     renderComponentMiddleware?: ComponentRendererMiddleware<Services, any>
 }
 
-export const ComponentRenderer: React.FC<Props<any>> = props => {
+export const ComponentRenderer: React.FC<ComponentRendererProps<any>> = props => {
     const component = props.componentRegistrar.get(props.type)
     if (component === undefined) {
         return null
     }
 
-    const componentServices: RenderFunctionServices<any> = {
+    const componentServices: MiddlwareServices<any> = {
         services: props.services,
         layout: props.layoutApi,
     }

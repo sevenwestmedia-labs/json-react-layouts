@@ -3,29 +3,33 @@ import React from 'react'
 import { getComponentPath } from './helpers'
 import { ComponentInformation } from './ComponentRegistrar'
 import { CompositionInformation } from './CompositionRegistrar'
-import { LayoutApi } from './RouteBuilder'
+import { LayoutApi } from './LayoutApi'
 import { Logger } from 'typescript-log'
 
-export type Props<
-    TComponents extends ComponentInformation<any>,
-    TCompositions extends CompositionInformation<any, TComponents, any, any>,
+export interface Props<
+    Components extends ComponentInformation<any>,
+    Compositions extends CompositionInformation<any, Components, any, any>,
     Services
-> = {
-    compositions: TCompositions[]
+> {
+    compositions: Compositions[]
     renderPathPrefix?: string
     services: Services
 }
 
 export function createCompositionsRenderer<
-    TComponents extends ComponentInformation<any>,
-    TCompositions extends CompositionInformation<any, TComponents, any, any>,
+    Components extends ComponentInformation<any>,
+    Compositions extends CompositionInformation<any, Components, any, any>,
     Services,
-    MiddlewareProps extends {}
+    ComponentMiddlewaresProps extends {}
 >(
-    layoutApi: LayoutApi<TComponents, TCompositions, Services, MiddlewareProps>,
+    layoutApi: LayoutApi<Components, Compositions, Services, ComponentMiddlewaresProps>,
     logger: Logger,
-): React.FC<Props<TComponents, TCompositions, Services>> {
-    return function CompositionsRenderer({ services, renderPathPrefix, compositions }) {
+) {
+    const CompositionsRenderer: React.FC<Props<Components, Compositions, Services>> = ({
+        services,
+        renderPathPrefix,
+        compositions,
+    }) => {
         logger.debug(
             {
                 renderPathPrefix,
@@ -58,4 +62,6 @@ export function createCompositionsRenderer<
             </React.Fragment>
         )
     }
+    CompositionsRenderer.displayName = 'CompositionsRenderer'
+    return CompositionsRenderer
 }

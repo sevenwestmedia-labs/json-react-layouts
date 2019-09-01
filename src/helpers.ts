@@ -1,4 +1,4 @@
-import { ComponentInformation, ComponentRegistrar } from './ComponentRegistrar'
+import { ComponentInformation } from './ComponentRegistrar'
 import { NestedCompositionProps, CompositionInformation } from './CompositionRegistrar'
 
 export interface ComponentPathOptions {
@@ -30,10 +30,8 @@ export function flatMap<T, Mapped>(collection: T[], map: (value: T, i: number) =
 }
 
 /** Maps an array of compositions to a flat list of components */
-export function getComponentsInCompositions<LoadDataServices>(
+export function getComponentsInCompositions(
     compositions: Array<CompositionInformation<any, any, any, any>>,
-    componentRegistrar: ComponentRegistrar<any, any>,
-    loadDataServices: LoadDataServices,
     renderPathPrefix: string | undefined,
     renderPath: string | undefined,
 ) {
@@ -41,15 +39,7 @@ export function getComponentsInCompositions<LoadDataServices>(
         compositions,
         (composition: CompositionInformation<any, any, any, any>, i: number) =>
             flatMap(Object.keys(composition.contentAreas), key =>
-                contentAreas(
-                    composition,
-                    i,
-                    key,
-                    renderPath !== undefined,
-                    renderPathPrefix,
-                    componentRegistrar,
-                    loadDataServices,
-                ),
+                contentAreas(composition, i, key, renderPath !== undefined, renderPathPrefix),
             ),
     )
 }
@@ -57,11 +47,9 @@ export function getComponentsInCompositions<LoadDataServices>(
 /** Takes an array of compositions, and expands any nested compostions
  * into a flat list of components
  */
-function expandNestedCompositionsIntoComponents<LoadDataServices>(
+function expandNestedCompositionsIntoComponents(
     components: Array<ComponentInformation<any, any>>,
     renderPath: string,
-    componentRegistrar: ComponentRegistrar<any, any>,
-    loadDataServices: LoadDataServices,
     renderPathPrefix: string | undefined,
 ): ContentAreaData[] {
     const contentAreasArr: ContentAreaData[] = []
@@ -70,8 +58,6 @@ function expandNestedCompositionsIntoComponents<LoadDataServices>(
             const props = c.props
             const result = getComponentsInCompositions(
                 [props.composition],
-                componentRegistrar,
-                loadDataServices,
                 renderPathPrefix,
                 `${renderPath}[${i}]`,
             )
@@ -83,14 +69,12 @@ function expandNestedCompositionsIntoComponents<LoadDataServices>(
 }
 
 // map the content areas from the given composition
-function contentAreas<LoadDataServices>(
+function contentAreas(
     composition: CompositionInformation<any, any, any, any>,
     i: number,
     contentAreaKey: string,
     innerSearch: boolean,
     renderPathPrefix: string | undefined,
-    componentRegistrar: ComponentRegistrar<any, any>,
-    loadDataServices: LoadDataServices,
 ): ContentAreaData[] {
     const routeDataOptions: ComponentPathOptions = {
         subpath: !innerSearch ? composition.type : 'nested:' + composition.type,
@@ -107,13 +91,7 @@ function contentAreas<LoadDataServices>(
             renderPath: `${path}`,
             contentArea: composition.contentAreas[contentAreaKey],
         },
-        ...expandNestedCompositionsIntoComponents(
-            components,
-            path,
-            componentRegistrar,
-            loadDataServices,
-            renderPathPrefix,
-        ),
+        ...expandNestedCompositionsIntoComponents(components, path, renderPathPrefix),
     ]
 }
 

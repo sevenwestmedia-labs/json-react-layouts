@@ -6,7 +6,7 @@ import {
     ComponentRegistrar,
     RenderFunction,
 } from './ComponentRegistrar'
-import { LayoutApi } from './RouteBuilder'
+import { LayoutApi } from './LayoutApi'
 
 export interface CompositionRenderProps<TContentAreas, TProps, TLoadDataServices> {
     contentAreas: { [key in keyof TContentAreas]: React.ReactElement<any> }
@@ -48,9 +48,11 @@ export interface NestedCompositionProps {
 export class CompositionRegistrar<
     TComponents extends ComponentInformation<any>,
     TLoadDataServices,
-    TMiddlewareProps extends {},
+    TMiddlewareProps extends object,
     TCompositions extends CompositionInformation<any, any, any> = never
 > {
+    static displayName = 'CompositionRegistrar'
+
     private registeredCompositions: {
         [key: string]: {
             render: CompositionRenderFunction<any, any>
