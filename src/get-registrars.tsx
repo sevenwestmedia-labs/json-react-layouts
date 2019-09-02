@@ -6,16 +6,24 @@ export function getRegistrars<
     Components extends ComponentInformation<any, any>,
     Compositions extends CompositionInformation<any, any, any>,
     Services,
-    ComponentMiddlewaresProps extends object
+    ComponentMiddlewaresProps extends object,
+    CompositionMiddlewaresProps extends object
 >(
-    layout: LayoutApi<Components, Compositions, Services, ComponentMiddlewaresProps>,
+    layout: LayoutApi<
+        Components,
+        Compositions,
+        Services,
+        ComponentMiddlewaresProps,
+        CompositionMiddlewaresProps
+    >,
 ): {
     componentRegistrar: ComponentRegistrar<Services, Components, ComponentMiddlewaresProps>
     compositionRegistrar: CompositionRegistrar<
         Components,
         Services,
         ComponentMiddlewaresProps,
-        Compositions
+        Compositions,
+        CompositionMiddlewaresProps
     >
 } {
     return {

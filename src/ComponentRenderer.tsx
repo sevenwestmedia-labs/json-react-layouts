@@ -11,14 +11,14 @@ export interface ComponentProps {
 
 export interface ComponentRendererProps<Services> {
     type: string
-    layoutApi: LayoutApi<any, any, any, any>
+    layoutApi: LayoutApi<any, any, any, any, any>
     componentRegistrar: ComponentRegistrar<Services, any, any>
     componentProps: ComponentProps
     middlewareProps: { [props: string]: any }
     services: Services
 
     /** Allows a middleware to be specified for component rendering */
-    renderComponentMiddleware?: ComponentRendererMiddleware<Services, any>
+    renderComponentMiddleware: ComponentRendererMiddleware<Services, any>
 }
 
 export const ComponentRenderer: React.FC<ComponentRendererProps<any>> = props => {
@@ -41,18 +41,14 @@ export const ComponentRenderer: React.FC<ComponentRendererProps<any>> = props =>
         return rendered
     }
 
-    if (props.renderComponentMiddleware) {
-        const middlewareRender =
-            props.renderComponentMiddleware(
-                props.componentProps,
-                props.middlewareProps,
-                componentServices,
-                render,
-            ) || null
+    const middlewareRender =
+        props.renderComponentMiddleware(
+            props.componentProps,
+            props.middlewareProps,
+            componentServices,
+            render,
+        ) || null
 
-        return middlewareRender
-    }
-
-    return render()
+    return middlewareRender
 }
 ComponentRenderer.displayName = 'ComponentRenderer'

@@ -1,25 +1,35 @@
 import React from 'react'
 import { Logger } from 'typescript-log'
 
-import {
-    ContentAreaRendererProps,
-    CompositionInformation,
-    CompositionRegistrar,
-} from './CompositionRegistrar'
+import { CompositionInformation, CompositionRegistrar } from './CompositionRegistrar'
 import { ComponentInformation } from './ComponentRegistrar'
 import { ComponentRenderer } from './ComponentRenderer'
+import { LayoutApi } from './LayoutApi'
+
+export interface ContentAreaRendererProps<
+    Components extends ComponentInformation<any>,
+    Compositions extends CompositionInformation<any, any, any>,
+    Services
+> {
+    componentRenderPath: string
+    contentArea: Components[]
+    layoutApi: LayoutApi<Components, Compositions, Services, any, any>
+    services: Services
+}
 
 export function createContentAreaRenderer<
     Components extends ComponentInformation<any, any>,
     Compositions extends CompositionInformation<any, Components, any, any>,
     Services,
-    ComponentMiddlewaresProps extends object
+    ComponentMiddlewaresProps extends object,
+    CompositionsMiddlewaresProps extends object
 >(
     compositionRegistrar: CompositionRegistrar<
         Components,
         Services,
         ComponentMiddlewaresProps,
-        Compositions
+        Compositions,
+        CompositionsMiddlewaresProps
     >,
     logger: Logger,
 ) {
