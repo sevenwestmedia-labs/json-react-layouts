@@ -7,17 +7,20 @@ export {
     ComponentRegistrar,
 } from './ComponentRegistrar'
 
-export { ComponentRendererMiddleware, MiddlwareHandler, MiddlwareServices } from './middlewares'
+export {
+    ComponentRendererMiddleware,
+    MiddlwareHandler,
+    CompositionRendererMiddleware,
+    MiddlwareServices,
+} from './middlewares'
 
-export { LayoutApi, CompositionRenderer } from './LayoutApi'
+export { LayoutApi } from './LayoutApi'
 export {
     CompositionInformation,
     CompositionRegistration,
     CompositionRenderFunction,
     CompositionRenderProps,
-    CompositionRendererProps,
     NestedCompositionProps,
-    ContentAreaRendererProps,
     CompositionRegistrar,
 } from './CompositionRegistrar'
 export { getRegistrationCreators } from './get-registration-creators'

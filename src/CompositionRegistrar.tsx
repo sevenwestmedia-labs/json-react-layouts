@@ -6,7 +6,7 @@ import {
     ComponentRegistrar,
     RenderFunction,
 } from './ComponentRegistrar'
-import { LayoutApi } from './LayoutApi'
+import { CompositionRendererMiddleware, MiddlwareServices } from './middlewares'
 
 export interface CompositionRenderProps<TContentAreas, TProps, TLoadDataServices> {
     contentAreas: { [key in keyof TContentAreas]: React.ReactElement<any> }
@@ -30,15 +30,21 @@ export interface CompositionInformation<
     contentAreas: { [name in TContentAreas]: TComponentInformation[] }
 }
 
-export interface CompositionRegistration<TType, TContentAreas extends string, TProps = {}> {
+export interface CompositionRegistration<
+    TType,
+    TContentAreas extends string,
+    Services,
+    TProps = {}
+> {
     type: TType
-    render: CompositionRenderFunction<TContentAreas, TProps>
+    render: CompositionRenderFunction<TContentAreas, TProps, Services>
 }
 
-export type CompositionRenderFunction<TContentAreas extends string, TProps> = (renderProps: {
-    props: TProps
-    contentAreas: { [key in TContentAreas]: React.ReactElement<any> }
-}) => React.ReactElement<any>
+export type CompositionRenderFunction<TContentAreas extends string, TProps, Services> = (
+    contentAreas: { [key in TContentAreas]: React.ReactElement<any> },
+    renderProps: TProps,
+    services: Services,
+) => React.ReactElement<any>
 
 export interface NestedCompositionProps {
     composition: CompositionInformation<any, any, any, any>
@@ -49,15 +55,19 @@ export class CompositionRegistrar<
     Components extends ComponentInformation<any>,
     Services,
     ComponentMiddlewaresProps extends object,
-    Compositions extends CompositionInformation<any, any, any> = never
+    Compositions extends CompositionInformation<any, any, any> = never,
+    CompositionsMiddlewaresProps extends object = {}
 > {
     static displayName = 'CompositionRegistrar'
 
     private registeredCompositions: {
         [key: string]: {
-            render: CompositionRenderFunction<any, any>
+            render: CompositionRenderFunction<any, any, Services>
         }
     } = {}
+    private _compositionMiddlewares: Array<
+        CompositionRendererMiddleware<Services, CompositionsMiddlewaresProps>
+    > = []
 
     constructor(
         public componentRegistrar: ComponentRegistrar<
@@ -68,16 +78,47 @@ export class CompositionRegistrar<
     ) {}
 
     get(type: Compositions['type']) {
-        const foundComponent = this.registeredCompositions[type]
-        if (!foundComponent && process.env.NODE_ENV !== 'production') {
+        const foundComposition = this.registeredCompositions[type]
+        if (!foundComposition && process.env.NODE_ENV !== 'production') {
             // Warn a component is missing if not in production
             this.componentRegistrar.logger.warn(Errors.missing(type))
         }
-        return foundComponent.render
+        return foundComposition.render
+    }
+
+    public get componentMiddleware(): CompositionRendererMiddleware<
+        Services,
+        CompositionsMiddlewaresProps
+    > {
+        const pipeline = (
+            props: {},
+            middlewareProps: CompositionsMiddlewaresProps,
+            services: MiddlwareServices<Services>,
+            ...steps: Array<CompositionRendererMiddleware<Services, CompositionsMiddlewaresProps>>
+        ): React.ReactElement<any> | false | null => {
+            const [step, ...next] = steps
+            return step
+                ? step(props, middlewareProps, services, (stepProps, stepMiddlewareProps) =>
+                      pipeline(stepProps, stepMiddlewareProps, services, ...next),
+                  )
+                : null
+        }
+
+        return (props, middlewareProps, services, next) => {
+            return pipeline(
+                props,
+                middlewareProps,
+                services,
+                ...this._compositionMiddlewares,
+                (cp, mp, s) => {
+                    return next(cp, mp, s)
+                },
+            )
+        }
     }
 
     registerComposition<TType extends string, TContentAreas extends string, TProps>(
-        registration: CompositionRegistration<TType, TContentAreas, TProps>,
+        registration: CompositionRegistration<TType, TContentAreas, Services, TProps>,
     ): CompositionRegistrar<
         Components,
         Services,
@@ -95,27 +136,22 @@ export class CompositionRegistrar<
 
         return this as any
     }
-}
 
-export interface CompositionRendererProps<
-    Components extends ComponentInformation<any>,
-    Compositions extends CompositionInformation<any, any, any>,
-    Services,
-    ComponentMiddlewaresProps extends object
-> {
-    componentRenderPath: string
-    composition: CompositionInformation<any, Components, any>
-    layoutApi: LayoutApi<Components, Compositions, Services, ComponentMiddlewaresProps>
-    services: Services
-}
+    registerMiddleware<TRegistrationMiddlewareProps extends object>(
+        compositionMiddleware: CompositionRendererMiddleware<
+            Services,
+            TRegistrationMiddlewareProps
+        >,
+    ): CompositionRegistrar<
+        Components,
+        Services,
+        ComponentMiddlewaresProps,
+        Compositions,
+        CompositionsMiddlewaresProps & TRegistrationMiddlewareProps
+    > {
+        // This cast is safe because we are correctly typing the return type
+        this._compositionMiddlewares.push(compositionMiddleware as any)
 
-export interface ContentAreaRendererProps<
-    Components extends ComponentInformation<any>,
-    Compositions extends CompositionInformation<any, any, any>,
-    Services
-> {
-    componentRenderPath: string
-    contentArea: Components[]
-    layoutApi: LayoutApi<Components, Compositions, Services, any>
-    services: Services
+        return this as any
+    }
 }
