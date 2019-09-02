@@ -87,6 +87,13 @@ export const myComponentRegistration = createRegisterableComponent('component-ke
     <MyComponent />
 ))
 
+export const testCompositionRegistration = createRegisterableComposition<'main'>()(
+    'test-composition-with-props',
+    (contentAreas, props: { myProp: string }) => (
+        <TestComposition main={contentAreas.main} myProp={props.myProp} />
+    ),
+)
+
 // Create your `LayoutRegistration` then register your components
 const layout = new LayoutRegistration()
     .registerComponents(registrar =>
