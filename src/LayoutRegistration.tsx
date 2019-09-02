@@ -101,7 +101,10 @@ export class LayoutCompositionRegistration<
         return ComponentsRenderer
     }
 
-    registerCompositions<Compositions extends CompositionInformation<any, any, any>>(
+    registerCompositions<
+        Compositions extends CompositionInformation<any, any, any>,
+        CompositionMiddlewaresProps extends object
+    >(
         registerCallback: (
             registrar: Pick<
                 CompositionRegistrar<
@@ -109,22 +112,24 @@ export class LayoutCompositionRegistration<
                     Services,
                     ComponentMiddlewaresProps
                 >,
-                'registerComposition'
+                'registerComposition' | 'registerMiddleware'
             >,
         ) => Pick<
             CompositionRegistrar<
                 Components | ComponentInformation<'nested-composition', NestedCompositionProps>,
                 Services,
                 ComponentMiddlewaresProps,
-                Exclude<Compositions, never>
+                Exclude<Compositions, never>,
+                CompositionMiddlewaresProps
             >,
-            'registerComposition'
+            'registerComposition' | 'registerMiddleware'
         >,
     ): LayoutApi<
         Components | NestedComponentInfo,
         Exclude<Compositions, never>,
         Services,
-        ComponentMiddlewaresProps
+        ComponentMiddlewaresProps,
+        CompositionMiddlewaresProps
     > {
         const { createRegisterableComponent } = getRegistrationCreators<Services>()
 
@@ -140,10 +145,11 @@ export class LayoutCompositionRegistration<
 
                     return (
                         <CompositionRenderer
-                            composition={props.composition}
+                            composition={props.composition as any}
                             componentRenderPath={`${props.componentRenderPath}/nested:${props.composition.type}`}
                             services={services}
                             layoutApi={layout}
+                            renderCompositionMiddleware={registrar.componentMiddleware}
                         />
                     )
                 },
@@ -160,11 +166,13 @@ export class LayoutCompositionRegistration<
             Components | ComponentInformation<'nested-composition', NestedCompositionProps>,
             Services,
             ComponentMiddlewaresProps,
-            Exclude<Compositions, never>
+            Exclude<Compositions, never>,
+            CompositionMiddlewaresProps
         >
 
         const layout = new LayoutApi(unmaskedCompositionRegistrar)
-        const CompositionRenderer = layout.CompositionRenderer
+        // CompositionRenderer is private
+        const CompositionRenderer = (layout as any).CompositionRenderer
         return layout
     }
 }

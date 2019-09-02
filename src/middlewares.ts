@@ -2,7 +2,7 @@ import { LayoutApi } from './LayoutApi'
 import { ComponentProps } from './ComponentRenderer'
 
 export interface MiddlwareServices<Services> {
-    layout: LayoutApi<any, any, any, any>
+    layout: LayoutApi<any, any, any, any, any>
     services: Services
 }
 
@@ -18,4 +18,11 @@ export type ComponentRendererMiddleware<Services, ComponentMiddlewareProps exten
     middlewareProps: ComponentMiddlewareProps,
     services: MiddlwareServices<Services>,
     next: MiddlwareHandler<ComponentProps, ComponentMiddlewareProps, Services>,
+) => React.ReactElement<any> | false | null
+
+export type CompositionRendererMiddleware<Services, CompositionMiddlewareProps extends object> = (
+    compositionProps: {},
+    middlewareProps: CompositionMiddlewareProps,
+    services: MiddlwareServices<Services>,
+    next: MiddlwareHandler<{}, CompositionMiddlewareProps, Services>,
 ) => React.ReactElement<any> | false | null

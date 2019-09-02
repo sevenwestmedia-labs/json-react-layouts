@@ -20,11 +20,16 @@ export function getRegistrationCreators<Services>() {
          * for a composition with two content areas, main and sidebar.
          * Second call that registration function to create the registration.
          */
-        createRegisterableComposition<ContentAreas extends string, CompositionProps extends {}>() {
-            return <CompositionType extends string>(
+        createRegisterableComposition<ContentAreas extends string>() {
+            return <CompositionType extends string, CompositionProps extends {}>(
                 type: CompositionType,
-                render: CompositionRenderFunction<ContentAreas, CompositionProps>,
-            ): CompositionRegistration<CompositionType, ContentAreas, CompositionProps> => ({
+                render: CompositionRenderFunction<ContentAreas, CompositionProps, Services>,
+            ): CompositionRegistration<
+                CompositionType,
+                ContentAreas,
+                Services,
+                CompositionProps
+            > => ({
                 type,
                 render,
             })

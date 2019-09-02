@@ -1,23 +1,9 @@
 import React from 'react'
 import { ComponentInformation } from './ComponentRegistrar'
-import {
-    CompositionInformation,
-    CompositionRegistrar,
-    CompositionRendererProps,
-    ContentAreaRendererProps,
-} from './CompositionRegistrar'
+import { CompositionInformation, CompositionRegistrar } from './CompositionRegistrar'
 import { createCompositionsRenderer, Props } from './CompositionsRenderer'
-import { createCompositionRenderer } from './CompositionRenderer'
-import { createContentAreaRenderer } from './ContentAreaRenderer'
-
-export type CompositionRenderer<
-    Components extends ComponentInformation<any>,
-    Compositions extends CompositionInformation<any, Components, any, any>,
-    LoadDataServices,
-    ComponentMiddlewaresProps extends object
-> = React.FC<
-    CompositionRendererProps<Components, Compositions, LoadDataServices, ComponentMiddlewaresProps>
->
+import { createCompositionRenderer, CompositionRendererProps } from './CompositionRenderer'
+import { createContentAreaRenderer, ContentAreaRendererProps } from './ContentAreaRenderer'
 
 /**
  * Renders and type helpers for completed registrations
@@ -26,33 +12,12 @@ export class LayoutApi<
     Components extends ComponentInformation<any>,
     Compositions extends CompositionInformation<any, Components, any, any>,
     Services,
-    ComponentMiddlewaresProps extends object
+    ComponentMiddlewaresProps extends object,
+    CompositionMiddlewaresProps extends object
 > {
-    _compositionType!: Compositions
+    _compositionType!: Compositions & CompositionMiddlewaresProps
     _componentType!: Components & ComponentMiddlewaresProps
     _contentAreaType!: Components[]
-
-    CompositionsRenderer: React.FC<
-        Props<Components, Compositions, Services>
-    > = createCompositionsRenderer(this, this.compositionRegistrar.componentRegistrar.logger)
-
-    CompositionRenderer: CompositionRenderer<
-        Components,
-        Compositions,
-        Services,
-        ComponentMiddlewaresProps
-    > = createCompositionRenderer(
-        this,
-        this.compositionRegistrar,
-        this.compositionRegistrar.componentRegistrar.logger,
-    )
-
-    ContentAreaRenderer: React.FC<
-        ContentAreaRendererProps<Components, Compositions, Services>
-    > = createContentAreaRenderer(
-        this.compositionRegistrar,
-        this.compositionRegistrar.componentRegistrar.logger,
-    )
 
     // Expects a composition registrar to be passed in
     constructor(
@@ -60,9 +25,40 @@ export class LayoutApi<
             Components,
             Services,
             ComponentMiddlewaresProps,
-            Compositions
+            Compositions,
+            CompositionMiddlewaresProps
         >,
     ) {}
+
+    private ContentAreaRenderer: React.FC<
+        ContentAreaRendererProps<Components, Compositions, Services>
+    > = createContentAreaRenderer(
+        this.compositionRegistrar,
+        this.compositionRegistrar.componentRegistrar.logger,
+    )
+
+    private CompositionRenderer: React.FC<
+        CompositionRendererProps<
+            Components,
+            Compositions,
+            Services,
+            ComponentMiddlewaresProps,
+            CompositionMiddlewaresProps
+        >
+    > = createCompositionRenderer(
+        this.compositionRegistrar,
+        this.ContentAreaRenderer,
+        this.compositionRegistrar.componentRegistrar.logger,
+    )
+
+    CompositionsRenderer: React.FC<
+        Props<Components, Compositions & CompositionMiddlewaresProps, Services>
+    > = createCompositionsRenderer(
+        this,
+        this.compositionRegistrar,
+        this.CompositionRenderer,
+        this.compositionRegistrar.componentRegistrar.logger,
+    )
 
     component(component: Components & ComponentMiddlewaresProps) {
         return component
@@ -84,11 +80,13 @@ export class LayoutApi<
         return components
     }
 
-    composition(composition: Compositions) {
+    composition(composition: Compositions & CompositionMiddlewaresProps) {
         return composition
     }
 
-    compositions(...compositions: Compositions[]): Compositions[] {
+    compositions(
+        ...compositions: Array<Compositions & CompositionMiddlewaresProps>
+    ): Compositions[] {
         return compositions
     }
 }
