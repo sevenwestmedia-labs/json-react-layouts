@@ -140,7 +140,7 @@ export class LayoutCompositionRegistration<
 
                     return (
                         <CompositionRenderer
-                            compositionInformation={props.composition}
+                            composition={props.composition}
                             componentRenderPath={`${props.componentRenderPath}/nested:${props.composition.type}`}
                             services={services}
                             layoutApi={layout}

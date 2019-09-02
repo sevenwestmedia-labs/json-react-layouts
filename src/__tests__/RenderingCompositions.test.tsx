@@ -8,6 +8,7 @@ import {
     TestComponent,
     TestComponent2,
     TestComposition,
+    testCompositionWithPropsRegistration,
 } from './testComponents'
 import { LayoutRegistration } from '../LayoutRegistration'
 
@@ -52,6 +53,35 @@ it('can render a composition with a content area through the registrar', () => {
     expect(wrapper.find(TestComponent)).toHaveLength(2)
     expect(wrapper.find(TestComponent2)).toHaveLength(2)
     expect(wrapper.find(TestComposition)).toHaveLength(3)
+})
+
+it('can render a composition with props', () => {
+    const layout = new LayoutRegistration()
+        .registerComponents(registrar =>
+            registrar
+                .registerComponent(testComponentRegistration)
+                .registerComponent(testComponent2Registration),
+        )
+        .registerCompositions(registrar =>
+            registrar.registerComposition(testCompositionWithPropsRegistration),
+        )
+
+    const wrapper = mount(
+        <layout.CompositionsRenderer
+            services={{}}
+            compositions={[
+                {
+                    type: 'test-composition-with-props',
+                    props: { compositionTitle: 'Composition title' },
+                    contentAreas: { main: [{ type: 'test', props: {} }] },
+                },
+            ]}
+        />,
+    )
+
+    expect(wrapper.find(TestComposition).props()).toMatchObject({
+        compositionTitle: 'Composition title',
+    })
 })
 
 it('can render a nested composition', () => {

@@ -1,14 +1,13 @@
 export { getRegistrars } from './get-registrars'
 
 export {
-    ComponentRendererMiddleware,
-    MiddlwareServices,
     RenderFunction,
     ComponentRegistration,
     ComponentInformation,
-    MiddlwareHandler,
     ComponentRegistrar,
 } from './ComponentRegistrar'
+
+export { ComponentRendererMiddleware, MiddlwareHandler, MiddlwareServices } from './middlewares'
 
 export { LayoutApi, CompositionRenderer } from './LayoutApi'
 export {

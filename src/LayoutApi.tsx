@@ -4,17 +4,17 @@ import {
     CompositionInformation,
     CompositionRegistrar,
     CompositionRendererProps,
-    CompositionRenderProps,
     ContentAreaRendererProps,
 } from './CompositionRegistrar'
 import { createCompositionsRenderer, Props } from './CompositionsRenderer'
-import { ComponentRenderer } from './ComponentRenderer'
+import { createCompositionRenderer } from './CompositionRenderer'
+import { createContentAreaRenderer } from './ContentAreaRenderer'
 
 export type CompositionRenderer<
     Components extends ComponentInformation<any>,
     Compositions extends CompositionInformation<any, Components, any, any>,
     LoadDataServices,
-    ComponentMiddlewaresProps extends {}
+    ComponentMiddlewaresProps extends object
 > = React.FC<
     CompositionRendererProps<Components, Compositions, LoadDataServices, ComponentMiddlewaresProps>
 >
@@ -26,7 +26,7 @@ export class LayoutApi<
     Components extends ComponentInformation<any>,
     Compositions extends CompositionInformation<any, Components, any, any>,
     Services,
-    ComponentMiddlewaresProps extends {}
+    ComponentMiddlewaresProps extends object
 > {
     _compositionType!: Compositions
     _componentType!: Components & ComponentMiddlewaresProps
@@ -41,80 +41,18 @@ export class LayoutApi<
         Compositions,
         Services,
         ComponentMiddlewaresProps
-    > = (props): React.ReactElement<any> | null => {
-        /**
-         * The ContentAreaRenderer componentRenderPaths need to append `/[contentArea key]'
-         * key as this logic is duped outside of react for the ssr
-         */
-        this.compositionRegistrar.componentRegistrar.logger.debug(
-            {
-                componentRenderPath: props.componentRenderPath,
-                type: props.compositionInformation.type,
-            },
-            'Rendering composition',
-        )
+    > = createCompositionRenderer(
+        this,
+        this.compositionRegistrar,
+        this.compositionRegistrar.componentRegistrar.logger,
+    )
 
-        const contentAreas = Object.keys(props.compositionInformation.contentAreas).reduce<{
-            [key: string]: React.ReactElement<any>
-        }>((acc, val) => {
-            acc[val] = (
-                <this.ContentAreaRenderer
-                    componentRenderPath={`${props.componentRenderPath}/${val}`}
-                    contentArea={props.compositionInformation.contentAreas[val]}
-                    layoutApi={props.layoutApi}
-                    services={props.services}
-                />
-            )
-            return acc
-        }, {})
-        const compositionProps: CompositionRenderProps<any, any, Services> = {
-            contentAreas,
-            props: props.compositionInformation.props,
-        }
-        const compositionElement = this.compositionRegistrar.get(props.compositionInformation.type)
-        return compositionElement(compositionProps)
-    }
-
-    ContentAreaRenderer: React.FC<ContentAreaRendererProps<Components, Compositions, Services>> = (
-        props,
-    ): React.ReactElement<any> => {
-        this.compositionRegistrar.componentRegistrar.logger.debug(
-            {
-                componentRenderPath: props.componentRenderPath,
-                components: props.contentArea.map(component => ({
-                    type: component.type,
-                })),
-            },
-            'Rendering content area',
-        )
-
-        return (
-            <React.Fragment>
-                {props.contentArea.map((item, index) => {
-                    const { type, props: componentProps, ...middlewareProps } = item
-                    return (
-                        <ComponentRenderer
-                            // TODO allow components to be re-orderered without remounting
-                            key={`${item.type}-${index}`}
-                            type={type}
-                            layoutApi={props.layoutApi}
-                            componentRegistrar={this.compositionRegistrar.componentRegistrar}
-                            componentProps={{
-                                ...componentProps,
-                                componentType: item.type,
-                                componentRenderPath: `${props.componentRenderPath}[${index}]`,
-                            }}
-                            middlewareProps={middlewareProps}
-                            services={props.services}
-                            renderComponentMiddleware={
-                                this.compositionRegistrar.componentRegistrar.componentMiddleware
-                            }
-                        />
-                    )
-                })}
-            </React.Fragment>
-        )
-    }
+    ContentAreaRenderer: React.FC<
+        ContentAreaRendererProps<Components, Compositions, Services>
+    > = createContentAreaRenderer(
+        this.compositionRegistrar,
+        this.compositionRegistrar.componentRegistrar.logger,
+    )
 
     // Expects a composition registrar to be passed in
     constructor(
@@ -140,7 +78,9 @@ export class LayoutApi<
         }
     }
 
-    contentArea(...components: Components[]): Array<ComponentInformation<any>> {
+    contentArea(
+        ...components: Array<Components & ComponentMiddlewaresProps>
+    ): Array<ComponentInformation<any>> {
         return components
     }
 

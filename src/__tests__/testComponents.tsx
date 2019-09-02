@@ -50,7 +50,9 @@ export const TestCompositionWithProps: React.FC<
     { main: React.ReactElement<any> } & CompositionProps
 > = props => <div>{props.main}</div>
 
-export const testCompositionWithPropsRegistration = createRegisterableComposition<'main', {}>()(
-    'test-composition',
-    ({ contentAreas, props }) => <TestComposition main={contentAreas.main} {...props} />,
-)
+export const testCompositionWithPropsRegistration = createRegisterableComposition<
+    'main',
+    { compositionTitle: string }
+>()('test-composition-with-props', ({ contentAreas, props }) => (
+    <TestComposition main={contentAreas.main} {...props} />
+))
