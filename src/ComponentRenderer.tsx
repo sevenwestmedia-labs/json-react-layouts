@@ -35,8 +35,10 @@ export const ComponentRenderer: React.FC<ComponentRendererProps<any>> = props =>
     // A middleware may call next with props, we should use them
     function render(middlewareComponentProps?: ComponentProps) {
         const rendered =
-            component.render(middlewareComponentProps || props.componentProps, componentServices) ||
-            null
+            component.render(
+                middlewareComponentProps || props.componentProps,
+                componentServices.services,
+            ) || null
 
         return rendered
     }
