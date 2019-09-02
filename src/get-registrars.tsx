@@ -6,15 +6,15 @@ export function getRegistrars<
     Components extends ComponentInformation<any, any>,
     Compositions extends CompositionInformation<any, any, any>,
     Services,
-    ComponentMiddlewares extends object
+    ComponentMiddlewaresProps extends object
 >(
-    layout: LayoutApi<Components, Compositions, Services, ComponentMiddlewares>,
+    layout: LayoutApi<Components, Compositions, Services, ComponentMiddlewaresProps>,
 ): {
-    componentRegistrar: ComponentRegistrar<Services, Components, ComponentMiddlewares>
+    componentRegistrar: ComponentRegistrar<Services, Components, ComponentMiddlewaresProps>
     compositionRegistrar: CompositionRegistrar<
         Components,
         Services,
-        ComponentMiddlewares,
+        ComponentMiddlewaresProps,
         Compositions
     >
 } {

@@ -2,7 +2,7 @@ import React from 'react'
 import { Logger, noopLogger } from 'typescript-log'
 
 import { ComponentProps } from './ComponentRenderer'
-import { LayoutApi } from './LayoutApi'
+import { ComponentRendererMiddleware, MiddlwareServices } from './middlewares'
 
 export interface ComponentRegistration<
     ComponentType extends string,
@@ -17,11 +17,6 @@ export interface ComponentRegistration<
 export interface ComponentInformation<ComponentType, ComponentProps = {}> {
     type: ComponentType
     props: ComponentProps
-}
-
-export interface MiddlwareServices<Services> {
-    layout: LayoutApi<any, any, any, any>
-    services: Services
 }
 
 /** The render function for components, converts the route props into a react component */
@@ -140,17 +135,3 @@ export class ComponentRegistrar<
         return this as any
     }
 }
-
-/** The render function for components, converts the route props into a react component */
-export type MiddlwareHandler<TProps, TMiddlewareProps extends object, LoadDataServices> = (
-    props: TProps,
-    middlewareProps: TMiddlewareProps,
-    services: MiddlwareServices<LoadDataServices>,
-) => React.ReactElement<any> | false | null
-
-export type ComponentRendererMiddleware<TLoadDataServices, TMiddlewareProps extends object> = (
-    componentProps: ComponentProps,
-    middlewareProps: TMiddlewareProps,
-    services: MiddlwareServices<TLoadDataServices>,
-    next: MiddlwareHandler<ComponentProps, TMiddlewareProps, TLoadDataServices>,
-) => React.ReactElement<any> | false | null
