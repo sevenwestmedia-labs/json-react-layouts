@@ -44,7 +44,7 @@ export type CompositionRenderFunction<TContentAreas extends string, TProps, Serv
     contentAreas: { [key in TContentAreas]: React.ReactElement<any> },
     renderProps: TProps,
     services: Services,
-) => React.ReactElement<any>
+) => React.ReactElement<any> | false | null
 
 export interface NestedCompositionProps {
     composition: CompositionInformation<any, any, any, any>
