@@ -11,6 +11,7 @@ import {
     testCompositionWithPropsRegistration,
 } from './testComponents'
 import { LayoutRegistration } from '../LayoutRegistration'
+import { getRegistrationCreators } from '../get-registration-creators'
 
 configure({ adapter: new Adapter() })
 
@@ -116,4 +117,47 @@ it('can render a nested composition', () => {
     )
 
     expect(wrapper.find(TestComponent)).toHaveLength(1)
+})
+
+it('gets services', () => {
+    interface ExampleServices {
+        example: string
+    }
+    const { createRegisterableComponent, createRegisterableComposition } = getRegistrationCreators<
+        ExampleServices
+    >()
+
+    let capturedComponentServices: ExampleServices | undefined = undefined
+    let capturedCompositionServices: ExampleServices | undefined = undefined
+
+    const componentCaptureServices = createRegisterableComponent('test', (_, services) => {
+        capturedComponentServices = services
+        return null
+    })
+
+    const compositionCaptureServices = createRegisterableComposition<'main'>()(
+        'test',
+        (contentArea, __, services) => {
+            capturedCompositionServices = services
+            return <div>{contentArea.main}</div>
+        },
+    )
+
+    const layout = new LayoutRegistration<ExampleServices>()
+        .registerComponents(registrar => registrar.registerComponent(componentCaptureServices))
+        .registerCompositions(registrar =>
+            registrar.registerComposition(compositionCaptureServices),
+        )
+
+    mount(
+        <layout.CompositionsRenderer
+            compositions={[
+                { type: 'test', contentAreas: { main: [{ type: 'test', props: {} }] }, props: {} },
+            ]}
+            services={{ example: 'value' }}
+        />,
+    )
+
+    expect(capturedComponentServices).toMatchObject({ example: 'value' })
+    expect(capturedCompositionServices).toMatchObject({ example: 'value' })
 })

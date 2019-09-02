@@ -4,8 +4,6 @@ import {
     testCompositionRegistration,
 } from './testComponents'
 import { LayoutRegistration } from '../LayoutRegistration'
-import { ComponentInformation } from '../ComponentRegistrar'
-import { NestedCompositionProps } from '../CompositionRegistrar'
 
 it('can create a component instance', () => {
     const layout = new LayoutRegistration()
@@ -124,5 +122,3 @@ it('can create a page instance', () => {
         }),
     )
 })
-
-type AssertEqual<T, Expected> = T extends Expected ? (Expected extends T ? true : never) : never
