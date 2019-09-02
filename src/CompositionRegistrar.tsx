@@ -46,10 +46,10 @@ export interface NestedCompositionProps {
 }
 
 export class CompositionRegistrar<
-    TComponents extends ComponentInformation<any>,
-    TLoadDataServices,
-    TMiddlewareProps extends object,
-    TCompositions extends CompositionInformation<any, any, any> = never
+    Components extends ComponentInformation<any>,
+    Services,
+    ComponentMiddlewaresProps extends object,
+    Compositions extends CompositionInformation<any, any, any> = never
 > {
     static displayName = 'CompositionRegistrar'
 
@@ -61,13 +61,13 @@ export class CompositionRegistrar<
 
     constructor(
         public componentRegistrar: ComponentRegistrar<
-            TLoadDataServices,
-            TComponents,
-            TMiddlewareProps
+            Services,
+            Components,
+            ComponentMiddlewaresProps
         >,
     ) {}
 
-    get(type: TCompositions['type']) {
+    get(type: Compositions['type']) {
         const foundComponent = this.registeredCompositions[type]
         if (!foundComponent && process.env.NODE_ENV !== 'production') {
             // Warn a component is missing if not in production
@@ -79,11 +79,11 @@ export class CompositionRegistrar<
     registerComposition<TType extends string, TContentAreas extends string, TProps>(
         registration: CompositionRegistration<TType, TContentAreas, TProps>,
     ): CompositionRegistrar<
-        TComponents,
-        TLoadDataServices,
-        TMiddlewareProps,
-        | Exclude<TCompositions, never>
-        | CompositionInformation<TType, TComponents, TContentAreas, TProps>
+        Components,
+        Services,
+        ComponentMiddlewaresProps,
+        | Exclude<Compositions, never>
+        | CompositionInformation<TType, Components, TContentAreas, TProps>
     > {
         if (this.registeredCompositions[registration.type]) {
             throw new Error(`${registration.type} has already been registered`)
@@ -98,24 +98,24 @@ export class CompositionRegistrar<
 }
 
 export interface CompositionRendererProps<
-    TComponents extends ComponentInformation<any>,
-    TCompositions extends CompositionInformation<any, any, any>,
+    Components extends ComponentInformation<any>,
+    Compositions extends CompositionInformation<any, any, any>,
     Services,
-    TMiddlewareProps extends {}
+    ComponentMiddlewaresProps extends object
 > {
     componentRenderPath: string
-    compositionInformation: CompositionInformation<any, TComponents, any>
-    layoutApi: LayoutApi<TComponents, TCompositions, Services, TMiddlewareProps>
+    composition: CompositionInformation<any, Components, any>
+    layoutApi: LayoutApi<Components, Compositions, Services, ComponentMiddlewaresProps>
     services: Services
 }
 
 export interface ContentAreaRendererProps<
-    TComponents extends ComponentInformation<any>,
-    TCompositions extends CompositionInformation<any, any, any>,
+    Components extends ComponentInformation<any>,
+    Compositions extends CompositionInformation<any, any, any>,
     Services
 > {
     componentRenderPath: string
-    contentArea: TComponents[]
-    layoutApi: LayoutApi<TComponents, TCompositions, Services, any>
+    contentArea: Components[]
+    layoutApi: LayoutApi<Components, Compositions, Services, any>
     services: Services
 }

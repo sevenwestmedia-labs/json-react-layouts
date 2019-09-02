@@ -20,7 +20,7 @@ export function createCompositionsRenderer<
     Components extends ComponentInformation<any>,
     Compositions extends CompositionInformation<any, Components, any, any>,
     Services,
-    ComponentMiddlewaresProps extends {}
+    ComponentMiddlewaresProps extends object
 >(
     layoutApi: LayoutApi<Components, Compositions, Services, ComponentMiddlewaresProps>,
     logger: Logger,
@@ -53,7 +53,7 @@ export function createCompositionsRenderer<
                         <layoutApi.CompositionRenderer
                             key={componentRenderPath}
                             componentRenderPath={componentRenderPath}
-                            compositionInformation={composition}
+                            composition={composition}
                             layoutApi={layoutApi}
                             services={services}
                         />

@@ -1,10 +1,7 @@
 import React from 'react'
-import {
-    ComponentRegistrar,
-    MiddlwareServices,
-    ComponentRendererMiddleware,
-} from './ComponentRegistrar'
+import { ComponentRegistrar } from './ComponentRegistrar'
 import { LayoutApi } from './LayoutApi'
+import { ComponentRendererMiddleware, MiddlwareServices } from './middlewares'
 
 export interface ComponentProps {
     componentType: string
