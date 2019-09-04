@@ -33,7 +33,7 @@
         "@types/react": "^16.9.2",
         "@typescript-eslint/eslint-plugin": "^2.0.0",
         "@typescript-eslint/parser": "^2.0.0",
-        "cross-spawn": "^6.0.5",
+        "cross-spawn": "^7.0.0",
         "enzyme": "^3.10.0",
         "enzyme-adapter-react-16": "^1.14.0",
         "eslint": "^6.2.2",
