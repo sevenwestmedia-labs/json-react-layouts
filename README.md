@@ -10,7 +10,7 @@ JSON React layouts enables registration of components and layouts (called compos
 
 React is great for building web applications, but sometimes using React directly for websites can lead to a bunch of higher order components, hooks or helper functions which you need to use on every page route.
 
-React pages makes it easier to solve all the cross cutting concerns which pop up in a nice centrally managed way. It also opens up the possibility of CMS managing page layouts because pages are written as plain JS objects.
+JSON React layouts makes it easier to solve all the cross cutting concerns which pop up in a nice centrally managed way. It also opens up the possibility of CMS managing page layouts because pages are written as plain JS objects.
 
 ## Goals
 
@@ -53,7 +53,7 @@ const definition = layout.compositions([
     }
 ])
 
-// Now we can get react-pages to render that definition:
+// Now we can get json-react-layouts to render that definition:
 
 <layout.CompositionsRenderer
     compositions={definition}
