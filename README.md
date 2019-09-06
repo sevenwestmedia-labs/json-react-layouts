@@ -24,32 +24,34 @@ Once we have registered a `header`, `blog-entry` and `ad` component, our page de
 
 ```tsx
 const definition = layout.compositions([
-    type: '50-50-layout',
-    contentAreas: {
+    {
+        type: '50-50-layout',
+        contentAreas: {
 
-        left: [
-            {
-                type: 'header',
-                props: {
-                    text: 'My page header'
+            left: [
+                {
+                    type: 'header',
+                    props: {
+                        text: 'My page header'
+                    }
+                },
+                {
+                    type: 'blog-entry',
+                    props: {
+                        id: 1
+                    }
                 }
-            },
-            {
-                type: 'blog-entry',
-                props: {
-                    id: 1
-                }
-            }
-        ],
+            ],
 
-        right: [
-            {
-                type: 'ad',
-                props: {
-                    size: 'mrec'
+            right: [
+                {
+                    type: 'ad',
+                    props: {
+                        size: 'mrec'
+                    }
                 }
-            }
-        ]
+            ]
+        }
     }
 ])
 
@@ -122,39 +124,43 @@ These two examples are the same
 ```ts
 // Example 1
 const definition = layout.compositions([ // This is where your compilation error will be
-    type: '50-50-layout',
-    contentAreas: {
-        left: [
-            {
-                type: 'header',
-                props: {
-                    tet: 'My page header' // This is wrong
-                }
-            },
-            { type: 'blog-entry', props: { id: 1 } }
-        ],=
-        right: [
-            { type: 'ad', props: { size: 'mrec' } }
-        ]
+    {
+        type: '50-50-layout',
+        contentAreas: {
+            left: [
+                {
+                    type: 'header',
+                    props: {
+                        tet: 'My page header' // This is wrong
+                    }
+                },
+                { type: 'blog-entry', props: { id: 1 } }
+            ],=
+            right: [
+                { type: 'ad', props: { size: 'mrec' } }
+            ]
+        }
     }
 ])
 
 // Example 2
 const definition = layout.compositions([
-    type: '50-50-layout',
-    contentAreas: {
-        left: [
-            layout.component({ // This is where your compilation error will be
-                type: 'header',
-                props: {
-                    tet: 'My page header' // This is wrong
-                }
-            }),
-            { type: 'blog-entry', props: { id: 1 } }
-        ],
-        right: [
-            { type: 'ad', props: { size: 'mrec' }
-        ]
+    {
+        type: '50-50-layout',
+        contentAreas: {
+            left: [
+                layout.component({ // This is where your compilation error will be
+                    type: 'header',
+                    props: {
+                        tet: 'My page header' // This is wrong
+                    }
+                }),
+                { type: 'blog-entry', props: { id: 1 } }
+            ],
+            right: [
+                { type: 'ad', props: { size: 'mrec' }
+            ]
+        }
     }
 ])
 ```
