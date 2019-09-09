@@ -92,7 +92,15 @@ export class ComponentRegistrar<
      * expects the type from T to be passed in as a parameter, from this we
      * can retrieve the render function associated with the component
      */
-    get = (type: Components['type']) => {
+    get = (
+        type: Components['type'],
+    ):
+        | ComponentRegistration<
+              Components['type'],
+              Extract<Components, { type: Components['type'] }>,
+              Services
+          >
+        | undefined => {
         const foundComponent = this.registeredComponents[type]
         if (!foundComponent && process.env.NODE_ENV !== 'production') {
             // continue rendering in production only. otherwise throw, this is so the site does not crash
