@@ -34,8 +34,10 @@ export const ComponentRenderer: React.FC<ComponentRendererProps<any>> = props =>
 
     // A middleware may call next with props, we should use them
     function render(middlewareComponentProps?: ComponentProps) {
+        // component! because we have checked if it's undefined above
+        // We are just in a callback here so TypeScript does not maintain the narrowing
         const rendered =
-            component.render(
+            component!.render(
                 middlewareComponentProps || props.componentProps,
                 componentServices.services,
             ) || null
