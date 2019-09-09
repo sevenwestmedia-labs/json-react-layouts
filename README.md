@@ -199,7 +199,7 @@ const header: typeof layout._compositionType = {
 
 ## Middleware
 
-React playout allows you to add middlewares around component rendering, this makes it really easy to add capabilities to all components being rendered. This could be feature toggling, data loading and pretty much anything you can think of.
+JSON React Layouts allows you to add middlewares around component rendering, this makes it really easy to add capabilities to all components being rendered. This could be feature toggling, data loading and pretty much anything you can think of.
 
 For example, if you wanted to expose a skip render property on all components you could write a middleware which looked like this:
 
