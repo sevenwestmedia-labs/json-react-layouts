@@ -76,7 +76,7 @@ export class LayoutCompositionRegistration<
                         const { type, props: componentProps, ...middlewareProps } = item
                         return (
                             <ComponentRenderer
-                                key={`${item.type}-${index}`}
+                                key={item.renderKey || index}
                                 type={type}
                                 layoutApi={layoutApi}
                                 componentRegistrar={this.componentRegistrar}
@@ -146,7 +146,7 @@ export class LayoutCompositionRegistration<
                     return (
                         <CompositionRenderer
                             composition={props.composition as any}
-                            componentRenderPath={`${props.componentRenderPath}/nested:${props.composition.type}`}
+                            componentRenderPath={`${props.componentRenderPath}nested:${props.composition.type}`}
                             services={services}
                             layoutApi={layout}
                             renderCompositionMiddleware={registrar.componentMiddleware}

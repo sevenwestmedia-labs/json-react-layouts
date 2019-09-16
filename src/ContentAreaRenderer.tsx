@@ -52,15 +52,14 @@ export function createContentAreaRenderer<
                     const { type, props: componentProps, ...middlewareProps } = item
                     return (
                         <ComponentRenderer
-                            // TODO allow components to be re-orderered without remounting
-                            key={`${item.type}-${index}`}
+                            key={item.renderKey || index}
                             type={type}
                             layoutApi={props.layoutApi}
                             componentRegistrar={compositionRegistrar.componentRegistrar}
                             componentProps={{
                                 ...componentProps,
                                 componentType: item.type,
-                                componentRenderPath: `${props.componentRenderPath}[${index}]`,
+                                componentRenderPath: `${props.componentRenderPath}/[${index}]`,
                             }}
                             middlewareProps={middlewareProps}
                             services={props.services}

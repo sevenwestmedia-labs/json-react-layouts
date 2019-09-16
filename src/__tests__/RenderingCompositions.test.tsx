@@ -12,6 +12,7 @@ import {
 } from './testComponents'
 import { LayoutRegistration } from '../LayoutRegistration'
 import { getRegistrationCreators } from '../get-registration-creators'
+import { ComponentRenderer } from '../ComponentRenderer'
 
 configure({ adapter: new Adapter() })
 
@@ -54,6 +55,94 @@ it('can render a composition with a content area through the registrar', () => {
     expect(wrapper.find(TestComponent)).toHaveLength(2)
     expect(wrapper.find(TestComponent2)).toHaveLength(2)
     expect(wrapper.find(TestComposition)).toHaveLength(3)
+})
+
+it('content area renderer uses renderKey if specified', () => {
+    const layout = new LayoutRegistration()
+        .registerComponents(registrar =>
+            registrar
+                .registerComponent(testComponentRegistration)
+                .registerComponent(testComponent2Registration),
+        )
+        .registerCompositions(registrar =>
+            registrar.registerComposition(testCompositionRegistration),
+        )
+
+    const wrapper = mount(
+        <layout.CompositionsRenderer
+            services={{}}
+            compositions={[
+                {
+                    type: 'test-composition',
+                    props: {},
+                    contentAreas: {
+                        main: [{ type: 'test', props: {}, renderKey: 'custom-render-key' }],
+                    },
+                },
+            ]}
+        />,
+    )
+
+    expect(wrapper.find(ComponentRenderer).key()).toBe('custom-render-key')
+})
+
+it('compositions renderer uses renderKey if specified', () => {
+    const layout = new LayoutRegistration()
+        .registerComponents(registrar =>
+            registrar
+                .registerComponent(testComponentRegistration)
+                .registerComponent(testComponent2Registration),
+        )
+        .registerCompositions(registrar =>
+            registrar.registerComposition(testCompositionRegistration),
+        )
+
+    const wrapper = mount(
+        <layout.CompositionsRenderer
+            services={{}}
+            compositions={[
+                {
+                    type: 'test-composition',
+                    props: {},
+                    renderKey: 'custom-render-key',
+                    contentAreas: {
+                        main: [{ type: 'test', props: {} }],
+                    },
+                },
+            ]}
+        />,
+    )
+
+    expect(wrapper.find('CompositionRenderer').key()).toBe('custom-render-key')
+})
+
+it('compositions renderer uses index if renderKey not specified', () => {
+    const layout = new LayoutRegistration()
+        .registerComponents(registrar =>
+            registrar
+                .registerComponent(testComponentRegistration)
+                .registerComponent(testComponent2Registration),
+        )
+        .registerCompositions(registrar =>
+            registrar.registerComposition(testCompositionRegistration),
+        )
+
+    const wrapper = mount(
+        <layout.CompositionsRenderer
+            services={{}}
+            compositions={[
+                {
+                    type: 'test-composition',
+                    props: {},
+                    contentAreas: {
+                        main: [{ type: 'test', props: {} }],
+                    },
+                },
+            ]}
+        />,
+    )
+
+    expect(wrapper.find('CompositionRenderer').key()).toBe('0')
 })
 
 it('can render a composition with props', () => {

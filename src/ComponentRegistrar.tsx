@@ -13,8 +13,13 @@ export interface ComponentRegistration<
     render: RenderFunction<ComponentProps, Services>
 }
 
+export interface WithRenderKey {
+    /** Provide a custom React render key */
+    renderKey?: string
+}
+
 /** A component definition inside route definitions */
-export interface ComponentInformation<ComponentType, ComponentProps = {}> {
+export interface ComponentInformation<ComponentType, ComponentProps = {}> extends WithRenderKey {
     type: ComponentType
     props: ComponentProps
 }

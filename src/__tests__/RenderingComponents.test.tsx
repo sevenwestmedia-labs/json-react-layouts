@@ -4,6 +4,7 @@ import Adapter from 'enzyme-adapter-react-16'
 import { LayoutRegistration } from '../LayoutRegistration'
 import { testComponentWithPropsRegistration, TestComponentWithProps } from './testComponents'
 import { getRegistrationCreators } from '../get-registration-creators'
+import { ComponentRenderer } from '../ComponentRenderer'
 
 configure({ adapter: new Adapter() })
 
@@ -25,6 +26,28 @@ it('can create a ComponentsRenderer', () => {
 
     expect(wrapper.find(TestComponentWithProps).length).toBe(1)
     expect(wrapper.text()).toContain(title)
+    expect(wrapper.find(ComponentRenderer).key()).toBe('0')
+})
+
+it('component renderer uses renderKey', () => {
+    const ComponentsRenderer = new LayoutRegistration()
+        .registerComponents(registrar =>
+            registrar.registerComponent(testComponentWithPropsRegistration),
+        )
+        .createComponentsRenderer()
+
+    const title = 'Test title'
+
+    const wrapper = mount(
+        <ComponentsRenderer
+            components={[
+                { type: 'testWithTitleProp', props: { title }, renderKey: 'test-render-key' },
+            ]}
+            services={{}}
+        />,
+    )
+
+    expect(wrapper.find(ComponentRenderer).key()).toBe('test-render-key')
 })
 
 it('gets services', () => {

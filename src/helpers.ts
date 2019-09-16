@@ -10,8 +10,8 @@ export interface ComponentPathOptions {
 export function getComponentPath(options: ComponentPathOptions) {
     const { subpath, index, prefix } = options
 
-    const componentPath = index !== undefined ? `[${index}-${subpath}]` : `/${subpath}`
-    const prefixPath = prefix ? `${prefix}/` : ''
+    const componentPath = index !== undefined ? `[${index}]${subpath}` : subpath
+    const prefixPath = prefix ? `${prefix}` : ''
     const renderPath = `${prefixPath}${componentPath}`
 
     return renderPath
@@ -32,14 +32,19 @@ export function flatMap<T, Mapped>(collection: T[], map: (value: T, i: number) =
 /** Maps an array of compositions to a flat list of components */
 export function getComponentsInCompositions(
     compositions: Array<CompositionInformation<any, any, any, any>>,
-    renderPathPrefix: string | undefined,
-    renderPath: string | undefined,
+    componentRenderPath: string | undefined,
 ) {
     return flatMap(
         compositions,
         (composition: CompositionInformation<any, any, any, any>, i: number) =>
             flatMap(Object.keys(composition.contentAreas), key =>
-                contentAreas(composition, i, key, renderPath !== undefined, renderPathPrefix),
+                contentAreas(
+                    composition,
+                    i,
+                    key,
+                    componentRenderPath !== undefined,
+                    componentRenderPath,
+                ),
             ),
     )
 }
@@ -49,8 +54,7 @@ export function getComponentsInCompositions(
  */
 function expandNestedCompositionsIntoComponents(
     components: Array<ComponentInformation<any, any>>,
-    renderPath: string,
-    renderPathPrefix: string | undefined,
+    componentRenderPath: string,
 ): ContentAreaData[] {
     const contentAreasArr: ContentAreaData[] = []
     components.forEach((c, i) => {
@@ -58,10 +62,11 @@ function expandNestedCompositionsIntoComponents(
             const props = c.props
             const result = getComponentsInCompositions(
                 [props.composition],
-                renderPathPrefix,
-                `${renderPath}[${i}]`,
+                `${componentRenderPath}/[${i}]`,
             )
             result.forEach(col => contentAreasArr.push(col))
+        } else {
+            contentAreasArr.push({ ...c, componentRenderPath: `${componentRenderPath}/[${i}]` })
         }
     })
 
@@ -74,28 +79,21 @@ function contentAreas(
     i: number,
     contentAreaKey: string,
     innerSearch: boolean,
-    renderPathPrefix: string | undefined,
+    componentRenderPath: string | undefined,
 ): ContentAreaData[] {
     const routeDataOptions: ComponentPathOptions = {
         subpath: !innerSearch ? composition.type : 'nested:' + composition.type,
         index: !innerSearch ? i : undefined,
-        prefix: renderPathPrefix,
+        prefix: componentRenderPath,
     }
 
     const components = composition.contentAreas[contentAreaKey]
 
     const path = `${getComponentPath(routeDataOptions)}/${contentAreaKey}`
 
-    return [
-        {
-            renderPath: `${path}`,
-            contentArea: composition.contentAreas[contentAreaKey],
-        },
-        ...expandNestedCompositionsIntoComponents(components, path, renderPathPrefix),
-    ]
+    return expandNestedCompositionsIntoComponents(components, path)
 }
 
-export interface ContentAreaData {
-    renderPath: string
-    contentArea: Array<ComponentInformation<any, any>>
+export interface ContentAreaData extends ComponentInformation<any, any> {
+    componentRenderPath: string
 }
