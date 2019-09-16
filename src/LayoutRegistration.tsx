@@ -76,7 +76,7 @@ export class LayoutCompositionRegistration<
                         const { type, props: componentProps, ...middlewareProps } = item
                         return (
                             <ComponentRenderer
-                                key={`${item.type}-${index}`}
+                                key={item.renderKey || index}
                                 type={type}
                                 layoutApi={layoutApi}
                                 componentRegistrar={this.componentRegistrar}
