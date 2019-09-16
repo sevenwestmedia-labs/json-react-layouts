@@ -59,7 +59,7 @@ export function createContentAreaRenderer<
                             componentProps={{
                                 ...componentProps,
                                 componentType: item.type,
-                                componentRenderPath: `${props.componentRenderPath}[${index}]`,
+                                componentRenderPath: `${props.componentRenderPath}/[${index}]`,
                             }}
                             middlewareProps={middlewareProps}
                             services={props.services}

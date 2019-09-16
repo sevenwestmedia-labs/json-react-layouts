@@ -146,7 +146,7 @@ export class LayoutCompositionRegistration<
                     return (
                         <CompositionRenderer
                             composition={props.composition as any}
-                            componentRenderPath={`${props.componentRenderPath}/nested:${props.composition.type}`}
+                            componentRenderPath={`${props.componentRenderPath}nested:${props.composition.type}`}
                             services={services}
                             layoutApi={layout}
                             renderCompositionMiddleware={registrar.componentMiddleware}
