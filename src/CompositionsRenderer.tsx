@@ -73,7 +73,7 @@ export function createCompositionsRenderer<
 
                     return (
                         <CompositionRenderer
-                            key={componentRenderPath}
+                            key={composition.renderKey || index}
                             componentRenderPath={componentRenderPath}
                             composition={composition}
                             layoutApi={layoutApi}
