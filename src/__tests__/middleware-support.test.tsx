@@ -7,29 +7,30 @@ import {
 } from './testComponents'
 import { configure, mount } from 'enzyme'
 import { LayoutRegistration } from '../LayoutRegistration'
+import { getRegistrationCreators } from '../get-registration-creators'
 
 configure({ adapter: new Adapter() })
+
+const { createRegisterableComponent, createRegisterableComposition } = getRegistrationCreators<{}>()
 
 it('can hook component middleware', () => {
     let middlewareCalled: any
     let middlewareProps: any
-    let middlewareNext: any
 
     const ComponentRenderer = new LayoutRegistration()
         .registerComponents(registrar =>
             registrar
                 .registerComponent(testComponentWithPropsRegistration)
-                .registerMiddleware((_, mp: { skipRender?: boolean }, __, next) => {
+                .registerMiddleware((cp, mp: { skipRender?: boolean }, ms, next) => {
                     middlewareCalled = true
                     middlewareProps = mp
-                    middlewareNext = next
 
-                    return null
+                    return next(cp, mp, ms)
                 }),
         )
         .createComponentsRenderer()
 
-    mount(
+    const renderOutput = mount(
         <ComponentRenderer
             components={[{ type: 'testWithTitleProp', props: { title: 'test' }, skipRender: true }]}
             services={{}}
@@ -38,9 +39,6 @@ it('can hook component middleware', () => {
 
     expect(middlewareCalled).toBe(true)
     expect(middlewareProps).toMatchObject({ skipRender: true })
-
-    // Verify next() will actually render the component
-    const renderOutput = mount(middlewareNext())
 
     expect(renderOutput.find(TestComponentWithProps).length).toBe(1)
     expect(renderOutput.text()).toContain('test')
@@ -51,12 +49,21 @@ it('can hook multiple component middleware', () => {
     let middleware2Called: any
     let middleware2Props: any
     let middleware2ComponentProps: any
-    let middleware2Next: any
     let middleware2Services: any
+    let componenentServices: any
+
     const ComponentsRenderer = new LayoutRegistration<{ serviceValue: boolean }>()
         .registerComponents(registrar =>
             registrar
-                .registerComponent(testComponentWithPropsRegistration)
+                .registerComponent(
+                    createRegisterableComponent(
+                        'testWithTitleProp',
+                        (props: { title: string }, services) => {
+                            componenentServices = services
+                            return <TestComponentWithProps title={props.title} />
+                        },
+                    ),
+                )
                 .registerMiddleware((props, _: { skipRender?: boolean }, services, next) => {
                     middlewareCalled = true
                     if (middleware2Called) {
@@ -79,15 +86,19 @@ it('can hook multiple component middleware', () => {
                         middleware2Called = true
                         middleware2ComponentProps = componentProps
                         middleware2Props = middlewareProps
-                        middleware2Next = next
                         middleware2Services = services
-                        return null
+
+                        return next(
+                            middleware2ComponentProps,
+                            middleware2Props,
+                            middleware2Services,
+                        )
                     },
                 ),
         )
         .createComponentsRenderer()
 
-    mount(
+    const renderOutput1 = mount(
         <ComponentsRenderer
             components={[
                 { type: 'testWithTitleProp', props: { title: 'test' }, skipRender2: true },
@@ -100,19 +111,12 @@ it('can hook multiple component middleware', () => {
     expect(middleware2Called).toBe(true)
     expect(middleware2Props).toMatchObject({ skipRender2: true })
     expect(middleware2ComponentProps).toMatchObject({ additional: true })
-    expect(middleware2Services).toMatchObject({ services: { serviceValue: true } })
 
-    // Verify next() will actually render the component
-    const renderOutput1 = mount(middleware2Next())
+    expect(middleware2Services).toMatchObject({ services: { serviceValue: true } })
+    expect(componenentServices).toMatchObject({ serviceValue: true })
 
     expect(renderOutput1.find(TestComponentWithProps).length).toBe(1)
     expect(renderOutput1.text()).toContain('test')
-
-    // Verify next() will actually render the component
-    const renderOutput = mount(middleware2Next({ title: 'Override' }))
-
-    expect(renderOutput.find(TestComponentWithProps).length).toBe(1)
-    expect(renderOutput.text()).toContain('Override')
 })
 
 it('can hook composition middleware', () => {

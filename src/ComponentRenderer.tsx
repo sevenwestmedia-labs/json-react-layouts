@@ -1,7 +1,7 @@
 import React from 'react'
 import { ComponentRegistrar } from './ComponentRegistrar'
 import { LayoutApi } from './LayoutApi'
-import { ComponentRendererMiddleware, MiddlwareServices } from './middlewares'
+import { ComponentRendererMiddleware, MiddlwareServices, MiddlwareHandler } from './middlewares'
 
 export interface ComponentProps {
     componentType: string
@@ -33,13 +33,17 @@ export const ComponentRenderer: React.FC<ComponentRendererProps<any>> = props =>
     }
 
     // A middleware may call next with props, we should use them
-    function render(middlewareComponentProps?: ComponentProps) {
+    const render: MiddlwareHandler<any, any, any> = (
+        middlewareComponentProps: ComponentProps,
+        _,
+        services,
+    ) => {
         // component! because we have checked if it's undefined above
         // We are just in a callback here so TypeScript does not maintain the narrowing
         const rendered =
             component!.render(
                 middlewareComponentProps || props.componentProps,
-                componentServices.services,
+                services.services,
             ) || null
 
         return rendered
