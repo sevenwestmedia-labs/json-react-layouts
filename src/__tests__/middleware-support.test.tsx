@@ -52,7 +52,8 @@ it('can hook multiple component middleware', () => {
     let middleware2Props: any
     let middleware2ComponentProps: any
     let middleware2Next: any
-    const ComponentsRenderer = new LayoutRegistration()
+    let middleware2Services: any
+    const ComponentsRenderer = new LayoutRegistration<{ serviceValue: boolean }>()
         .registerComponents(registrar =>
             registrar
                 .registerComponent(testComponentWithPropsRegistration)
@@ -62,16 +63,24 @@ it('can hook multiple component middleware', () => {
                         throw new Error('middlewares called out of order')
                     }
 
-                    return next({ ...props, additional: true }, _, services)
+                    return next({ ...props, additional: true }, _, {
+                        ...services,
+                        services: { serviceValue: true },
+                    })
                 })
 
                 .registerMiddleware(
-                    (componentProps, middlewareProps: { skipRender2?: boolean }, __, next) => {
+                    (
+                        componentProps,
+                        middlewareProps: { skipRender2?: boolean },
+                        services,
+                        next,
+                    ) => {
                         middleware2Called = true
                         middleware2ComponentProps = componentProps
                         middleware2Props = middlewareProps
                         middleware2Next = next
-
+                        middleware2Services = services
                         return null
                     },
                 ),
@@ -83,7 +92,7 @@ it('can hook multiple component middleware', () => {
             components={[
                 { type: 'testWithTitleProp', props: { title: 'test' }, skipRender2: true },
             ]}
-            services={{}}
+            services={{ serviceValue: false }}
         />,
     )
 
@@ -91,6 +100,7 @@ it('can hook multiple component middleware', () => {
     expect(middleware2Called).toBe(true)
     expect(middleware2Props).toMatchObject({ skipRender2: true })
     expect(middleware2ComponentProps).toMatchObject({ additional: true })
+    expect(middleware2Services).toMatchObject({ services: { serviceValue: true } })
 
     // Verify next() will actually render the component
     const renderOutput1 = mount(middleware2Next())
@@ -159,8 +169,9 @@ it('can hook multiple composition middleware', () => {
     let middleware2Props: any
     let middleware2ComponentProps: any
     let middleware2Next: any
+    let middleware2Service: any
 
-    const layout = new LayoutRegistration()
+    const layout = new LayoutRegistration<{ serviceAvailable: boolean }>()
         .registerComponents(registrar =>
             registrar.registerComponent(testComponentWithPropsRegistration),
         )
@@ -173,15 +184,19 @@ it('can hook multiple composition middleware', () => {
                         throw new Error('middlewares called out of order')
                     }
 
-                    return next({ ...props, additional: true }, _, services)
+                    return next({ ...props, additional: true }, _, {
+                        ...services,
+                        services: { serviceAvailable: true },
+                    })
                 })
 
                 .registerMiddleware(
-                    (componentProps, middlewareProps: { skipRender2?: boolean }, __, next) => {
+                    (componentProps, middlewareProps: { skipRender2?: boolean }, service, next) => {
                         middleware2Called = true
                         middleware2ComponentProps = componentProps
                         middleware2Props = middlewareProps
                         middleware2Next = next
+                        middleware2Service = service
 
                         return null
                     },
@@ -200,7 +215,7 @@ it('can hook multiple composition middleware', () => {
                     skipRender2: true,
                 },
             ]}
-            services={{}}
+            services={{ serviceAvailable: false }}
         />,
     )
 
@@ -208,6 +223,7 @@ it('can hook multiple composition middleware', () => {
     expect(middleware2Called).toBe(true)
     expect(middleware2Props).toMatchObject({ skipRender2: true })
     expect(middleware2ComponentProps).toMatchObject({ additional: true })
+    expect(middleware2Service).toMatchObject({ services: { serviceAvailable: true } })
 
     // Verify next() will actually render the component
     const renderOutput1 = mount(middleware2Next())
