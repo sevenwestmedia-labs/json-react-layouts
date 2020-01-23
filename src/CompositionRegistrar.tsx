@@ -98,8 +98,12 @@ export class CompositionRegistrar<
         ): React.ReactElement<any> | false | null => {
             const [step, ...next] = steps
             return step
-                ? step(props, middlewareProps, services, (stepProps, stepMiddlewareProps) =>
-                      pipeline(stepProps, stepMiddlewareProps, services, ...next),
+                ? step(
+                      props,
+                      middlewareProps,
+                      services,
+                      (stepProps, stepMiddlewareProps, stepServices) =>
+                          pipeline(stepProps, stepMiddlewareProps, stepServices, ...next),
                   )
                 : null
         }
