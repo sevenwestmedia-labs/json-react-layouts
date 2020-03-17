@@ -52,7 +52,7 @@ export class LayoutApi<
     )
 
     CompositionsRenderer: React.FC<
-        Props<Components, Compositions & CompositionMiddlewaresProps, Services>
+        Props<Components, Compositions, Services, CompositionMiddlewaresProps>
     > = createCompositionsRenderer(
         this,
         this.compositionRegistrar,

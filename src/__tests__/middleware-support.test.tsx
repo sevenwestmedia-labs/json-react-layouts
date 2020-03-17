@@ -182,7 +182,7 @@ it('can hook multiple composition middleware', () => {
         .registerCompositions(registrar =>
             registrar
                 .registerComposition(testCompositionWithPropsRegistration)
-                .registerMiddleware((props, _: { skipRender?: boolean }, services, next) => {
+                .registerMiddleware<{ skipRender?: boolean }>((props, _, services, next) => {
                     middlewareCalled = true
                     if (middleware2Called) {
                         throw new Error('middlewares called out of order')
@@ -194,8 +194,8 @@ it('can hook multiple composition middleware', () => {
                     })
                 })
 
-                .registerMiddleware(
-                    (componentProps, middlewareProps: { skipRender2?: boolean }, service, next) => {
+                .registerMiddleware<{ skipRender2?: boolean }>(
+                    (componentProps, middlewareProps, service, next) => {
                         middleware2Called = true
                         middleware2ComponentProps = componentProps
                         middleware2Props = middlewareProps

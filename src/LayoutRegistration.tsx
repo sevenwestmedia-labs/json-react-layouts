@@ -110,7 +110,9 @@ export class LayoutCompositionRegistration<
                 CompositionRegistrar<
                     Components | ComponentInformation<'nested-composition', NestedCompositionProps>,
                     Services,
-                    ComponentMiddlewaresProps
+                    ComponentMiddlewaresProps,
+                    never,
+                    {}
                 >,
                 'registerComposition' | 'registerMiddleware'
             >,
@@ -158,10 +160,12 @@ export class LayoutCompositionRegistration<
         const registrar = new CompositionRegistrar<
             Components | NestedComponentInfo,
             Services,
-            ComponentMiddlewaresProps
+            ComponentMiddlewaresProps,
+            never,
+            {}
         >(registrarWithNestedComposition as any)
 
-        // We use the mast to limit the API the end user sees, cast back to full compositionRegistrar
+        // We use the mask to limit the API the end user sees, cast back to full compositionRegistrar
         const unmaskedCompositionRegistrar = registerCallback(registrar) as CompositionRegistrar<
             Components | ComponentInformation<'nested-composition', NestedCompositionProps>,
             Services,

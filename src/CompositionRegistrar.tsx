@@ -55,8 +55,8 @@ export class CompositionRegistrar<
     Components extends ComponentInformation<any>,
     Services,
     ComponentMiddlewaresProps extends object,
-    Compositions extends CompositionInformation<any, any, any> = never,
-    CompositionsMiddlewaresProps extends object = {}
+    Compositions extends CompositionInformation<any, any, any>,
+    CompositionsMiddlewaresProps extends object
 > {
     static displayName = 'CompositionRegistrar'
 
@@ -128,7 +128,8 @@ export class CompositionRegistrar<
         Services,
         ComponentMiddlewaresProps,
         | Exclude<Compositions, never>
-        | CompositionInformation<TType, Components, TContentAreas, TProps>
+        | CompositionInformation<TType, Components, TContentAreas, TProps>,
+        CompositionsMiddlewaresProps
     > {
         if (this.registeredCompositions[registration.type]) {
             throw new Error(`${registration.type} has already been registered`)
