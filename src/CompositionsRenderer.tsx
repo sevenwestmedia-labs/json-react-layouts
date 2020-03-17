@@ -10,9 +10,10 @@ import { CompositionRendererProps } from './CompositionRenderer'
 export interface Props<
     Components extends ComponentInformation<any>,
     Compositions extends CompositionInformation<any, Components, any, any>,
-    Services
+    Services,
+    CompositionMiddlewaresProps extends object
 > {
-    compositions: Compositions[]
+    compositions: Array<Compositions & CompositionMiddlewaresProps>
     renderPathPrefix?: string
     services: Services
 }
@@ -49,9 +50,12 @@ export function createCompositionsRenderer<
     >,
     logger: Logger,
 ) {
-    const CompositionsRenderer: React.FC<
-        Props<Components, Compositions & CompositionMiddlewaresProps, Services>
-    > = ({ services, renderPathPrefix, compositions }) => {
+    const CompositionsRenderer: React.FC<Props<
+        Components,
+        Compositions,
+        Services,
+        CompositionMiddlewaresProps
+    >> = ({ services, renderPathPrefix, compositions }) => {
         logger.debug(
             {
                 renderPathPrefix,
