@@ -6,7 +6,7 @@ import {
 import { LayoutRegistration } from '../LayoutRegistration'
 
 it('can create a component instance', () => {
-    const layout = new LayoutRegistration()
+    const layout = LayoutRegistration()
         .registerComponents(registrar =>
             registrar
                 .registerComponent(testComponentRegistration)
@@ -23,7 +23,7 @@ it('can create a component instance', () => {
 })
 
 it('can register nested compositions', () => {
-    const layout = new LayoutRegistration()
+    const layout = LayoutRegistration()
         .registerComponents(registrar =>
             registrar
                 .registerComponent(testComponentRegistration)
@@ -33,15 +33,15 @@ it('can register nested compositions', () => {
             registrar.registerComposition(testCompositionRegistration),
         )
 
-    layout.nestedComposition({
-        type: 'test-composition',
+    layout.component({
+        type: 'nested-composition',
         contentAreas: { main: [] },
         props: {},
     })
 })
 
 it('can create a content area instance', () => {
-    const layout = new LayoutRegistration()
+    const layout = LayoutRegistration()
         .registerComponents(registrar =>
             registrar
                 .registerComponent(testComponentRegistration)
@@ -51,7 +51,7 @@ it('can create a content area instance', () => {
             registrar.registerComposition(testCompositionRegistration),
         )
 
-    layout.contentArea(
+    layout.components(
         layout.component({
             type: 'test',
             props: {},
@@ -64,7 +64,7 @@ it('can create a content area instance', () => {
 })
 
 it('can create a composition instance', () => {
-    const layout = new LayoutRegistration()
+    const layout = LayoutRegistration()
         .registerComponents(registrar =>
             registrar
                 .registerComponent(testComponentRegistration)
@@ -78,7 +78,7 @@ it('can create a composition instance', () => {
         type: 'test-composition',
         props: {},
         contentAreas: {
-            main: layout.contentArea(
+            main: layout.components(
                 layout.component({
                     type: 'test',
                     props: {},
@@ -93,7 +93,7 @@ it('can create a composition instance', () => {
 })
 
 it('can create a page instance', () => {
-    const layout = new LayoutRegistration()
+    const layout = LayoutRegistration()
         .registerComponents(registrar =>
             registrar
                 .registerComponent(testComponentRegistration)
@@ -108,7 +108,7 @@ it('can create a page instance', () => {
             type: 'test-composition',
             props: {},
             contentAreas: {
-                main: layout.contentArea(
+                main: layout.components(
                     layout.component({
                         type: 'test',
                         props: {},

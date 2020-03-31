@@ -1,11 +1,6 @@
 import React from 'react'
 
-import {
-    ComponentInformation,
-    Errors,
-    ComponentRegistrar,
-    RenderFunction,
-} from './ComponentRegistrar'
+import { ComponentInformation, RenderFunction, WithRenderKey } from './ComponentRegistrar'
 import { CompositionRendererMiddleware, MiddlwareServices } from './middlewares'
 
 export interface CompositionRenderProps<TContentAreas, TProps, TLoadDataServices> {
@@ -24,7 +19,7 @@ export interface CompositionInformation<
     TComponentInformation,
     TContentAreas extends string,
     TProps = {}
-> extends ComponentInformation<TType, TProps> {
+> extends WithRenderKey {
     type: TType
     props: TProps
     contentAreas: { [name in TContentAreas]: TComponentInformation[] }
@@ -46,117 +41,80 @@ export type CompositionRenderFunction<TContentAreas extends string, TProps, Serv
     services: Services,
 ) => React.ReactElement<any> | false | null
 
-export interface NestedCompositionProps {
-    composition: CompositionInformation<any, any, any, any>
-    componentRenderPath: string
+export interface CompositionRegistrations {
+    get(type: string): CompositionRegistration<string, any, any> | undefined
 }
 
-export class CompositionRegistrar<
-    Components extends ComponentInformation<any>,
-    Services,
-    ComponentMiddlewaresProps extends object,
-    Compositions extends CompositionInformation<any, any, any>,
-    CompositionsMiddlewaresProps extends object
-> {
-    static displayName = 'CompositionRegistrar'
+// public get componentMiddleware(): CompositionRendererMiddleware<
+// Services,
+// CompositionsMiddlewaresProps
+// > {
+// const pipeline = (
+//     props: {},
+//     middlewareProps: CompositionsMiddlewaresProps,
+//     services: MiddlwareServices<Services>,
+//     ...steps: Array<CompositionRendererMiddleware<Services, CompositionsMiddlewaresProps>>
+// ): React.ReactElement<any> | false | null => {
+//     const [step, ...next] = steps
+//     return step
+//         ? step(
+//               props,
+//               middlewareProps,
+//               services,
+//               (stepProps, stepMiddlewareProps, stepServices) =>
+//                   pipeline(stepProps, stepMiddlewareProps, stepServices, ...next),
+//           )
+//         : null
+// }
 
-    private registeredCompositions: {
-        [key: string]: {
-            render: CompositionRenderFunction<any, any, Services>
-        }
-    } = {}
-    private _compositionMiddlewares: Array<
-        CompositionRendererMiddleware<Services, CompositionsMiddlewaresProps>
-    > = []
+// return (props, middlewareProps, services, next) => {
+//     return pipeline(
+//         props,
+//         middlewareProps,
+//         services,
+//         ...this._compositionMiddlewares,
+//         (cp, mp, s) => {
+//             return next(cp, mp, s)
+//         },
+//     )
+// }
+// }
 
-    constructor(
-        public componentRegistrar: ComponentRegistrar<
-            Services,
-            Components,
-            ComponentMiddlewaresProps
-        >,
-    ) {}
+// registerComposition<TType extends string, TContentAreas extends string, TProps>(
+// registration: CompositionRegistration<TType, TContentAreas, Services, TProps>,
+// ): CompositionRegistrar<
+// Components,
+// Services,
+// ComponentMiddlewaresProps,
+// | Exclude<Compositions, never>
+// | CompositionInformation<TType, Components, TContentAreas, TProps>,
+// CompositionsMiddlewaresProps
+// > {
+// if (this.registeredCompositions[registration.type]) {
+//     throw new Error(`${registration.type} has already been registered`)
+// }
 
-    get(type: Compositions['type']) {
-        const foundComposition = this.registeredCompositions[type]
-        if (!foundComposition && process.env.NODE_ENV !== 'production') {
-            // Warn a component is missing if not in production
-            this.componentRegistrar.logger.warn(Errors.missing(type))
-        }
-        return foundComposition.render
-    }
+// this.registeredCompositions[registration.type] = {
+//     render: registration.render as any,
+// }
 
-    public get componentMiddleware(): CompositionRendererMiddleware<
-        Services,
-        CompositionsMiddlewaresProps
-    > {
-        const pipeline = (
-            props: {},
-            middlewareProps: CompositionsMiddlewaresProps,
-            services: MiddlwareServices<Services>,
-            ...steps: Array<CompositionRendererMiddleware<Services, CompositionsMiddlewaresProps>>
-        ): React.ReactElement<any> | false | null => {
-            const [step, ...next] = steps
-            return step
-                ? step(
-                      props,
-                      middlewareProps,
-                      services,
-                      (stepProps, stepMiddlewareProps, stepServices) =>
-                          pipeline(stepProps, stepMiddlewareProps, stepServices, ...next),
-                  )
-                : null
-        }
+// return this as any
+// }
 
-        return (props, middlewareProps, services, next) => {
-            return pipeline(
-                props,
-                middlewareProps,
-                services,
-                ...this._compositionMiddlewares,
-                (cp, mp, s) => {
-                    return next(cp, mp, s)
-                },
-            )
-        }
-    }
+// registerMiddleware<TRegistrationMiddlewareProps extends object>(
+// compositionMiddleware: CompositionRendererMiddleware<
+//     Services,
+//     TRegistrationMiddlewareProps
+// >,
+// ): CompositionRegistrar<
+// Components,
+// Services,
+// ComponentMiddlewaresProps,
+// Compositions,
+// CompositionsMiddlewaresProps & TRegistrationMiddlewareProps
+// > {
+// // This cast is safe because we are correctly typing the return type
+// this._compositionMiddlewares.push(compositionMiddleware as any)
 
-    registerComposition<TType extends string, TContentAreas extends string, TProps>(
-        registration: CompositionRegistration<TType, TContentAreas, Services, TProps>,
-    ): CompositionRegistrar<
-        Components,
-        Services,
-        ComponentMiddlewaresProps,
-        | Exclude<Compositions, never>
-        | CompositionInformation<TType, Components, TContentAreas, TProps>,
-        CompositionsMiddlewaresProps
-    > {
-        if (this.registeredCompositions[registration.type]) {
-            throw new Error(`${registration.type} has already been registered`)
-        }
-
-        this.registeredCompositions[registration.type] = {
-            render: registration.render as any,
-        }
-
-        return this as any
-    }
-
-    registerMiddleware<TRegistrationMiddlewareProps extends object>(
-        compositionMiddleware: CompositionRendererMiddleware<
-            Services,
-            TRegistrationMiddlewareProps
-        >,
-    ): CompositionRegistrar<
-        Components,
-        Services,
-        ComponentMiddlewaresProps,
-        Compositions,
-        CompositionsMiddlewaresProps & TRegistrationMiddlewareProps
-    > {
-        // This cast is safe because we are correctly typing the return type
-        this._compositionMiddlewares.push(compositionMiddleware as any)
-
-        return this as any
-    }
-}
+// return this as any
+// }

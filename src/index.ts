@@ -1,11 +1,4 @@
-export { getRegistrars } from './get-registrars'
-
-export {
-    RenderFunction,
-    ComponentRegistration,
-    ComponentInformation,
-    ComponentRegistrar,
-} from './ComponentRegistrar'
+export { RenderFunction, ComponentRegistration, ComponentInformation } from './ComponentRegistrar'
 
 export {
     ComponentRendererMiddleware,
@@ -20,8 +13,7 @@ export {
     CompositionRegistration,
     CompositionRenderFunction,
     CompositionRenderProps,
-    NestedCompositionProps,
-    CompositionRegistrar,
+    CompositionRegistrations as CompositionRegistrar,
 } from './CompositionRegistrar'
 export { getRegistrationCreators } from './get-registration-creators'
 export { LayoutRegistration } from './LayoutRegistration'

@@ -4270,10 +4270,9 @@ typescript-log@^1.1.1:
   resolved "https://registry.yarnpkg.com/typescript-log/-/typescript-log-1.1.1.tgz#36952d41d135a92b24f0ed87c3ea8f49dd7aeb8e"
   integrity sha512-BEP3PcTcaKTDOy/36qcoF+mgVfTjz70E0Z4+fxt+WEDsNSMXbb8gDJU7W16AWnjqaVY9naMm5WyLbqQ5cb9PoA==
 
-typescript@3.8.3:
-  version "3.8.3"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.8.3.tgz#409eb8544ea0335711205869ec458ab109ee1061"
-  integrity sha512-MYlEfn5VrLNsgudQTVJeNaQFUAI7DkhnOjdpAp4T+ku1TfQClewlbSuTVHiA+8skNBgaf02TL/kLOvig4y3G8w==
+"typescript@https://typescript.visualstudio.com/cf7ac146-d525-443c-b23c-0d58337efebc/_apis/build/builds/68257/artifacts?artifactName=tgz&fileId=40690DCD46D299E4A42CCDF70E4EDA21B03F7801D400F7A0AC0CEAACB274F57E02&fileName=/typescript-3.9.0-insiders.20200316.tgz":
+  version "3.9.0-insiders.20200316"
+  resolved "https://typescript.visualstudio.com/cf7ac146-d525-443c-b23c-0d58337efebc/_apis/build/builds/68257/artifacts?artifactName=tgz&fileId=40690DCD46D299E4A42CCDF70E4EDA21B03F7801D400F7A0AC0CEAACB274F57E02&fileName=/typescript-3.9.0-insiders.20200316.tgz#4ebd055e244e64d0f618d1c1603fd56eedd4b244"
 
 union-value@^1.0.0:
   version "1.0.1"
