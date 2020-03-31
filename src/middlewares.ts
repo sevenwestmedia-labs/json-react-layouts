@@ -1,8 +1,8 @@
 import { LayoutApi } from './LayoutApi'
-import { ComponentProps } from './ComponentRenderer'
+import { ComponentProps } from './renderers/component-renderer'
 
 export interface MiddlwareServices<Services> {
-    layout: LayoutApi<any, any, any, any, any>
+    layout: LayoutApi<any, any, any, any>
     services: Services
 }
 
