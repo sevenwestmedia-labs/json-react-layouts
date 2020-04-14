@@ -43,7 +43,7 @@ export interface LayoutApi<
     // and just using these helpers to put components in the content areas
 }
 
-interface RenderLayouts<
+export interface RenderLayouts<
     Components extends ComponentInformation<any>,
     Compositions extends CompositionInformation<any, Components, any, any>,
     ComponentMiddlewaresProps extends {},
