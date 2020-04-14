@@ -2,7 +2,7 @@ export { RenderFunction, ComponentRegistration, ComponentInformation } from './C
 
 export { RendererMiddleware, MiddlwareHandler, MiddlwareServices } from './middlewares'
 
-export { LayoutApi } from './LayoutApi'
+export { LayoutApi, RenderLayouts } from './LayoutApi'
 export {
     CompositionInformation,
     CompositionRegistration,
