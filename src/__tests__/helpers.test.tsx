@@ -16,7 +16,6 @@ it('calculates correct render path', () => {
         .registerCompositions((registrar) =>
             registrar.registerComposition(testCompositionRegistration),
         )
-        .withServices({})
 
     const compositions = layout.compositions({
         type: 'test-composition',

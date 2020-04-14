@@ -1,26 +1,26 @@
 import { LayoutApi } from './LayoutApi'
 import { ComponentProps } from './renderers/component-renderer'
 
-export interface MiddlwareServices<Services> {
-    layout: LayoutApi<any, any, any, any>
+export interface MiddlwareServices<Services extends {}> {
+    layout: LayoutApi<any, any, any, any, Services>
     services: Services
 }
 
 /** The render function for components, converts the route props into a react component */
-export type MiddlwareHandler<TProps, TMiddlewareProps extends object, LoadDataServices> = (
+export type MiddlwareHandler<TProps, TMiddlewareProps extends {}, LoadDataServices extends {}> = (
     props: TProps,
     middlewareProps: TMiddlewareProps,
     services: MiddlwareServices<LoadDataServices>,
 ) => React.ReactElement<any> | false | null
 
-export type RendererMiddleware<Services, MiddlewareProps extends object> = (
+export type RendererMiddleware<Services extends {}, MiddlewareProps extends {}> = (
     props: ComponentProps,
     middlewareProps: MiddlewareProps,
     services: MiddlwareServices<Services>,
     next: MiddlwareHandler<ComponentProps, MiddlewareProps, Services>,
 ) => React.ReactElement<any> | false | null
 
-export function composeMiddleware<Services extends {}, MiddlewareProps extends object>(
+export function composeMiddleware<Services extends {}, MiddlewareProps extends {}>(
     componentMiddlewares: Array<RendererMiddleware<Services, MiddlewareProps>>,
 ): RendererMiddleware<Services, MiddlewareProps> {
     const pipeline = (

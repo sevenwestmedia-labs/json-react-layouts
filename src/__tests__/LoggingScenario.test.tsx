@@ -30,7 +30,7 @@ it('can render a composition with a content area through the registrar', () => {
         warn: addToLog,
     }
 
-    const layout = LayoutRegistration(log)
+    const layout = LayoutRegistration()
         .registerComponents((registrar) =>
             registrar
                 .registerComponent(testComponentRegistration)
@@ -39,10 +39,11 @@ it('can render a composition with a content area through the registrar', () => {
         .registerCompositions((registrar) =>
             registrar.registerComposition(testCompositionRegistration),
         )
-        .withServices({})
+
+    const renderers = layout.createRenderers({ services: {}, log })
 
     mount(
-        layout.renderCompositions({
+        renderers.renderCompositions({
             type: 'test-composition',
             props: {},
             contentAreas: {

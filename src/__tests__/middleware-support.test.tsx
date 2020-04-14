@@ -34,7 +34,7 @@ it('can hook component middleware', () => {
         .registerCompositions((registrar) =>
             registrar.registerComposition(testCompositionWithPropsRegistration),
         )
-        .withServices({})
+        .createRenderers({ services: {} })
 
     const renderOutput = mount(
         layout.renderComponents({
@@ -106,7 +106,7 @@ it('can hook multiple component middleware', () => {
         .registerCompositions((registrar) =>
             registrar.registerComposition(testCompositionWithPropsRegistration),
         )
-        .withServices({ serviceValue: false })
+        .createRenderers({ services: { serviceValue: false } })
 
     const renderOutput1 = mount(
         layout.renderComponents({
@@ -148,7 +148,7 @@ it('can hook composition middleware', () => {
                     return null
                 }),
         )
-        .withServices({})
+        .createRenderers({ services: {} })
 
     mount(
         layout.renderCompositions({
@@ -211,7 +211,7 @@ it('can hook multiple composition middleware', () => {
                     },
                 ),
         )
-        .withServices({ serviceAvailable: false })
+        .createRenderers({ services: { serviceAvailable: false } })
 
     mount(
         layout.renderCompositions({

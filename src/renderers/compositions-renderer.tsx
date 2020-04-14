@@ -9,7 +9,7 @@ import { ComponentRegistrations } from '../ComponentRegistrar'
 import { RendererMiddleware } from '../middlewares'
 
 export interface CompositionsRendererProps {
-    layoutApi: LayoutApi<any, any, any, any>
+    layoutApi: LayoutApi<any, any, any, any, any>
     compositions: Array<CompositionInformation<any, any, any>>
     componentRegistrations: ComponentRegistrations
     compositionRegistrations: CompositionRegistrations

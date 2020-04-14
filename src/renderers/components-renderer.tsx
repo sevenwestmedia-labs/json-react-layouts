@@ -5,7 +5,7 @@ import { ComponentRenderer } from './component-renderer'
 import { RendererMiddleware } from '../middlewares'
 
 interface ComponentsRendererProps {
-    layoutApi: LayoutApi<any, any, any, any>
+    layoutApi: LayoutApi<any, any, any, any, any>
     components: Array<ComponentInformation<any, any>>
     componentRegistrations: ComponentRegistrations
     componentMiddleware: RendererMiddleware<any, any>
