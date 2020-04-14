@@ -1,5 +1,5 @@
 import React from 'react'
-import { ComponentInformation, ComponentRegistrations } from '../ComponentRegistrar'
+import { ComponentRegistrations } from '../ComponentRegistrar'
 import { CompositionInformation, CompositionRegistrations } from '../CompositionRegistrar'
 import { Logger } from 'typescript-log'
 import { LayoutApi } from '../LayoutApi'
@@ -13,7 +13,7 @@ export interface CompositionRendererProps {
     componentRegistrations: ComponentRegistrations
     compositionMiddleware: RendererMiddleware<any, any>
     compositionRegistrations: CompositionRegistrations
-    layoutApi: LayoutApi<any, any, any, any>
+    layoutApi: LayoutApi<any, any, any, any, any>
     services: any
     log: Logger
 }

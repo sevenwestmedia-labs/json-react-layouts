@@ -38,7 +38,7 @@ export interface ComponentRegistrationBuilderStart<Services extends {}> {
 export interface ComponentRegistrationBuilder<
     Services extends {},
     Components extends ComponentInformation<any>,
-    ComponentMiddlewaresProps extends object
+    ComponentMiddlewaresProps extends {}
 > {
     registerComponent<TType extends string, TProps extends {}>(
         registration: ComponentRegistration<TType, TProps, Services>,
@@ -48,7 +48,7 @@ export interface ComponentRegistrationBuilder<
         ComponentMiddlewaresProps
     >
 
-    registerMiddleware<TRegistrationMiddlewareProps extends object>(
+    registerMiddleware<TRegistrationMiddlewareProps extends {}>(
         componentMiddleware: RendererMiddleware<Services, TRegistrationMiddlewareProps>,
     ): ComponentRegistrationBuilder<
         Services,

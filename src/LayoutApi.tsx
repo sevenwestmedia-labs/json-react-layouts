@@ -1,10 +1,12 @@
 import { ComponentInformation, CompositionInformation } from '.'
+import { Logger } from 'typescript-log'
 
 export interface LayoutApi<
     Components extends ComponentInformation<any>,
     Compositions extends CompositionInformation<any, Components, any, any>,
-    ComponentMiddlewaresProps extends object,
-    CompositionMiddlewaresProps extends object
+    ComponentMiddlewaresProps extends {},
+    CompositionMiddlewaresProps extends {},
+    Services extends {}
 > {
     /**
      * @example
@@ -28,9 +30,25 @@ export interface LayoutApi<
     ): Extract<Compositions, { type: Composition['type'] }>
     compositions(...compositions: Array<Compositions & CompositionMiddlewaresProps>): Compositions[]
 
+    createRenderers(options: {
+        services: Services
+        log?: Logger
+    }): RenderLayouts<
+        Components,
+        Compositions,
+        ComponentMiddlewaresProps,
+        CompositionMiddlewaresProps
+    >
     // TODO Test out compositions not having the list of components in their types
     // and just using these helpers to put components in the content areas
+}
 
+interface RenderLayouts<
+    Components extends ComponentInformation<any>,
+    Compositions extends CompositionInformation<any, Components, any, any>,
+    ComponentMiddlewaresProps extends {},
+    CompositionMiddlewaresProps extends {}
+> {
     renderComponents(
         ...components: Array<Components & ComponentMiddlewaresProps>
     ): React.ReactElement

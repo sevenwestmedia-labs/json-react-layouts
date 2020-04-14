@@ -18,10 +18,10 @@ import { CompositionsRenderer } from './renderers/compositions-renderer'
 import { composeMiddleware } from './middlewares'
 import { ComponentsRenderer } from './renderers/components-renderer'
 
-interface RegisterComponentsStep<Services extends object> {
+interface RegisterComponentsStep<Services extends {}> {
     registerComponents<
         Components extends ComponentInformation<any, any>,
-        ComponentMiddlewares extends object
+        ComponentMiddlewares extends {}
     >(
         registerCallback: (
             registrar: ComponentRegistrationBuilderStart<Services>,
@@ -63,7 +63,7 @@ export interface CompositionRegistrationBuilder<
         Services
     >
 
-    registerMiddleware<TRegistrationMiddlewareProps extends object>(
+    registerMiddleware<TRegistrationMiddlewareProps extends {}>(
         compositionMiddleware: RendererMiddleware<Services, TRegistrationMiddlewareProps>,
     ): CompositionRegistrationBuilder<
         Components,
@@ -76,12 +76,12 @@ export interface CompositionRegistrationBuilder<
 
 interface RegisterCompositionsStep<
     Components extends ComponentInformation<any, any>,
-    ComponentMiddlewaresProps extends object,
-    Services extends object
+    ComponentMiddlewaresProps extends {},
+    Services extends {}
 > {
     registerCompositions<
         Compositions extends CompositionInformation<any, Components, any, any>,
-        CompositionMiddlewaresProps extends object
+        CompositionMiddlewaresProps extends {}
     >(
         registerCallback: (
             registrar: CompositionRegistrationBuilderStart<
@@ -96,7 +96,7 @@ interface RegisterCompositionsStep<
             CompositionMiddlewaresProps,
             Services
         >,
-    ): AddServices<
+    ): LayoutApi<
         Components,
         Compositions,
         ComponentMiddlewaresProps,
@@ -105,25 +105,11 @@ interface RegisterCompositionsStep<
     >
 }
 
-interface AddServices<
-    Components extends ComponentInformation<any, any>,
-    Compositions extends CompositionInformation<any, Components, any, any>,
-    ComponentMiddlewares extends object,
-    CompositionMiddlewaresProps extends object,
-    Services extends object
-> {
-    withServices(
-        services: Services,
-    ): LayoutApi<Components, Compositions, ComponentMiddlewares, CompositionMiddlewaresProps>
-}
-
-export function LayoutRegistration<Services extends object = {}>(
-    log: Logger = noopLogger(),
-): RegisterComponentsStep<Services> {
+export function LayoutRegistration<Services extends {} = {}>(): RegisterComponentsStep<Services> {
     return {
         registerComponents<
             Components extends ComponentInformation<any, any>,
-            ComponentMiddlewares extends object
+            ComponentMiddlewares extends {}
         >(
             registerCallback: (
                 registrar: ComponentRegistrationBuilderStart<Services>,
@@ -161,11 +147,13 @@ export function LayoutRegistration<Services extends object = {}>(
                 },
             })
 
+            let log: Logger = noopLogger()
+
             // the following exposes registerCompositions
             return {
                 registerCompositions<
                     Compositions extends CompositionInformation<any, Components, any, any>,
-                    CompositionMiddlewaresProps extends object
+                    CompositionMiddlewaresProps extends {}
                 >(
                     registerCallback: (
                         registrar: CompositionRegistrationBuilderStart<
@@ -180,7 +168,7 @@ export function LayoutRegistration<Services extends object = {}>(
                         CompositionMiddlewaresProps,
                         Services
                     >,
-                ): AddServices<
+                ): LayoutApi<
                     Components,
                     Compositions,
                     ComponentMiddlewares,
@@ -226,9 +214,7 @@ export function LayoutRegistration<Services extends object = {}>(
                         composition: () => null,
                     }
 
-                    let layoutServices: object
-
-                    const layout: LayoutApi<any, any, any, any> = {
+                    const layout: LayoutApi<any, any, any, any, Services> = {
                         _componentType: undefined as any,
                         _compositionType: undefined as any,
 
@@ -254,32 +240,38 @@ export function LayoutRegistration<Services extends object = {}>(
                             return compositions
                         },
 
-                        renderComponents(...components) {
-                            return (
-                                <ComponentsRenderer
-                                    layoutApi={layout}
-                                    componentMiddleware={middlewares.component}
-                                    componentRegistrations={componentRegistrations}
-                                    services={layoutServices}
-                                    components={components}
-                                    componentRenderPath=""
-                                />
-                            )
-                        },
+                        createRenderers({ services, log: userLog = noopLogger() }) {
+                            log = userLog
 
-                        renderCompositions(...compositions) {
-                            return (
-                                <CompositionsRenderer
-                                    log={log}
-                                    layoutApi={layout}
-                                    componentMiddleware={middlewares.component}
-                                    compositionMiddleware={middlewares.composition}
-                                    componentRegistrations={componentRegistrations}
-                                    compositionRegistrations={compositionRegistrations}
-                                    services={layoutServices}
-                                    compositions={compositions}
-                                />
-                            )
+                            return {
+                                renderComponents(...components) {
+                                    return (
+                                        <ComponentsRenderer
+                                            layoutApi={layout}
+                                            componentMiddleware={middlewares.component}
+                                            componentRegistrations={componentRegistrations}
+                                            services={services}
+                                            components={components}
+                                            componentRenderPath=""
+                                        />
+                                    )
+                                },
+
+                                renderCompositions(...compositions) {
+                                    return (
+                                        <CompositionsRenderer
+                                            log={log}
+                                            layoutApi={layout}
+                                            componentMiddleware={middlewares.component}
+                                            compositionMiddleware={middlewares.composition}
+                                            componentRegistrations={componentRegistrations}
+                                            compositionRegistrations={compositionRegistrations}
+                                            services={services}
+                                            compositions={compositions}
+                                        />
+                                    )
+                                },
+                            }
                         },
                     }
 
@@ -336,12 +328,7 @@ export function LayoutRegistration<Services extends object = {}>(
                     middlewares.component = composeMiddleware(componentMiddlewares)
                     middlewares.composition = composeMiddleware(compositionMiddlewares)
 
-                    return {
-                        withServices(services) {
-                            layoutServices = services
-                            return layout
-                        },
-                    }
+                    return layout
                 },
             }
         },
@@ -357,7 +344,7 @@ export interface NestedCompositionProps<
 
 export interface NestedComposition<
     Components extends ComponentInformation<any, any>,
-    ComponentMiddlewares extends object,
+    ComponentMiddlewares extends {},
     Compositions extends CompositionInformation<any, Components & ComponentMiddlewares, any>,
     CompositionMiddlewaresProps extends {}
 > extends ComponentInformation<'nested-composition', NestedCompositionProps<Compositions>> {
@@ -367,7 +354,7 @@ export interface NestedComposition<
 /** Recursive type for nested components */
 export type ComponentsWithNested<
     Components extends ComponentInformation<any, any>,
-    ComponentMiddlewares extends object,
+    ComponentMiddlewares extends {},
     Compositions extends CompositionInformation<any, any, any>,
     CompositionMiddlewaresProps extends {}
 > =

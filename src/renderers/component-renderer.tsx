@@ -11,7 +11,7 @@ export interface ComponentProps {
 
 export interface ComponentRendererProps {
     type: string
-    layoutApi: LayoutApi<any, any, any, any>
+    layoutApi: LayoutApi<any, any, any, any, any>
     componentRegistrations: ComponentRegistrations
     componentProps: ComponentProps
     middlewareProps: { [props: string]: any }
