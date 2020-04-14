@@ -5,23 +5,22 @@ import { CompositionInformation, CompositionRegistrations } from '../Composition
 import { LayoutApi } from '../LayoutApi'
 import { Logger } from 'typescript-log'
 import { CompositionRenderer } from './composition-renderer'
-import { CompositionRendererMiddleware, ComponentRendererMiddleware } from '../middlewares'
 import { ComponentRegistrations } from '../ComponentRegistrar'
+import { RendererMiddleware } from '../middlewares'
 
 export interface CompositionsRendererProps {
     layoutApi: LayoutApi<any, any, any, any>
     compositions: Array<CompositionInformation<any, any, any>>
     componentRegistrations: ComponentRegistrations
     compositionRegistrations: CompositionRegistrations
-
-    componentMiddleware: ComponentRendererMiddleware<any, any>
-    compositionMiddleware: CompositionRendererMiddleware<any, any>
+    componentMiddleware: RendererMiddleware<any, any>
+    compositionMiddleware: RendererMiddleware<any, any>
     renderPathPrefix?: string
     services: any
     log: Logger
 }
 
-const CompositionsRenderer: React.FC<CompositionsRendererProps> = ({
+export const CompositionsRenderer: React.FC<CompositionsRendererProps> = ({
     services,
     renderPathPrefix,
     componentRegistrations,
@@ -35,7 +34,7 @@ const CompositionsRenderer: React.FC<CompositionsRendererProps> = ({
     log.debug(
         {
             renderPathPrefix,
-            compositions: compositions.map(composition => ({
+            compositions: compositions.map((composition) => ({
                 type: composition.type,
             })),
         },

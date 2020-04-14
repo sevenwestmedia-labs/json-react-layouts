@@ -1,7 +1,7 @@
 import React from 'react'
 import { ComponentRegistrations } from '../ComponentRegistrar'
 import { LayoutApi } from '../LayoutApi'
-import { ComponentRendererMiddleware, MiddlwareServices, MiddlwareHandler } from '../middlewares'
+import { RendererMiddleware, MiddlwareServices, MiddlwareHandler } from '../middlewares'
 
 export interface ComponentProps {
     componentType: string
@@ -16,7 +16,7 @@ export interface ComponentRendererProps {
     componentProps: ComponentProps
     middlewareProps: { [props: string]: any }
     services: any
-    componentMiddleware: ComponentRendererMiddleware<any, any>
+    componentMiddleware: RendererMiddleware<any, any>
 }
 
 export const ComponentRenderer: React.FC<ComponentRendererProps> = ({

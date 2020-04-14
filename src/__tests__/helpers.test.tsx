@@ -7,15 +7,16 @@ import {
 } from './testComponents'
 
 it('calculates correct render path', () => {
-    const layout = new LayoutRegistration()
-        .registerComponents(registrar =>
+    const layout = LayoutRegistration()
+        .registerComponents((registrar) =>
             registrar
                 .registerComponent(testComponentRegistration)
                 .registerComponent(testComponent2Registration),
         )
-        .registerCompositions(registrar =>
+        .registerCompositions((registrar) =>
             registrar.registerComposition(testCompositionRegistration),
         )
+        .withServices({})
 
     const compositions = layout.compositions({
         type: 'test-composition',
@@ -27,7 +28,10 @@ it('calculates correct render path', () => {
                     type: 'test-composition',
                     props: {},
                     contentAreas: {
-                        main: [{ type: 'test', props: {} }, { type: 'test', props: {} }],
+                        main: [
+                            { type: 'test', props: {} },
+                            { type: 'test', props: {} },
+                        ],
                     },
                 }),
                 { type: 'test', props: {} },

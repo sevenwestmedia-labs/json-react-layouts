@@ -18,8 +18,23 @@ export interface LayoutApi<
      */
     _componentType: Components & ComponentMiddlewaresProps
 
-    component(component: Components & ComponentMiddlewaresProps): Components
+    component<Component extends Components & ComponentMiddlewaresProps>(
+        component: Component,
+    ): Extract<Components, { type: Component['type'] }>
+    nestedComposition(composition: Compositions): ComponentInformation<any, any>
     components(...component: Array<Components & ComponentMiddlewaresProps>): Components[]
-    composition(composition: Compositions & CompositionMiddlewaresProps): Compositions
+    composition<Composition extends Compositions & CompositionMiddlewaresProps>(
+        composition: Composition,
+    ): Extract<Compositions, { type: Composition['type'] }>
     compositions(...compositions: Array<Compositions & CompositionMiddlewaresProps>): Compositions[]
+
+    // TODO Test out compositions not having the list of components in their types
+    // and just using these helpers to put components in the content areas
+
+    renderComponents(
+        ...components: Array<Components & ComponentMiddlewaresProps>
+    ): React.ReactElement
+    renderCompositions(
+        ...compositions: Array<Compositions & CompositionMiddlewaresProps>
+    ): React.ReactElement
 }

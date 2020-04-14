@@ -10,7 +10,9 @@
         "build:esm": "tsc -p ./tsconfig.build.json --outDir ./dist/esm --module es2015",
         "build": "yarn build:commonjs && yarn build:esm",
         "lint": "eslint --ext .js,.ts .",
-        "test": "jest",
+        "test-types": "tsd",
+        "test-code": "jest",
+        "test": "yarn test-code && yarn test-types",
         "verify": "yarn build && yarn test && yarn lint"
     },
     "jest": {
@@ -45,6 +47,7 @@
         "react": "^16.13.0",
         "react-dom": "^16.13.0",
         "ts-jest": "^25.2.1",
+        "tsd": "^0.11.0",
         "tslib": "^1.11.1",
         "typescript": "https://typescript.visualstudio.com/cf7ac146-d525-443c-b23c-0d58337efebc/_apis/build/builds/68257/artifacts?artifactName=tgz&fileId=40690DCD46D299E4A42CCDF70E4EDA21B03F7801D400F7A0AC0CEAACB274F57E02&fileName=/typescript-3.9.0-insiders.20200316.tgz"
     },
