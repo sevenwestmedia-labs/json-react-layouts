@@ -11,12 +11,13 @@
         "noImplicitThis": true,
         "removeComments": true,
         "strict": true,
-        "sourceRoot": "/",
+        "baseUrl": "./src",
         "noEmit": true,
         "jsx": "react",
         "declaration": true,
         "lib": ["dom", "es5", "es2015.promise"],
         "importHelpers": true
     },
-    "exclude": ["node_modules", "dist", "src/TypeSafetyTestFixtures"]
+    "include": ["./src"],
+    "exclude": ["node_modules", "dist"]
 }

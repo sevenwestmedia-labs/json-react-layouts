@@ -3,19 +3,15 @@ import { ComponentInformation, ComponentRegistrations } from '../ComponentRegist
 import { CompositionInformation, CompositionRegistrations } from '../CompositionRegistrar'
 import { Logger } from 'typescript-log'
 import { LayoutApi } from '../LayoutApi'
-import {
-    CompositionRendererMiddleware,
-    MiddlwareServices,
-    ComponentRendererMiddleware,
-} from '../middlewares'
-import { ContentAreaRenderer } from './content-area-renderer'
+import { MiddlwareServices, RendererMiddleware } from '../middlewares'
+import { ComponentsRenderer } from './components-renderer'
 
 export interface CompositionRendererProps {
     componentRenderPath: string
-    composition: CompositionInformation<any, any, any>
-    componentMiddleware: ComponentRendererMiddleware<any, any>
+    composition: CompositionInformation<any, any, any, any>
+    componentMiddleware: RendererMiddleware<any, any>
     componentRegistrations: ComponentRegistrations
-    compositionMiddleware: CompositionRendererMiddleware<any, any>
+    compositionMiddleware: RendererMiddleware<any, any>
     compositionRegistrations: CompositionRegistrations
     layoutApi: LayoutApi<any, any, any, any>
     services: any
@@ -63,15 +59,25 @@ export const CompositionRenderer: React.FunctionComponent<CompositionRendererPro
         const contentAreas = Object.keys(composition.contentAreas).reduce<{
             [key: string]: React.ReactElement<any>
         }>((acc, val) => {
+            const componentsRenderPath = `${componentRenderPath}/${val}`
+            log.debug(
+                {
+                    componentsRenderPath,
+                    components: composition.contentAreas[val].map((component) => ({
+                        type: component.type,
+                    })),
+                },
+                'Rendering content area',
+            )
+
             acc[val] = (
-                <ContentAreaRenderer
+                <ComponentsRenderer
                     componentMiddleware={componentMiddleware}
                     componentRegistrations={componentRegistrations}
-                    componentRenderPath={`${componentRenderPath}/${val}`}
-                    contentArea={composition.contentAreas[val]}
+                    componentRenderPath={componentsRenderPath}
+                    components={composition.contentAreas[val]}
                     layoutApi={layoutApi}
                     services={services}
-                    log={log}
                 />
             )
             return acc

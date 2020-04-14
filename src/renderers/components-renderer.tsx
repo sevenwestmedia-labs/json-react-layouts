@@ -2,22 +2,24 @@ import React from 'react'
 import { ComponentInformation, ComponentRegistrations } from '../ComponentRegistrar'
 import { LayoutApi } from '../LayoutApi'
 import { ComponentRenderer } from './component-renderer'
-import { ComponentRendererMiddleware } from '../middlewares'
+import { RendererMiddleware } from '../middlewares'
 
 interface ComponentsRendererProps {
     layoutApi: LayoutApi<any, any, any, any>
     components: Array<ComponentInformation<any, any>>
     componentRegistrations: ComponentRegistrations
-    componentMiddleware: ComponentRendererMiddleware<any, any>
+    componentMiddleware: RendererMiddleware<any, any>
+    componentRenderPath: string
     services: any
 }
 
-const ComponentsRenderer: React.FC<ComponentsRendererProps> = ({
+export const ComponentsRenderer: React.FC<ComponentsRendererProps> = ({
     components,
     services,
     layoutApi,
     componentRegistrations,
     componentMiddleware,
+    componentRenderPath,
 }) => {
     return (
         <React.Fragment>
@@ -32,7 +34,7 @@ const ComponentsRenderer: React.FC<ComponentsRendererProps> = ({
                         componentProps={{
                             ...componentProps,
                             componentType: item.type,
-                            componentRenderPath: `[${index}]`,
+                            componentRenderPath: `${componentRenderPath}/[${index}]`,
                         }}
                         middlewareProps={middlewareProps}
                         services={services}

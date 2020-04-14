@@ -13,16 +13,37 @@ export type MiddlwareHandler<TProps, TMiddlewareProps extends object, LoadDataSe
     services: MiddlwareServices<LoadDataServices>,
 ) => React.ReactElement<any> | false | null
 
-export type ComponentRendererMiddleware<Services, ComponentMiddlewareProps extends object> = (
-    componentProps: ComponentProps,
-    middlewareProps: ComponentMiddlewareProps,
+export type RendererMiddleware<Services, MiddlewareProps extends object> = (
+    props: ComponentProps,
+    middlewareProps: MiddlewareProps,
     services: MiddlwareServices<Services>,
-    next: MiddlwareHandler<ComponentProps, ComponentMiddlewareProps, Services>,
+    next: MiddlwareHandler<ComponentProps, MiddlewareProps, Services>,
 ) => React.ReactElement<any> | false | null
 
-export type CompositionRendererMiddleware<Services, CompositionMiddlewareProps extends object> = (
-    compositionProps: {},
-    middlewareProps: CompositionMiddlewareProps,
-    services: MiddlwareServices<Services>,
-    next: MiddlwareHandler<{}, CompositionMiddlewareProps, Services>,
-) => React.ReactElement<any> | false | null
+export function composeMiddleware<Services extends {}, MiddlewareProps extends object>(
+    componentMiddlewares: Array<RendererMiddleware<Services, MiddlewareProps>>,
+): RendererMiddleware<Services, MiddlewareProps> {
+    const pipeline = (
+        props: ComponentProps,
+        middlewareProps: MiddlewareProps,
+        services: MiddlwareServices<Services>,
+        ...steps: Array<RendererMiddleware<Services, MiddlewareProps>>
+    ): React.ReactElement<any> | false | null => {
+        const [step, ...next] = steps
+        return step
+            ? step(
+                  props,
+                  middlewareProps,
+                  services,
+                  (stepProps, stepMiddlewareProps, stepServices) =>
+                      pipeline(stepProps, stepMiddlewareProps, stepServices, ...next),
+              )
+            : null
+    }
+
+    return (props, middlewareProps, services, next) => {
+        return pipeline(props, middlewareProps, services, ...componentMiddlewares, (cp, mp, s) => {
+            return next(cp, mp, s)
+        })
+    }
+}

@@ -1,7 +1,6 @@
 import React from 'react'
 
-import { ComponentInformation, RenderFunction, WithRenderKey } from './ComponentRegistrar'
-import { CompositionRendererMiddleware, MiddlwareServices } from './middlewares'
+import { RenderFunction, WithRenderKey } from './ComponentRegistrar'
 
 export interface CompositionRenderProps<TContentAreas, TProps, TLoadDataServices> {
     contentAreas: { [key in keyof TContentAreas]: React.ReactElement<any> }
@@ -44,77 +43,3 @@ export type CompositionRenderFunction<TContentAreas extends string, TProps, Serv
 export interface CompositionRegistrations {
     get(type: string): CompositionRegistration<string, any, any> | undefined
 }
-
-// public get componentMiddleware(): CompositionRendererMiddleware<
-// Services,
-// CompositionsMiddlewaresProps
-// > {
-// const pipeline = (
-//     props: {},
-//     middlewareProps: CompositionsMiddlewaresProps,
-//     services: MiddlwareServices<Services>,
-//     ...steps: Array<CompositionRendererMiddleware<Services, CompositionsMiddlewaresProps>>
-// ): React.ReactElement<any> | false | null => {
-//     const [step, ...next] = steps
-//     return step
-//         ? step(
-//               props,
-//               middlewareProps,
-//               services,
-//               (stepProps, stepMiddlewareProps, stepServices) =>
-//                   pipeline(stepProps, stepMiddlewareProps, stepServices, ...next),
-//           )
-//         : null
-// }
-
-// return (props, middlewareProps, services, next) => {
-//     return pipeline(
-//         props,
-//         middlewareProps,
-//         services,
-//         ...this._compositionMiddlewares,
-//         (cp, mp, s) => {
-//             return next(cp, mp, s)
-//         },
-//     )
-// }
-// }
-
-// registerComposition<TType extends string, TContentAreas extends string, TProps>(
-// registration: CompositionRegistration<TType, TContentAreas, Services, TProps>,
-// ): CompositionRegistrar<
-// Components,
-// Services,
-// ComponentMiddlewaresProps,
-// | Exclude<Compositions, never>
-// | CompositionInformation<TType, Components, TContentAreas, TProps>,
-// CompositionsMiddlewaresProps
-// > {
-// if (this.registeredCompositions[registration.type]) {
-//     throw new Error(`${registration.type} has already been registered`)
-// }
-
-// this.registeredCompositions[registration.type] = {
-//     render: registration.render as any,
-// }
-
-// return this as any
-// }
-
-// registerMiddleware<TRegistrationMiddlewareProps extends object>(
-// compositionMiddleware: CompositionRendererMiddleware<
-//     Services,
-//     TRegistrationMiddlewareProps
-// >,
-// ): CompositionRegistrar<
-// Components,
-// Services,
-// ComponentMiddlewaresProps,
-// Compositions,
-// CompositionsMiddlewaresProps & TRegistrationMiddlewareProps
-// > {
-// // This cast is safe because we are correctly typing the return type
-// this._compositionMiddlewares.push(compositionMiddleware as any)
-
-// return this as any
-// }

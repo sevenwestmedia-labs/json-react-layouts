@@ -4,8 +4,8 @@ exports[`can render a composition with a content area through the registrar 1`] 
 Array [
   "{\\"compositions\\":[{\\"type\\":\\"test-composition\\"}]}, \\"Rendering compositions\\"",
   "{\\"componentRenderPath\\":\\"[0]test-composition\\",\\"type\\":\\"test-composition\\"}, \\"Rendering composition\\"",
-  "{\\"componentRenderPath\\":\\"[0]test-composition/main\\",\\"components\\":[{\\"type\\":\\"test\\"},{\\"type\\":\\"nested-composition\\"}]}, \\"Rendering content area\\"",
+  "{\\"componentsRenderPath\\":\\"[0]test-composition/main\\",\\"components\\":[{\\"type\\":\\"test\\"},{\\"type\\":\\"nested-composition\\"}]}, \\"Rendering content area\\"",
   "{\\"componentRenderPath\\":\\"[0]test-composition/main/[1]nested:test-composition\\",\\"type\\":\\"test-composition\\"}, \\"Rendering composition\\"",
-  "{\\"componentRenderPath\\":\\"[0]test-composition/main/[1]nested:test-composition/main\\",\\"components\\":[{\\"type\\":\\"test\\"}]}, \\"Rendering content area\\"",
+  "{\\"componentsRenderPath\\":\\"[0]test-composition/main/[1]nested:test-composition/main\\",\\"components\\":[{\\"type\\":\\"test\\"}]}, \\"Rendering content area\\"",
 ]
 `;

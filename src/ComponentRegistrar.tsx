@@ -1,8 +1,5 @@
 import React from 'react'
-import { Logger, noopLogger } from 'typescript-log'
-
-import { ComponentProps } from './renderers/component-renderer'
-import { ComponentRendererMiddleware, MiddlwareServices } from './middlewares'
+import { RendererMiddleware } from '.'
 
 export interface ComponentRegistration<
     ComponentType extends string,
@@ -52,7 +49,7 @@ export interface ComponentRegistrationBuilder<
     >
 
     registerMiddleware<TRegistrationMiddlewareProps extends object>(
-        componentMiddleware: ComponentRendererMiddleware<Services, TRegistrationMiddlewareProps>,
+        componentMiddleware: RendererMiddleware<Services, TRegistrationMiddlewareProps>,
     ): ComponentRegistrationBuilder<
         Services,
         Components,
@@ -68,32 +65,4 @@ export interface ComponentRegistrations {
      * can retrieve the render function associated with the component
      */
     get(type: string): ComponentRegistration<string, any, any> | undefined
-}
-
-function composeComponentMiddleware<Services extends {}, ComponentMiddlewaresProps extends object>(
-    componentMiddlewares: Array<ComponentRendererMiddleware<Services, any>>,
-): ComponentRendererMiddleware<Services, ComponentMiddlewaresProps> {
-    const pipeline = (
-        props: ComponentProps,
-        middlewareProps: any,
-        services: MiddlwareServices<Services>,
-        ...steps: Array<ComponentRendererMiddleware<Services, any>>
-    ): React.ReactElement<any> | false | null => {
-        const [step, ...next] = steps
-        return step
-            ? step(
-                  props,
-                  middlewareProps,
-                  services,
-                  (stepProps, stepMiddlewareProps, stepServices) =>
-                      pipeline(stepProps, stepMiddlewareProps, stepServices, ...next),
-              )
-            : null
-    }
-
-    return (props, middlewareProps, services, next) => {
-        return pipeline(props, middlewareProps, services, ...componentMiddlewares, (cp, mp, s) => {
-            return next(cp, mp, s)
-        })
-    }
 }

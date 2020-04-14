@@ -1,11 +1,6 @@
 export { RenderFunction, ComponentRegistration, ComponentInformation } from './ComponentRegistrar'
 
-export {
-    ComponentRendererMiddleware,
-    MiddlwareHandler,
-    CompositionRendererMiddleware,
-    MiddlwareServices,
-} from './middlewares'
+export { RendererMiddleware, MiddlwareHandler, MiddlwareServices } from './middlewares'
 
 export { LayoutApi } from './LayoutApi'
 export {

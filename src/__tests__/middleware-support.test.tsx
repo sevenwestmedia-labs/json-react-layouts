@@ -8,6 +8,9 @@ import {
 import { configure, mount } from 'enzyme'
 import { LayoutRegistration } from '../LayoutRegistration'
 import { getRegistrationCreators } from '../get-registration-creators'
+import { ComponentsRenderer } from '../renderers/components-renderer'
+import { CompositionsRenderer } from '../renderers/compositions-renderer'
+import { ComponentRenderer } from '../renderers/component-renderer'
 
 configure({ adapter: new Adapter() })
 
@@ -17,8 +20,8 @@ it('can hook component middleware', () => {
     let middlewareCalled: any
     let middlewareProps: any
 
-    const ComponentRenderer = new LayoutRegistration()
-        .registerComponents(registrar =>
+    const layout = LayoutRegistration()
+        .registerComponents((registrar) =>
             registrar
                 .registerComponent(testComponentWithPropsRegistration)
                 .registerMiddleware((cp, mp: { skipRender?: boolean }, ms, next) => {
@@ -28,13 +31,17 @@ it('can hook component middleware', () => {
                     return next(cp, mp, ms)
                 }),
         )
-        .createComponentsRenderer()
+        .registerCompositions((registrar) =>
+            registrar.registerComposition(testCompositionWithPropsRegistration),
+        )
+        .withServices({})
 
     const renderOutput = mount(
-        <ComponentRenderer
-            components={[{ type: 'testWithTitleProp', props: { title: 'test' }, skipRender: true }]}
-            services={{}}
-        />,
+        layout.renderComponents({
+            type: 'testWithTitleProp',
+            props: { title: 'test' },
+            skipRender: true,
+        }),
     )
 
     expect(middlewareCalled).toBe(true)
@@ -52,8 +59,8 @@ it('can hook multiple component middleware', () => {
     let middleware2Services: any
     let componenentServices: any
 
-    const ComponentsRenderer = new LayoutRegistration<{ serviceValue: boolean }>()
-        .registerComponents(registrar =>
+    const layout = LayoutRegistration<{ serviceValue: boolean }>()
+        .registerComponents((registrar) =>
             registrar
                 .registerComponent(
                     createRegisterableComponent(
@@ -96,15 +103,17 @@ it('can hook multiple component middleware', () => {
                     },
                 ),
         )
-        .createComponentsRenderer()
+        .registerCompositions((registrar) =>
+            registrar.registerComposition(testCompositionWithPropsRegistration),
+        )
+        .withServices({ serviceValue: false })
 
     const renderOutput1 = mount(
-        <ComponentsRenderer
-            components={[
-                { type: 'testWithTitleProp', props: { title: 'test' }, skipRender2: true },
-            ]}
-            services={{ serviceValue: false }}
-        />,
+        layout.renderComponents({
+            type: 'testWithTitleProp',
+            props: { title: 'test' },
+            skipRender2: true,
+        }),
     )
 
     expect(middlewareCalled).toBe(true)
@@ -124,11 +133,11 @@ it('can hook composition middleware', () => {
     let middlewareProps: any
     let middlewareNext: any
 
-    const layout = new LayoutRegistration()
-        .registerComponents(registrar =>
+    const layout = LayoutRegistration()
+        .registerComponents((registrar) =>
             registrar.registerComponent(testComponentWithPropsRegistration),
         )
-        .registerCompositions(registrar =>
+        .registerCompositions((registrar) =>
             registrar
                 .registerComposition(testCompositionWithPropsRegistration)
                 .registerMiddleware((_, mp: { skipRender?: boolean }, __, next) => {
@@ -139,21 +148,17 @@ it('can hook composition middleware', () => {
                     return null
                 }),
         )
+        .withServices({})
 
     mount(
-        <layout.CompositionsRenderer
-            compositions={[
-                {
-                    type: 'test-composition-with-props',
-                    contentAreas: {
-                        main: [{ type: 'testWithTitleProp', props: { title: 'Component title' } }],
-                    },
-                    props: { compositionTitle: 'Composition title' },
-                    skipRender: true,
-                },
-            ]}
-            services={{}}
-        />,
+        layout.renderCompositions({
+            type: 'test-composition-with-props',
+            contentAreas: {
+                main: [{ type: 'testWithTitleProp', props: { title: 'Component title' } }],
+            },
+            props: { compositionTitle: 'Composition title' },
+            skipRender: true,
+        }),
     )
 
     expect(middlewareCalled).toBe(true)
@@ -175,11 +180,11 @@ it('can hook multiple composition middleware', () => {
     let middleware2Next: any
     let middleware2Service: any
 
-    const layout = new LayoutRegistration<{ serviceAvailable: boolean }>()
-        .registerComponents(registrar =>
+    const layout = LayoutRegistration<{ serviceAvailable: boolean }>()
+        .registerComponents((registrar) =>
             registrar.registerComponent(testComponentWithPropsRegistration),
         )
-        .registerCompositions(registrar =>
+        .registerCompositions((registrar) =>
             registrar
                 .registerComposition(testCompositionWithPropsRegistration)
                 .registerMiddleware<{ skipRender?: boolean }>((props, _, services, next) => {
@@ -206,21 +211,17 @@ it('can hook multiple composition middleware', () => {
                     },
                 ),
         )
+        .withServices({ serviceAvailable: false })
 
     mount(
-        <layout.CompositionsRenderer
-            compositions={[
-                {
-                    type: 'test-composition-with-props',
-                    contentAreas: {
-                        main: [{ type: 'testWithTitleProp', props: { title: 'Component title' } }],
-                    },
-                    props: { compositionTitle: 'Composition title' },
-                    skipRender2: true,
-                },
-            ]}
-            services={{ serviceAvailable: false }}
-        />,
+        layout.renderCompositions({
+            type: 'test-composition-with-props',
+            contentAreas: {
+                main: [{ type: 'testWithTitleProp', props: { title: 'Component title' } }],
+            },
+            props: { compositionTitle: 'Composition title' },
+            skipRender2: true,
+        }),
     )
 
     expect(middlewareCalled).toBe(true)

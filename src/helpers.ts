@@ -1,5 +1,6 @@
 import { ComponentInformation } from './ComponentRegistrar'
-import { NestedCompositionProps, CompositionInformation } from './CompositionRegistrar'
+import { CompositionInformation } from './CompositionRegistrar'
+import { NestedCompositionProps } from './LayoutRegistration'
 
 export interface ComponentPathOptions {
     subpath: string
@@ -18,7 +19,7 @@ export function getComponentPath(options: ComponentPathOptions) {
 }
 export function isNestedComposition(
     component: ComponentInformation<any, any>,
-): component is ComponentInformation<any, NestedCompositionProps> {
+): component is ComponentInformation<any, NestedCompositionProps<any>> {
     return component.type === 'nested-composition'
 }
 
