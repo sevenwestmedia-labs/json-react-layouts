@@ -21,7 +21,7 @@ export function getRegistrationCreators<Services>() {
          * Second call that registration function to create the registration.
          */
         createRegisterableComposition<ContentAreas extends string>() {
-            return <CompositionType extends string, CompositionProps extends {} = {}>(
+            return <CompositionType extends string, CompositionProps extends {}>(
                 type: CompositionType,
                 render: CompositionRenderFunction<ContentAreas, CompositionProps, Services>,
             ): CompositionRegistration<

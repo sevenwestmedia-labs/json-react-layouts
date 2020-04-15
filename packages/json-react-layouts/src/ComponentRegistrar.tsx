@@ -16,7 +16,8 @@ export interface WithRenderKey {
 }
 
 /** A component definition inside route definitions */
-export interface ComponentInformation<ComponentType, ComponentProps = {}> extends WithRenderKey {
+export interface ComponentInformation<ComponentType, ComponentProps extends {}>
+    extends WithRenderKey {
     type: ComponentType
     props: ComponentProps
 }
@@ -37,7 +38,7 @@ export interface ComponentRegistrationBuilderStart<Services extends {}> {
 /** Component registration builder */
 export interface ComponentRegistrationBuilder<
     Services extends {},
-    Components extends ComponentInformation<any>,
+    Components extends ComponentInformation<any, any>,
     ComponentMiddlewaresProps extends {}
 > {
     registerComponent<TType extends string, TProps extends {}>(
