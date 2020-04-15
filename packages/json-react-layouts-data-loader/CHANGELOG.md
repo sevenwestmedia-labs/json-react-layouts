@@ -1,5 +1,13 @@
 # json-react-layouts-data-loader
 
+## 4.0.0-beta.2
+
+### Patch Changes
+
+-   1207d38: Simplified types further
+-   Updated dependencies [1207d38]
+    -   json-react-layouts@3.0.0-beta.2
+
 ## 4.0.0-beta.1
 
 ### Patch Changes
