@@ -1,5 +1,11 @@
 # json-react-layouts
 
+## 3.0.0-beta.3
+
+### Patch Changes
+
+-   Allow checked composition to be used as a nested composition
+
 ## 3.0.0-beta.2
 
 ### Patch Changes

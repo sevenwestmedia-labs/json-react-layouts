@@ -21,7 +21,7 @@ export interface LayoutApi<
     ): CheckedComponentInformation
 
     nestedComposition<Composition extends Compositions & CompositionMiddlewaresProps>(
-        composition: Composition,
+        composition: Composition | CheckedCompositionInformation,
     ): CheckedComponentInformation
 
     composition<Composition extends Compositions & CompositionMiddlewaresProps>(

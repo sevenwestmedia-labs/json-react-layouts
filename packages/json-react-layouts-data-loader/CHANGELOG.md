@@ -1,5 +1,13 @@
 # json-react-layouts-data-loader
 
+## 4.0.0-beta.3
+
+### Patch Changes
+
+-   Allow checked composition to be used as a nested composition
+-   Updated dependencies [undefined]
+    -   json-react-layouts@3.0.0-beta.3
+
 ## 4.0.0-beta.2
 
 ### Patch Changes
