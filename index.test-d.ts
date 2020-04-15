@@ -5,21 +5,24 @@ import {
     testComponent3Registration,
     testCompositionWithPropsRegistration,
     testComponentWithPropsRegistration,
-} from './src/__tests__/testComponents'
-import { CompositionInformation, ComponentInformation, LayoutRegistration } from './src'
+} from './packages/json-react-layouts/src/__tests__/testComponents'
+import {
+    CompositionInformation,
+    ComponentInformation,
+    LayoutRegistration,
+} from './packages/json-react-layouts/src'
 import { expectType, expectError } from 'tsd'
 
 it('can create a component instance', () => {
     const layout = LayoutRegistration()
-        .registerComponents((registrar) =>
+        .registerComponents(registrar =>
             registrar
                 .registerComponent(testComponentRegistration)
                 .registerComponent(testComponent2Registration),
         )
-        .registerCompositions((registrar) =>
+        .registerCompositions(registrar =>
             registrar.registerComposition(testCompositionRegistration),
         )
-        .withServices({})
 
     const component = layout.component({
         type: 'test',
@@ -31,15 +34,14 @@ it('can create a component instance', () => {
 
 it('can register nested compositions', () => {
     const layout = LayoutRegistration()
-        .registerComponents((registrar) =>
+        .registerComponents(registrar =>
             registrar
                 .registerComponent(testComponentRegistration)
                 .registerComponent(testComponent2Registration),
         )
-        .registerCompositions((registrar) =>
+        .registerCompositions(registrar =>
             registrar.registerComposition(testCompositionRegistration),
         )
-        .withServices({})
 
     const nestedComposition = layout.nestedComposition({
         type: 'test-composition',
@@ -52,16 +54,15 @@ it('can register nested compositions', () => {
 
 it('can create a content area instance', () => {
     const layout = LayoutRegistration()
-        .registerComponents((registrar) =>
+        .registerComponents(registrar =>
             registrar
                 .registerComponent(testComponentRegistration)
                 .registerComponent(testComponent2Registration)
                 .registerComponent(testComponent3Registration),
         )
-        .registerCompositions((registrar) =>
+        .registerCompositions(registrar =>
             registrar.registerComposition(testCompositionRegistration),
         )
-        .withServices({})
 
     const components = layout.components(
         layout.component({
@@ -85,15 +86,14 @@ it('can create a content area instance', () => {
 
 it('can create a composition instance', () => {
     const layout = LayoutRegistration()
-        .registerComponents((registrar) =>
+        .registerComponents(registrar =>
             registrar
                 .registerComponent(testComponentRegistration)
                 .registerComponent(testComponent2Registration),
         )
-        .registerCompositions((registrar) =>
+        .registerCompositions(registrar =>
             registrar.registerComposition(testCompositionRegistration),
         )
-        .withServices({})
 
     const composition = layout.composition({
         type: 'test-composition',
@@ -124,17 +124,16 @@ it('can create a composition instance', () => {
 
 it('can create a page instance', () => {
     const layout = LayoutRegistration()
-        .registerComponents((registrar) =>
+        .registerComponents(registrar =>
             registrar
                 .registerComponent(testComponentRegistration)
                 .registerComponent(testComponent2Registration),
         )
-        .registerCompositions((registrar) =>
+        .registerCompositions(registrar =>
             registrar
                 .registerComposition(testCompositionRegistration)
                 .registerComposition(testCompositionWithPropsRegistration),
         )
-        .withServices({})
 
     const compositions = layout.compositions(
         layout.composition({
@@ -175,15 +174,14 @@ it('can create a page instance', () => {
 
 it('prevents using incorrect component', () => {
     const layout = LayoutRegistration()
-        .registerComponents((registrar) =>
+        .registerComponents(registrar =>
             registrar
                 .registerComponent(testComponentRegistration)
                 .registerComponent(testComponent2Registration),
         )
-        .registerCompositions((registrar) =>
+        .registerCompositions(registrar =>
             registrar.registerComposition(testCompositionRegistration),
         )
-        .withServices({})
 
     expectError(
         layout.component({
@@ -195,16 +193,15 @@ it('prevents using incorrect component', () => {
 
 it('prevents using incorrect component props', () => {
     const layout = LayoutRegistration()
-        .registerComponents((registrar) =>
+        .registerComponents(registrar =>
             registrar
                 .registerComponent(testComponentRegistration)
                 .registerComponent(testComponent2Registration)
                 .registerComponent(testComponentWithPropsRegistration),
         )
-        .registerCompositions((registrar) =>
+        .registerCompositions(registrar =>
             registrar.registerComposition(testCompositionRegistration),
         )
-        .withServices({})
 
     expectError(
         layout.component({
@@ -222,17 +219,16 @@ it('prevents using incorrect component props', () => {
 
 it('prevents using incorrect composition', () => {
     const layout = LayoutRegistration()
-        .registerComponents((registrar) =>
+        .registerComponents(registrar =>
             registrar
                 .registerComponent(testComponentRegistration)
                 .registerComponent(testComponent2Registration),
         )
-        .registerCompositions((registrar) =>
+        .registerCompositions(registrar =>
             registrar
                 .registerComposition(testCompositionRegistration)
                 .registerComposition(testCompositionWithPropsRegistration),
         )
-        .withServices({})
 
     expectError(
         layout.composition({
