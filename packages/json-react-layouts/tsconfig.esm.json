@@ -1,0 +1,7 @@
+{
+    "extends": "./tsconfig.cjs.json",
+    "compilerOptions": {
+        "module": "ES2015",
+        "outDir": "./dist/esm" /* Redirect output structure to the directory. */
+    }
+}

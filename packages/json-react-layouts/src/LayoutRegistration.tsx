@@ -122,7 +122,7 @@ export function LayoutRegistration<Services extends {} = {}>(): RegisterComponen
             const componentMiddlewares: Array<RendererMiddleware<Services, any>> = []
 
             const builder: ComponentRegistrationBuilder<Services, any, any> = {
-                registerComponent: (registration) => {
+                registerComponent: registration => {
                     if (registeredComponents[registration.type]) {
                         throw new Error(`${registration.type} has already been registered`)
                     }
@@ -130,14 +130,14 @@ export function LayoutRegistration<Services extends {} = {}>(): RegisterComponen
                     registeredComponents[registration.type] = registration
                     return builder
                 },
-                registerMiddleware: (componentMiddleware) => {
+                registerMiddleware: componentMiddleware => {
                     componentMiddlewares.push(componentMiddleware)
                     return builder
                 },
             }
 
             registerCallback({
-                registerComponent: (registration) => {
+                registerComponent: registration => {
                     if (registeredComponents[registration.type]) {
                         throw new Error(`${registration.type} has already been registered`)
                     }
@@ -217,6 +217,8 @@ export function LayoutRegistration<Services extends {} = {}>(): RegisterComponen
                     const layout: LayoutApi<any, any, any, any, Services> = {
                         _componentType: undefined as any,
                         _compositionType: undefined as any,
+                        componentRegistrations,
+                        compositionRegistrations,
 
                         component(component) {
                             return component

@@ -1,23 +1,17 @@
 {
-    "compilerOptions": {
-        "sourceMap": true,
-        "target": "ES5",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "esModuleInterop": true,
-        "noFallthroughCasesInSwitch": true,
-        "noImplicitAny": true,
-        "noImplicitReturns": true,
-        "noImplicitThis": true,
-        "removeComments": true,
-        "strict": true,
-        "baseUrl": "./src",
-        "noEmit": true,
-        "jsx": "react",
-        "declaration": true,
-        "lib": ["dom", "es5", "es2015.promise"],
-        "importHelpers": true
-    },
-    "include": ["./src"],
-    "exclude": ["node_modules", "dist"]
+    "references": [
+        {
+            "path": "./packages/json-react-layouts/tsconfig.cjs.json"
+        },
+        {
+            "path": "./packages/json-react-layouts/tsconfig.esm.json"
+        },
+        {
+            "path": "./packages/json-react-layouts-data-loader/tsconfig.cjs.json"
+        },
+        {
+            "path": "./packages/json-react-layouts-data-loader/tsconfig.esm.json"
+        }
+    ],
+    "files": []
 }
