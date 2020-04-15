@@ -40,7 +40,7 @@ export interface CompositionRegistrationBuilderStart<
     ): CompositionRegistrationBuilder<
         Components,
         ComponentMiddlewaresProps,
-        CompositionInformation<TType, Components, TContentAreas, TProps>,
+        CompositionInformation<TType, TContentAreas, TProps>,
         {},
         Services
     >
@@ -58,7 +58,7 @@ export interface CompositionRegistrationBuilder<
     ): CompositionRegistrationBuilder<
         Components,
         ComponentMiddlewaresProps,
-        Compositions | CompositionInformation<TType, Components, TContentAreas, TProps>,
+        Compositions | CompositionInformation<TType, TContentAreas, TProps>,
         CompositionMiddlewaresProps,
         Services
     >
@@ -80,7 +80,7 @@ interface RegisterCompositionsStep<
     Services extends {}
 > {
     registerCompositions<
-        Compositions extends CompositionInformation<any, Components, any, any>,
+        Compositions extends CompositionInformation<any, any, any>,
         CompositionMiddlewaresProps extends {}
     >(
         registerCallback: (
@@ -152,7 +152,7 @@ export function LayoutRegistration<Services extends {} = {}>(): RegisterComponen
             // the following exposes registerCompositions
             return {
                 registerCompositions<
-                    Compositions extends CompositionInformation<any, Components, any, any>,
+                    Compositions extends CompositionInformation<any, any, any>,
                     CompositionMiddlewaresProps extends {}
                 >(
                     registerCallback: (
@@ -224,10 +224,6 @@ export function LayoutRegistration<Services extends {} = {}>(): RegisterComponen
                             return component
                         },
 
-                        components(...components) {
-                            return components
-                        },
-
                         composition(composition) {
                             return composition
                         },
@@ -235,11 +231,7 @@ export function LayoutRegistration<Services extends {} = {}>(): RegisterComponen
                             return {
                                 type: 'nested-composition',
                                 props: { composition: composition },
-                            }
-                        },
-
-                        compositions(...compositions) {
-                            return compositions
+                            } as any
                         },
 
                         createRenderers({ services, log: userLog = noopLogger() }) {
@@ -344,21 +336,5 @@ export interface NestedCompositionProps<
     componentRenderPath?: string
 }
 
-export interface NestedComposition<
-    Components extends ComponentInformation<any, any>,
-    ComponentMiddlewares extends {},
-    Compositions extends CompositionInformation<any, Components & ComponentMiddlewares, any>,
-    CompositionMiddlewaresProps extends {}
-> extends ComponentInformation<'nested-composition', NestedCompositionProps<Compositions>> {
-    compositions: Array<Compositions & CompositionMiddlewaresProps>
-}
-
-/** Recursive type for nested components */
-export type ComponentsWithNested<
-    Components extends ComponentInformation<any, any>,
-    ComponentMiddlewares extends {},
-    Compositions extends CompositionInformation<any, any, any>,
-    CompositionMiddlewaresProps extends {}
-> =
-    | NestedComposition<Components, ComponentMiddlewares, Compositions, CompositionMiddlewaresProps>
-    | Components
+export type ComponentCheckedMessage = 'wrap in layout.component()'
+export type CompositionCheckedMessage = 'wrap in layout.composition()'

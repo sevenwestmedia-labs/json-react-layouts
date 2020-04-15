@@ -10,7 +10,7 @@
     },
     "references": [
         {
-            "path": "../json-react-layouts/tsconfig.cjs.json"
+            "path": "../json-react-layouts"
         }
     ],
     "exclude": ["dist"]

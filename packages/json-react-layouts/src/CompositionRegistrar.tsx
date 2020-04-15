@@ -1,6 +1,7 @@
 import React from 'react'
 
-import { RenderFunction, WithRenderKey } from './ComponentRegistrar'
+import { RenderFunction, WithRenderKey, ComponentInformation } from './ComponentRegistrar'
+import { ComponentCheckedMessage } from './LayoutRegistration'
 
 export interface CompositionRenderProps<TContentAreas, TProps, TLoadDataServices> {
     contentAreas: { [key in keyof TContentAreas]: React.ReactElement<any> }
@@ -15,13 +16,14 @@ export interface CompositionRenderProps<TContentAreas, TProps, TLoadDataServices
 
 export interface CompositionInformation<
     TType extends string,
-    TComponentInformation,
     TContentAreas extends string,
     TProps = {}
 > extends WithRenderKey {
     type: TType
     props: TProps
-    contentAreas: { [name in TContentAreas]: TComponentInformation[] }
+    contentAreas: {
+        [name in TContentAreas]: Array<ComponentInformation<any, any> & ComponentCheckedMessage>
+    }
 }
 
 export interface CompositionRegistration<

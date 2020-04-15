@@ -8,7 +8,7 @@ import { ComponentsRenderer } from './components-renderer'
 
 export interface CompositionRendererProps {
     componentRenderPath: string
-    composition: CompositionInformation<any, any, any, any>
+    composition: CompositionInformation<any, any, any>
     componentMiddleware: RendererMiddleware<any, any>
     componentRegistrations: ComponentRegistrations
     compositionMiddleware: RendererMiddleware<any, any>
@@ -63,7 +63,7 @@ export const CompositionRenderer: React.FunctionComponent<CompositionRendererPro
             log.debug(
                 {
                     componentsRenderPath,
-                    components: composition.contentAreas[val].map((component) => ({
+                    components: composition.contentAreas[val].map(component => ({
                         type: component.type,
                     })),
                 },

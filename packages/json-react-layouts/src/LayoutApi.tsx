@@ -2,10 +2,11 @@ import { ComponentInformation, CompositionInformation } from '.'
 import { Logger } from 'typescript-log'
 import { ComponentRegistrations } from './ComponentRegistrar'
 import { CompositionRegistrations } from './CompositionRegistrar'
+import { ComponentCheckedMessage, CompositionCheckedMessage } from './LayoutRegistration'
 
 export interface LayoutApi<
-    Components extends ComponentInformation<any>,
-    Compositions extends CompositionInformation<any, Components, any, any>,
+    Components extends ComponentInformation<any, any>,
+    Compositions extends CompositionInformation<any, any, any>,
     ComponentMiddlewaresProps extends {},
     CompositionMiddlewaresProps extends {},
     Services extends {}
@@ -24,40 +25,29 @@ export interface LayoutApi<
 
     component<Component extends Components & ComponentMiddlewaresProps>(
         component: Component,
-    ): Extract<Components, { type: Component['type'] }>
-    nestedComposition(composition: Compositions): ComponentInformation<any, any>
-    components(...component: Array<Components & ComponentMiddlewaresProps>): Components[]
+    ): Extract<Components, { type: Component['type'] }> & ComponentCheckedMessage
+
+    nestedComposition<Composition extends Compositions & CompositionMiddlewaresProps>(
+        composition: Composition,
+    ): ComponentInformation<any, any> & ComponentCheckedMessage
+
     composition<Composition extends Compositions & CompositionMiddlewaresProps>(
         composition: Composition,
-    ): Extract<Compositions, { type: Composition['type'] }>
-    compositions(...compositions: Array<Compositions & CompositionMiddlewaresProps>): Compositions[]
+    ): Extract<Compositions, { type: Composition['type'] }> & CompositionCheckedMessage
 
     componentRegistrations: ComponentRegistrations
     compositionRegistrations: CompositionRegistrations
 
-    createRenderers(options: {
-        services: Services
-        log?: Logger
-    }): RenderLayouts<
-        Components,
-        Compositions,
-        ComponentMiddlewaresProps,
-        CompositionMiddlewaresProps
-    >
+    createRenderers(options: { services: Services; log?: Logger }): RenderLayouts
     // TODO Test out compositions not having the list of components in their types
     // and just using these helpers to put components in the content areas
 }
 
-export interface RenderLayouts<
-    Components extends ComponentInformation<any>,
-    Compositions extends CompositionInformation<any, Components, any, any>,
-    ComponentMiddlewaresProps extends {},
-    CompositionMiddlewaresProps extends {}
-> {
+export interface RenderLayouts {
     renderComponents(
-        ...components: Array<Components & ComponentMiddlewaresProps>
+        ...components: Array<ComponentInformation<any, any> & ComponentCheckedMessage>
     ): React.ReactElement
     renderCompositions(
-        ...compositions: Array<Compositions & CompositionMiddlewaresProps>
+        ...compositions: Array<CompositionInformation<any, any, any> & CompositionCheckedMessage>
     ): React.ReactElement
 }

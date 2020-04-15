@@ -31,32 +31,34 @@ it('can render a composition with a content area through the registrar', () => {
     }
 
     const layout = LayoutRegistration()
-        .registerComponents((registrar) =>
+        .registerComponents(registrar =>
             registrar
                 .registerComponent(testComponentRegistration)
                 .registerComponent(testComponent2Registration),
         )
-        .registerCompositions((registrar) =>
+        .registerCompositions(registrar =>
             registrar.registerComposition(testCompositionRegistration),
         )
 
     const renderers = layout.createRenderers({ services: {}, log })
 
     mount(
-        renderers.renderCompositions({
-            type: 'test-composition',
-            props: {},
-            contentAreas: {
-                main: [
-                    { type: 'test', props: {} },
-                    layout.nestedComposition({
-                        type: 'test-composition',
-                        props: {},
-                        contentAreas: { main: [{ type: 'test', props: {} }] },
-                    }),
-                ],
-            },
-        }),
+        renderers.renderCompositions(
+            layout.composition({
+                type: 'test-composition',
+                props: {},
+                contentAreas: {
+                    main: [
+                        layout.component({ type: 'test', props: {} }),
+                        layout.nestedComposition({
+                            type: 'test-composition',
+                            props: {},
+                            contentAreas: { main: [layout.component({ type: 'test', props: {} })] },
+                        }),
+                    ],
+                },
+            }),
+        ),
     )
 
     expect(logMessages).toMatchSnapshot()
