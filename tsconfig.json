@@ -1,13 +1,13 @@
 {
     "references": [
         {
-            "path": "./packages/json-react-layouts/tsconfig.cjs.json"
+            "path": "./packages/json-react-layouts"
         },
         {
             "path": "./packages/json-react-layouts/tsconfig.esm.json"
         },
         {
-            "path": "./packages/json-react-layouts-data-loader/tsconfig.cjs.json"
+            "path": "./packages/json-react-layouts-data-loader"
         },
         {
             "path": "./packages/json-react-layouts-data-loader/tsconfig.esm.json"

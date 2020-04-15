@@ -32,21 +32,19 @@ export function flatMap<T, Mapped>(collection: T[], map: (value: T, i: number) =
 
 /** Maps an array of compositions to a flat list of components */
 export function getComponentsInCompositions(
-    compositions: Array<CompositionInformation<any, any, any, any>>,
+    compositions: Array<CompositionInformation<any, any, any>>,
     componentRenderPath: string | undefined,
 ) {
-    return flatMap(
-        compositions,
-        (composition: CompositionInformation<any, any, any, any>, i: number) =>
-            flatMap(Object.keys(composition.contentAreas), key =>
-                contentAreas(
-                    composition,
-                    i,
-                    key,
-                    componentRenderPath !== undefined,
-                    componentRenderPath,
-                ),
+    return flatMap(compositions, (composition: CompositionInformation<any, any, any>, i: number) =>
+        flatMap(Object.keys(composition.contentAreas), key =>
+            contentAreas(
+                composition,
+                i,
+                key,
+                componentRenderPath !== undefined,
+                componentRenderPath,
             ),
+        ),
     )
 }
 
@@ -76,7 +74,7 @@ function expandNestedCompositionsIntoComponents(
 
 // map the content areas from the given composition
 function contentAreas(
-    composition: CompositionInformation<any, any, any, any>,
+    composition: CompositionInformation<any, any, any>,
     i: number,
     contentAreaKey: string,
     innerSearch: boolean,

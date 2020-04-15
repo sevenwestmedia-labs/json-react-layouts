@@ -42,18 +42,20 @@ it('can load data for component', async () => {
 
     const wrapper = mount(
         <DataProvider resources={resources} globalProps={{}}>
-            {renderers.renderCompositions({
-                type: 'test-composition',
-                contentAreas: {
-                    main: [
-                        {
-                            type: 'test-with-data',
-                            props: { dataDefinitionArgs: { dataArg: 'Foo' } },
-                        },
-                    ],
-                },
-                props: {},
-            })}
+            {renderers.renderCompositions(
+                layout.composition({
+                    type: 'test-composition',
+                    contentAreas: {
+                        main: [
+                            layout.component({
+                                type: 'test-with-data',
+                                props: { dataDefinitionArgs: { dataArg: 'Foo' } },
+                            }),
+                        ],
+                    },
+                    props: {},
+                }),
+            )}
         </DataProvider>,
     )
 
@@ -110,18 +112,20 @@ it('cap wrap data load function', async () => {
 
     mount(
         <DataProvider resources={resources} globalProps={{ serviceProp: 'example' }}>
-            {renderers.renderCompositions({
-                type: 'test-composition',
-                contentAreas: {
-                    main: [
-                        {
-                            type: 'test-with-data',
-                            props: { dataDefinitionArgs: { dataArg: 'Foo' } },
-                        },
-                    ],
-                },
-                props: {},
-            })}
+            {renderers.renderCompositions(
+                layout.composition({
+                    type: 'test-composition',
+                    contentAreas: {
+                        main: [
+                            layout.component({
+                                type: 'test-with-data',
+                                props: { dataDefinitionArgs: { dataArg: 'Foo' } },
+                            }),
+                        ],
+                    },
+                    props: {},
+                }),
+            )}
         </DataProvider>,
     )
 
@@ -195,18 +199,20 @@ it('component can provide additional arguments dynamically', async () => {
 
     const wrapper = mount(
         <DataProvider resources={resources} globalProps={{}}>
-            {renderers.renderCompositions({
-                type: 'test-composition',
-                contentAreas: {
-                    main: [
-                        {
-                            type: 'test-with-data',
-                            props: { dataDefinitionArgs: { dataArg: 'Foo' } },
-                        },
-                    ],
-                },
-                props: {},
-            })}
+            {renderers.renderCompositions(
+                layout.composition({
+                    type: 'test-composition',
+                    contentAreas: {
+                        main: [
+                            layout.component({
+                                type: 'test-with-data',
+                                props: { dataDefinitionArgs: { dataArg: 'Foo' } },
+                            }),
+                        ],
+                    },
+                    props: {},
+                }),
+            )}
         </DataProvider>,
     )
 

@@ -8,35 +8,37 @@ import {
 
 it('calculates correct render path', () => {
     const layout = LayoutRegistration()
-        .registerComponents((registrar) =>
+        .registerComponents(registrar =>
             registrar
                 .registerComponent(testComponentRegistration)
                 .registerComponent(testComponent2Registration),
         )
-        .registerCompositions((registrar) =>
+        .registerCompositions(registrar =>
             registrar.registerComposition(testCompositionRegistration),
         )
 
-    const compositions = layout.compositions({
-        type: 'test-composition',
-        props: {},
-        contentAreas: {
-            main: [
-                { type: 'test', props: {} },
-                layout.nestedComposition({
-                    type: 'test-composition',
-                    props: {},
-                    contentAreas: {
-                        main: [
-                            { type: 'test', props: {} },
-                            { type: 'test', props: {} },
-                        ],
-                    },
-                }),
-                { type: 'test', props: {} },
-            ],
-        },
-    })
+    const compositions = [
+        layout.composition({
+            type: 'test-composition',
+            props: {},
+            contentAreas: {
+                main: [
+                    layout.component({ type: 'test', props: {} }),
+                    layout.nestedComposition({
+                        type: 'test-composition',
+                        props: {},
+                        contentAreas: {
+                            main: [
+                                layout.component({ type: 'test', props: {} }),
+                                layout.component({ type: 'test', props: {} }),
+                            ],
+                        },
+                    }),
+                    layout.component({ type: 'test', props: {} }),
+                ],
+            },
+        }),
+    ]
 
     const components = getComponentsInCompositions(compositions, undefined)
 
