@@ -1,5 +1,11 @@
 # json-react-layouts
 
+## 3.0.0-beta.4
+
+### Patch Changes
+
+-   Restore default generic param for DataDefinition type
+
 ## 3.0.0-beta.3
 
 ### Patch Changes
