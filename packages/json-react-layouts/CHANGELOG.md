@@ -1,5 +1,11 @@
 # json-react-layouts
 
+## 3.0.0-beta.2
+
+### Patch Changes
+
+-   1207d38: Simplified types further
+
 ## 3.0.0-beta.1
 
 ### Patch Changes
