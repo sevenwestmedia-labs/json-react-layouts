@@ -1,5 +1,13 @@
 # json-react-layouts-data-loader
 
+## 4.0.0-beta.4
+
+### Patch Changes
+
+-   Restore default generic param for DataDefinition type
+-   Updated dependencies [undefined]
+    -   json-react-layouts@3.0.0-beta.4
+
 ## 4.0.0-beta.3
 
 ### Patch Changes

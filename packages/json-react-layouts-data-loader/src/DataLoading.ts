@@ -10,7 +10,7 @@ export interface DataDefinition<
     DataLoadArguments extends {},
     TData,
     Services extends {},
-    AdditionalParams extends {}
+    AdditionalParams extends {} = {}
 > {
     /** Custom React Hook to provide additional dynamic parameters to the data loader */
     useRuntimeParams?: (
