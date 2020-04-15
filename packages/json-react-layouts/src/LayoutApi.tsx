@@ -4,6 +4,11 @@ import { ComponentRegistrations } from './ComponentRegistrar'
 import { CompositionRegistrations } from './CompositionRegistrar'
 import { ComponentCheckedMessage, CompositionCheckedMessage } from './LayoutRegistration'
 
+export type CheckedComponentInformation = ComponentInformation<any, any> & ComponentCheckedMessage
+
+export type CheckedCompositionInformation = CompositionInformation<any, any, any> &
+    CompositionCheckedMessage
+
 export interface LayoutApi<
     Components extends ComponentInformation<any, any>,
     Compositions extends CompositionInformation<any, any, any>,
@@ -11,29 +16,17 @@ export interface LayoutApi<
     CompositionMiddlewaresProps extends {},
     Services extends {}
 > {
-    /**
-     * @example
-     * const Composition: typeof layout._compositionType = {...}
-     */
-    _compositionType: Compositions & CompositionMiddlewaresProps
-
-    /**
-     * @example
-     * const Component: typeof layout._componentType = {...}
-     */
-    _componentType: Components & ComponentMiddlewaresProps
-
-    component<Component extends Components & ComponentMiddlewaresProps>(
-        component: Component,
-    ): Extract<Components, { type: Component['type'] }> & ComponentCheckedMessage
+    component<Component extends Components>(
+        component: Component & ComponentMiddlewaresProps,
+    ): CheckedComponentInformation
 
     nestedComposition<Composition extends Compositions & CompositionMiddlewaresProps>(
         composition: Composition,
-    ): ComponentInformation<any, any> & ComponentCheckedMessage
+    ): CheckedComponentInformation
 
     composition<Composition extends Compositions & CompositionMiddlewaresProps>(
         composition: Composition,
-    ): Extract<Compositions, { type: Composition['type'] }> & CompositionCheckedMessage
+    ): CheckedCompositionInformation
 
     componentRegistrations: ComponentRegistrations
     compositionRegistrations: CompositionRegistrations
@@ -44,10 +37,6 @@ export interface LayoutApi<
 }
 
 export interface RenderLayouts {
-    renderComponents(
-        ...components: Array<ComponentInformation<any, any> & ComponentCheckedMessage>
-    ): React.ReactElement
-    renderCompositions(
-        ...compositions: Array<CompositionInformation<any, any, any> & CompositionCheckedMessage>
-    ): React.ReactElement
+    renderComponents(...components: CheckedComponentInformation[]): React.ReactElement
+    renderCompositions(...compositions: CheckedCompositionInformation[]): React.ReactElement
 }

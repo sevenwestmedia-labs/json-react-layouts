@@ -260,7 +260,7 @@ const testCompositionRegistration = createRegisterableComposition<'main'>()(
     contentAreas => <TestComposition main={contentAreas.main} />,
 )
 
-const lengthCalculatorDataDefinition: DataDefinition<{ dataArg: string }, number, {}> = {
+const lengthCalculatorDataDefinition: DataDefinition<{ dataArg: string }, number, {}, {}> = {
     loadData: props =>
         new Promise(resolve =>
             setTimeout(() => {

@@ -31,7 +31,7 @@ interface RegisterComponentsStep<Services extends {}> {
 }
 
 export interface CompositionRegistrationBuilderStart<
-    Components extends ComponentInformation<any>,
+    Components extends ComponentInformation<any, any>,
     ComponentMiddlewaresProps extends {},
     Services
 > {
@@ -105,7 +105,7 @@ interface RegisterCompositionsStep<
     >
 }
 
-export function LayoutRegistration<Services extends {} = {}>(): RegisterComponentsStep<Services> {
+export function LayoutRegistration<Services extends {}>(): RegisterComponentsStep<Services> {
     return {
         registerComponents<
             Components extends ComponentInformation<any, any>,
@@ -215,17 +215,14 @@ export function LayoutRegistration<Services extends {} = {}>(): RegisterComponen
                     }
 
                     const layout: LayoutApi<any, any, any, any, Services> = {
-                        _componentType: undefined as any,
-                        _compositionType: undefined as any,
                         componentRegistrations,
                         compositionRegistrations,
 
                         component(component) {
-                            return component
+                            return component as any
                         },
-
                         composition(composition) {
-                            return composition
+                            return composition as any
                         },
                         nestedComposition(composition) {
                             return {

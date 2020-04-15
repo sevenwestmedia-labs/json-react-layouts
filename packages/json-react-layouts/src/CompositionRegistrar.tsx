@@ -2,6 +2,7 @@ import React from 'react'
 
 import { RenderFunction, WithRenderKey, ComponentInformation } from './ComponentRegistrar'
 import { ComponentCheckedMessage } from './LayoutRegistration'
+import { CheckedComponentInformation } from './LayoutApi'
 
 export interface CompositionRenderProps<TContentAreas, TProps, TLoadDataServices> {
     contentAreas: { [key in keyof TContentAreas]: React.ReactElement<any> }
@@ -17,12 +18,12 @@ export interface CompositionRenderProps<TContentAreas, TProps, TLoadDataServices
 export interface CompositionInformation<
     TType extends string,
     TContentAreas extends string,
-    TProps = {}
+    TProps extends {}
 > extends WithRenderKey {
     type: TType
     props: TProps
     contentAreas: {
-        [name in TContentAreas]: Array<ComponentInformation<any, any> & ComponentCheckedMessage>
+        [name in TContentAreas]: CheckedComponentInformation[]
     }
 }
 
@@ -30,7 +31,7 @@ export interface CompositionRegistration<
     TType,
     TContentAreas extends string,
     Services,
-    TProps = {}
+    TProps extends {}
 > {
     type: TType
     render: CompositionRenderFunction<TContentAreas, TProps, Services>
@@ -43,5 +44,5 @@ export type CompositionRenderFunction<TContentAreas extends string, TProps, Serv
 ) => React.ReactElement<any> | false | null
 
 export interface CompositionRegistrations {
-    get(type: string): CompositionRegistration<string, any, any> | undefined
+    get(type: string): CompositionRegistration<string, any, any, any> | undefined
 }
