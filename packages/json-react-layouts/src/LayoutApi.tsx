@@ -1,5 +1,7 @@
 import { ComponentInformation, CompositionInformation } from '.'
 import { Logger } from 'typescript-log'
+import { ComponentRegistrations } from './ComponentRegistrar'
+import { CompositionRegistrations } from './CompositionRegistrar'
 
 export interface LayoutApi<
     Components extends ComponentInformation<any>,
@@ -29,6 +31,9 @@ export interface LayoutApi<
         composition: Composition,
     ): Extract<Compositions, { type: Composition['type'] }>
     compositions(...compositions: Array<Compositions & CompositionMiddlewaresProps>): Compositions[]
+
+    componentRegistrations: ComponentRegistrations
+    compositionRegistrations: CompositionRegistrations
 
     createRenderers(options: {
         services: Services

@@ -1,0 +1,11 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "json-react-layouts": "2.1.2",
+    "json-react-layouts-data-loader": "3.1.0"
+  },
+  "changesets": [
+    "happy-nails-repeat"
+  ]
+}
