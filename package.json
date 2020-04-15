@@ -8,8 +8,7 @@
         "build": "yarn tsc -b",
         "lint": "eslint --ext .js,.ts .",
         "test-types": "tsd",
-        "test-code": "jest",
-        "test": "yarn test-code && yarn test-types",
+        "test": "jest",
         "verify": "yarn build && yarn test && yarn lint",
         "changeset": "changeset",
         "release": "yarn verify && changeset publish"
@@ -40,9 +39,7 @@
         "ts-jest": "^25.2.1",
         "tsd": "^0.11.0",
         "tslib": "^1.11.1",
-        "typescript": "3.8.3"
-    },
-    "dependencies": {
+        "typescript": "3.8.3",
         "typescript-log": "^1.1.1"
     }
 }
