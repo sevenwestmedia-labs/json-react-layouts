@@ -34,9 +34,7 @@ export interface CompositionRegistration<
 > {
     type: CompositionType
     render: CompositionRenderFunction<ContentAreas, CompositionProps, Services>
-    componentProps:
-        | undefined
-        | ((options: { contentArea: ContentAreas; props: CompositionProps }) => {})
+    componentProps: undefined | ((contentArea: ContentAreas, props: CompositionProps) => {})
 }
 
 export type CompositionRenderFunction<TContentAreas extends string, TProps, Services> = (

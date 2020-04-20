@@ -24,10 +24,10 @@ export function getRegistrationCreators<Services>() {
             return <CompositionType extends string, CompositionProps extends {}>(
                 type: CompositionType,
                 render: CompositionRenderFunction<ContentAreas, CompositionProps, Services>,
-                componentProps?: (options: {
-                    contentArea: ContentAreas
-                    props: CompositionProps
-                }) => {},
+                componentProps?: <T extends CompositionProps>(
+                    contentArea: ContentAreas,
+                    props: T,
+                ) => {},
             ): CompositionRegistration<
                 CompositionType,
                 ContentAreas,

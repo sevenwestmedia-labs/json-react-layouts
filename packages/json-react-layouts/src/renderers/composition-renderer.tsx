@@ -13,6 +13,7 @@ export interface CompositionRendererProps {
     componentRegistrations: ComponentRegistrations
     compositionMiddleware: RendererMiddleware<any, any>
     compositionRegistrations: CompositionRegistrations
+    additionalComponentProps: {}
     layoutApi: LayoutApi<any, any, any, any, any>
     services: any
     log: Logger
@@ -27,6 +28,7 @@ export const CompositionRenderer: React.FunctionComponent<CompositionRendererPro
     componentRegistrations,
     componentMiddleware,
     compositionRegistrations,
+    additionalComponentProps,
     log,
 }): React.ReactElement<any> | null => {
     /**
@@ -56,7 +58,11 @@ export const CompositionRenderer: React.FunctionComponent<CompositionRendererPro
 
     // A middleware may call next with props, we should use them
     function render(middlewareCompositionProps?: any) {
-        const compositionRenderProps = middlewareCompositionProps || compositionProps
+        const compositionRenderProps = {
+            ...additionalComponentProps,
+            ...(middlewareCompositionProps || compositionProps),
+        }
+
         const contentAreas = Object.keys(composition.contentAreas).reduce<{
             [key: string]: React.ReactElement<any>
         }>((acc, contentAreaName) => {
@@ -72,10 +78,7 @@ export const CompositionRenderer: React.FunctionComponent<CompositionRendererPro
             )
 
             const additionalProps = compositionRegistration?.componentProps
-                ? compositionRegistration?.componentProps({
-                      contentArea: contentAreaName,
-                      props: compositionRenderProps,
-                  })
+                ? compositionRegistration?.componentProps(contentAreaName, compositionRenderProps)
                 : {}
             acc[contentAreaName] = (
                 <ComponentsRenderer

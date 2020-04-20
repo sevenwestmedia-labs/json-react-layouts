@@ -25,15 +25,13 @@ export const TestComposition: React.FC<{
 
 export const testCompositionRegistration = createRegisterableComposition<'main' | 'sidebar'>()(
     'test-composition',
-    (contentAreas, _: { widthRatio: number }) => (
-        <TestComposition main={contentAreas.main} sidebar={contentAreas.sidebar} />
-    ),
-    ({ contentArea, props }) => {
+    contentAreas => <TestComposition main={contentAreas.main} sidebar={contentAreas.sidebar} />,
+    (contentArea, { contentAreaRatio = 1 }: { contentAreaRatio?: number }) => {
         if (contentArea === 'main') {
-            return { contentAreaRatio: 0.66 * props.widthRatio }
+            return { contentAreaRatio: 0.66 * contentAreaRatio }
         }
 
-        return { contentAreaRatio: 0.32 * props.widthRatio }
+        return { contentAreaRatio: 0.32 * contentAreaRatio }
     },
 )
 
@@ -54,7 +52,7 @@ it('can pass props to all contained components', () => {
         renderers.renderCompositions(
             layout.composition({
                 type: 'test-composition',
-                props: { widthRatio: 0.5 },
+                props: {},
                 contentAreas: {
                     main: [
                         layout.component({
@@ -73,6 +71,55 @@ it('can pass props to all contained components', () => {
         ),
     )
 
-    expect(wrapper.find(TestComponent).props()).toMatchObject({ contentAreaRatio: 0.33 })
-    expect(wrapper.find(TestComponent2).props()).toMatchObject({ contentAreaRatio: 0.16 })
+    expect(wrapper.find(TestComponent).props()).toMatchObject({ contentAreaRatio: 0.66 })
+    expect(wrapper.find(TestComponent2).props()).toMatchObject({ contentAreaRatio: 0.32 })
+})
+
+it('nested compositions pass additional props to composition', () => {
+    const layout = LayoutRegistration<{}>()
+        .registerComponents(registrar =>
+            registrar
+                .registerComponent(testComponentRegistration)
+                .registerComponent(testComponent2Registration),
+        )
+        .registerCompositions(registrar =>
+            registrar.registerComposition(testCompositionRegistration),
+        )
+
+    const renderers = layout.createRenderers({ services: {} })
+
+    const wrapper = mount(
+        renderers.renderCompositions(
+            layout.composition({
+                type: 'test-composition',
+                props: {},
+                contentAreas: {
+                    main: [
+                        layout.nestedComposition({
+                            type: 'test-composition',
+                            props: {},
+                            contentAreas: {
+                                main: [
+                                    layout.component({
+                                        type: 'test',
+                                        props: {},
+                                    }),
+                                ],
+                                sidebar: [],
+                            },
+                        }),
+                    ],
+                    sidebar: [
+                        layout.component({
+                            type: 'test2',
+                            props: {},
+                        }),
+                    ],
+                },
+            }),
+        ),
+    )
+
+    expect(wrapper.find(TestComponent).props()).toMatchObject({ contentAreaRatio: 0.66 * 0.66 })
+    expect(wrapper.find(TestComponent2).props()).toMatchObject({ contentAreaRatio: 0.32 })
 })
