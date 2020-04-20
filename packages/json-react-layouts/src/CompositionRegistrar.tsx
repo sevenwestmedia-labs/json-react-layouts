@@ -1,7 +1,6 @@
 import React from 'react'
 
-import { RenderFunction, WithRenderKey, ComponentInformation } from './ComponentRegistrar'
-import { ComponentCheckedMessage } from './LayoutRegistration'
+import { RenderFunction, WithRenderKey } from './ComponentRegistrar'
 import { CheckedComponentInformation } from './LayoutApi'
 
 export interface CompositionRenderProps<TContentAreas, TProps, TLoadDataServices> {
@@ -28,13 +27,16 @@ export interface CompositionInformation<
 }
 
 export interface CompositionRegistration<
-    TType,
-    TContentAreas extends string,
+    CompositionType,
+    ContentAreas extends string,
     Services,
-    TProps extends {}
+    CompositionProps extends {}
 > {
-    type: TType
-    render: CompositionRenderFunction<TContentAreas, TProps, Services>
+    type: CompositionType
+    render: CompositionRenderFunction<ContentAreas, CompositionProps, Services>
+    componentProps:
+        | undefined
+        | ((options: { contentArea: ContentAreas; props: CompositionProps }) => {})
 }
 
 export type CompositionRenderFunction<TContentAreas extends string, TProps, Services> = (

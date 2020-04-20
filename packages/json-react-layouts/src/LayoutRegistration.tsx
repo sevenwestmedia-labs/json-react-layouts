@@ -244,6 +244,7 @@ export function LayoutRegistration<Services extends {}>(): RegisterComponentsSte
                                             services={services}
                                             components={components}
                                             componentRenderPath=""
+                                            additionalComponentProps={{}}
                                         />
                                     )
                                 },
