@@ -1,6 +1,6 @@
 {
     "name": "json-react-layouts-data-loader",
-    "version": "4.0.0-beta.4",
+    "version": "4.0.0-beta.5",
     "repository": "github:sevenwestmedia-labs/json-react-layouts",
     "author": "Seven West Media WA",
     "license": "MIT",
@@ -8,7 +8,7 @@
     "module": "dist/esm/index.js",
     "devDependencies": {},
     "dependencies": {
-        "json-react-layouts": "^3.0.0-beta.4"
+        "json-react-layouts": "^3.0.0-beta.5"
     },
     "peerDependencies": {
         "typescript-log": "^1.1.1",

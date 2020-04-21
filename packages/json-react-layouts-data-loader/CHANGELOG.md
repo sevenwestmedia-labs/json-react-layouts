@@ -1,5 +1,18 @@
 # json-react-layouts-data-loader
 
+## 4.0.0-beta.5
+
+### Minor Changes
+
+-   885b1fa: Add ability for a composition to provide additional props to all components rendered inside it
+
+    This opens up the possibility of compositions to pass width ratio information down to children, enabling sorta container queries
+
+### Patch Changes
+
+-   Updated dependencies [885b1fa]
+    -   json-react-layouts@3.0.0-beta.5
+
 ## 4.0.0-beta.4
 
 ### Patch Changes
