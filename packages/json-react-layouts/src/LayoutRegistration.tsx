@@ -244,6 +244,7 @@ export function LayoutRegistration<Services extends {}>(): RegisterComponentsSte
                                             services={services}
                                             components={components}
                                             componentRenderPath=""
+                                            additionalComponentProps={{}}
                                         />
                                     )
                                 },
@@ -269,8 +270,15 @@ export function LayoutRegistration<Services extends {}>(): RegisterComponentsSte
                     builder.registerComponent(
                         createRegisterableComponent(
                             'nested-composition',
-                            (props: NestedCompositionProps<any>, services) => {
-                                if (props.composition.type === 'nested-composition') {
+                            (
+                                {
+                                    composition,
+                                    componentRenderPath,
+                                    ...additionalComponentProps
+                                }: NestedCompositionProps<any>,
+                                services,
+                            ) => {
+                                if (composition.type === 'nested-composition') {
                                     throw new Error(
                                         "nested-composition is registered as a component, it is not allowed within a nested composition as it's not a composition, please check the route",
                                     )
@@ -278,14 +286,15 @@ export function LayoutRegistration<Services extends {}>(): RegisterComponentsSte
 
                                 return (
                                     <CompositionRenderer
-                                        composition={props.composition}
-                                        componentRenderPath={`${props.componentRenderPath}nested:${props.composition.type}`}
+                                        composition={composition}
+                                        componentRenderPath={`${componentRenderPath}nested:${composition.type}`}
                                         services={services}
                                         layoutApi={layout}
                                         componentRegistrations={componentRegistrations}
                                         compositionRegistrations={compositionRegistrations}
                                         componentMiddleware={middlewares.component}
                                         compositionMiddleware={middlewares.composition}
+                                        additionalComponentProps={additionalComponentProps}
                                         log={log}
                                     />
                                 )

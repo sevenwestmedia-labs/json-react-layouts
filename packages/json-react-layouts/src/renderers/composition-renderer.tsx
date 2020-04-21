@@ -13,6 +13,7 @@ export interface CompositionRendererProps {
     componentRegistrations: ComponentRegistrations
     compositionMiddleware: RendererMiddleware<any, any>
     compositionRegistrations: CompositionRegistrations
+    additionalComponentProps: {}
     layoutApi: LayoutApi<any, any, any, any, any>
     services: any
     log: Logger
@@ -27,6 +28,7 @@ export const CompositionRenderer: React.FunctionComponent<CompositionRendererPro
     componentRegistrations,
     componentMiddleware,
     compositionRegistrations,
+    additionalComponentProps,
     log,
 }): React.ReactElement<any> | null => {
     /**
@@ -48,47 +50,52 @@ export const CompositionRenderer: React.FunctionComponent<CompositionRendererPro
         layout: layoutApi,
     }
 
-    const compositionElement = compositionRegistrations.get(composition.type)
+    const compositionRegistration = compositionRegistrations.get(composition.type)
 
-    if (!compositionElement) {
+    if (!compositionRegistration) {
         return null
     }
 
     // A middleware may call next with props, we should use them
     function render(middlewareCompositionProps?: any) {
+        const compositionRenderProps = {
+            ...additionalComponentProps,
+            ...(middlewareCompositionProps || compositionProps),
+        }
+
         const contentAreas = Object.keys(composition.contentAreas).reduce<{
             [key: string]: React.ReactElement<any>
-        }>((acc, val) => {
-            const componentsRenderPath = `${componentRenderPath}/${val}`
+        }>((acc, contentAreaName) => {
+            const componentsRenderPath = `${componentRenderPath}/${contentAreaName}`
             log.debug(
                 {
                     componentsRenderPath,
-                    components: composition.contentAreas[val].map(component => ({
+                    components: composition.contentAreas[contentAreaName].map(component => ({
                         type: component.type,
                     })),
                 },
                 'Rendering content area',
             )
 
-            acc[val] = (
+            const additionalProps = compositionRegistration?.componentProps
+                ? compositionRegistration?.componentProps(contentAreaName, compositionRenderProps)
+                : {}
+            acc[contentAreaName] = (
                 <ComponentsRenderer
                     componentMiddleware={componentMiddleware}
                     componentRegistrations={componentRegistrations}
                     componentRenderPath={componentsRenderPath}
-                    components={composition.contentAreas[val]}
+                    components={composition.contentAreas[contentAreaName]}
                     layoutApi={layoutApi}
                     services={services}
+                    additionalComponentProps={additionalProps}
                 />
             )
             return acc
         }, {})
 
         const rendered =
-            compositionElement!.render(
-                contentAreas,
-                middlewareCompositionProps || compositionProps,
-                services,
-            ) || null
+            compositionRegistration!.render(contentAreas, compositionRenderProps, services) || null
 
         return rendered
     }

@@ -5,16 +5,13 @@ import {
     TestComponentWithProps,
     testCompositionWithPropsRegistration,
 } from './testComponents'
-import { configure, mount, render } from 'enzyme'
+import { configure, mount } from 'enzyme'
 import { LayoutRegistration } from '../LayoutRegistration'
 import { getRegistrationCreators } from '../get-registration-creators'
-import { ComponentsRenderer } from '../renderers/components-renderer'
-import { CompositionsRenderer } from '../renderers/compositions-renderer'
-import { ComponentRenderer } from '../renderers/component-renderer'
 
 configure({ adapter: new Adapter() })
 
-const { createRegisterableComponent, createRegisterableComposition } = getRegistrationCreators<{}>()
+const { createRegisterableComponent } = getRegistrationCreators<{}>()
 
 it('can hook component middleware', () => {
     let middlewareCalled: any

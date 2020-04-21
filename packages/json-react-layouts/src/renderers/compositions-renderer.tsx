@@ -34,7 +34,7 @@ export const CompositionsRenderer: React.FC<CompositionsRendererProps> = ({
     log.debug(
         {
             renderPathPrefix,
-            compositions: compositions.map((composition) => ({
+            compositions: compositions.map(composition => ({
                 type: composition.type,
             })),
         },
@@ -62,6 +62,7 @@ export const CompositionsRenderer: React.FC<CompositionsRendererProps> = ({
                         log={log}
                         componentMiddleware={componentMiddleware}
                         compositionMiddleware={compositionMiddleware}
+                        additionalComponentProps={{}}
                     />
                 )
             })}
