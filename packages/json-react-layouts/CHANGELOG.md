@@ -1,5 +1,11 @@
 # json-react-layouts
 
+## 3.0.0-beta.6
+
+### Minor Changes
+
+-   9a6621d: Upgraded dependencies
+
 ## 3.0.0-beta.5
 
 ### Minor Changes
