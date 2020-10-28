@@ -7,6 +7,6 @@
     "license": "MIT",
     "repository": "github:sevenwestmedia-labs/json-react-layouts",
     "peerDependencies": {
-        "typescript-log": "^1.1.1"
+        "typescript-log": "^2.0.0"
     }
 }

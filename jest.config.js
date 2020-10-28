@@ -12,7 +12,7 @@ module.exports = {
     testRegex: '(\\.(test|spec))\\.(ts|tsx)$',
     globals: {
         'ts-jest': {
-            tsConfig: 'tsconfig.test.json',
+            tsconfig: 'tsconfig.test.json',
         },
     },
     moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),

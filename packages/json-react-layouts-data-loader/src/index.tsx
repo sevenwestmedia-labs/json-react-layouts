@@ -41,7 +41,7 @@ export function init<Services extends object>(
     >
     middleware: RendererMiddleware<Services, {}>
 } {
-    const ComponentDataLoader = resources.registerResource<any, LoadArguments<Services>>(
+    const useComponentData = resources.registerResource<any, LoadArguments<Services>>(
         'component-data-loader',
         ({
             dataDefinitionArgs,
@@ -129,34 +129,32 @@ export function init<Services extends object>(
                     componentProps = { ...componentProps, dataDefinitionArgs }
                 }
 
+                // eslint-disable-next-line react-hooks/rules-of-hooks
+                const renderProps = useComponentData({
+                    dataDefinition,
+                    dataDefinitionArgs,
+                    layout: services.layout,
+                })
+
+                if (!renderProps.lastAction.success) {
+                    // We have failed to load data, use error boundaries
+                    // to send error back up and render error page
+                    throw renderProps.lastAction.error
+                }
+
+                const data: ComponentState<any> = renderProps.data.hasData
+                    ? { data: { loaded: true, result: renderProps.data.result } }
+                    : { data: { loaded: false } }
+
                 return (
-                    <ComponentDataLoader
-                        layout={services.layout}
-                        dataDefinition={dataDefinition}
-                        dataDefinitionArgs={dataDefinitionArgs}
-                        renderData={renderProps => {
-                            if (!renderProps.lastAction.success) {
-                                // We have failed to load data, use error boundaries
-                                // to send error back up and render error page
-                                throw renderProps.lastAction.error
-                            }
-
-                            const data: ComponentState<any> = renderProps.data.hasData
-                                ? { data: { loaded: true, result: renderProps.data.result } }
-                                : { data: { loaded: false } }
-
-                            return (
-                                next(
-                                    {
-                                        ...componentProps,
-                                        ...data,
-                                    },
-                                    middlewareProps,
-                                    services,
-                                ) || null
-                            )
-                        }}
-                    />
+                    next(
+                        {
+                            ...componentProps,
+                            ...data,
+                        },
+                        middlewareProps,
+                        services,
+                    ) || null
                 )
             }
 
