@@ -1,5 +1,13 @@
 # json-react-layouts-data-loader
 
+## 4.0.0-beta.7
+
+### Patch Changes
+
+-   ddf9a2e: Fixed issue where middleware is violating the rules of hooks
+-   Updated dependencies [ddf9a2e]
+    -   json-react-layouts@3.0.0-beta.7
+
 ## 4.0.0-beta.6
 
 ### Minor Changes

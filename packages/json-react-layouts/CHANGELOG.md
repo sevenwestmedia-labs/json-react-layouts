@@ -1,5 +1,11 @@
 # json-react-layouts
 
+## 3.0.0-beta.7
+
+### Patch Changes
+
+-   ddf9a2e: Fixed issue where middleware is violating the rules of hooks
+
 ## 3.0.0-beta.6
 
 ### Minor Changes
