@@ -10,7 +10,6 @@ import { DataLoaderResources } from 'react-ssr-data-loader'
 
 import { ComponentState, LoadArguments, DataDefinition, MaybeLoaded, LoadData } from './DataLoading'
 import { getComponentDataArgs } from './get-data-args'
-import { ComponentProps } from 'json-react-layouts/dist/cjs/renderers/component-renderer'
 
 type RenderComponentWithDataProps<
     ComponentProps extends {},
@@ -76,9 +75,9 @@ export function init<Services extends object>(
         middlewareProps,
     }: {
         dataDefinition: DataDefinition<any, any, Services, any>
-        componentProps: ComponentProps
+        componentProps: any
         services: MiddlwareServices<Services>
-        next: MiddlwareHandler<ComponentProps, {}, Services>
+        next: MiddlwareHandler<any, {}, Services>
         middlewareProps: {}
     }) {
         const dataDefinitionArgs = dataDefinition.useRuntimeParams
