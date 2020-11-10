@@ -1,5 +1,11 @@
 import React from 'react'
-import { RendererMiddleware, ComponentRegistration, RenderFunction } from 'json-react-layouts'
+import {
+    RendererMiddleware,
+    ComponentRegistration,
+    RenderFunction,
+    MiddlwareHandler,
+    MiddlwareServices,
+} from 'json-react-layouts'
 import { DataLoaderResources } from 'react-ssr-data-loader'
 
 import { ComponentState, LoadArguments, DataDefinition, MaybeLoaded, LoadData } from './DataLoading'
@@ -61,6 +67,60 @@ export function init<Services extends object>(
         ['dataDefinitionArgs'],
     )
 
+    function WithDataLoad({
+        dataDefinition,
+        componentProps,
+        services,
+        next,
+        middlewareProps,
+    }: {
+        dataDefinition: DataDefinition<any, any, Services, any>
+        componentProps: any
+        services: MiddlwareServices<Services>
+        next: MiddlwareHandler<any, {}, Services>
+        middlewareProps: {}
+    }) {
+        const dataDefinitionArgs = dataDefinition.useRuntimeParams
+            ? {
+                  ...componentProps.dataDefinitionArgs,
+                  ...dataDefinition.useRuntimeParams(
+                      componentProps.dataDefinitionArgs,
+                      services.services,
+                  ),
+              }
+            : componentProps.dataDefinitionArgs
+
+        if (dataDefinition.useRuntimeParams) {
+            componentProps = { ...componentProps, dataDefinitionArgs }
+        }
+
+        const renderProps = useComponentData({
+            dataDefinition,
+            dataDefinitionArgs,
+            layout: services.layout,
+        })
+
+        if (!renderProps.lastAction.success) {
+            // We have failed to load data, use error boundaries
+            // to send error back up and render error page
+            throw renderProps.lastAction.error
+        }
+
+        const data: ComponentState<any> = renderProps.data.hasData
+            ? { data: { loaded: true, result: renderProps.data.result } }
+            : { data: { loaded: false } }
+        return (
+            next(
+                {
+                    ...componentProps,
+                    ...data,
+                },
+                middlewareProps,
+                services,
+            ) || null
+        )
+    }
+
     return {
         createRegisterableComponentWithData: function createRegisterableComponentWithData<
             ComponentType extends string,
@@ -115,46 +175,14 @@ export function init<Services extends object>(
             )
 
             if (dataDefinition) {
-                const dataDefinitionArgs = dataDefinition.useRuntimeParams
-                    ? {
-                          ...componentProps.dataDefinitionArgs,
-                          ...dataDefinition.useRuntimeParams(
-                              componentProps.dataDefinitionArgs,
-                              services.services,
-                          ),
-                      }
-                    : componentProps.dataDefinitionArgs
-
-                if (dataDefinition.useRuntimeParams) {
-                    componentProps = { ...componentProps, dataDefinitionArgs }
-                }
-
-                // eslint-disable-next-line react-hooks/rules-of-hooks
-                const renderProps = useComponentData({
-                    dataDefinition,
-                    dataDefinitionArgs,
-                    layout: services.layout,
-                })
-
-                if (!renderProps.lastAction.success) {
-                    // We have failed to load data, use error boundaries
-                    // to send error back up and render error page
-                    throw renderProps.lastAction.error
-                }
-
-                const data: ComponentState<any> = renderProps.data.hasData
-                    ? { data: { loaded: true, result: renderProps.data.result } }
-                    : { data: { loaded: false } }
-
                 return (
-                    next(
-                        {
-                            ...componentProps,
-                            ...data,
-                        },
-                        middlewareProps,
-                        services,
-                    ) || null
+                    <WithDataLoad
+                        dataDefinition={dataDefinition}
+                        componentProps={componentProps}
+                        services={services}
+                        next={next}
+                        middlewareProps={middlewareProps}
+                    />
                 )
             }
 

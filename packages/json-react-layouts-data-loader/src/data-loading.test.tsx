@@ -60,7 +60,7 @@ it('can load data for component', async () => {
     )
 
     expect(wrapper.find(TestComponentWithData).text()).toBe('Loading')
-    await new Promise(resolve => setTimeout(resolve))
+    await act(() => new Promise(resolve => setTimeout(resolve)))
 
     const component = wrapper.update().find(TestComponentWithData)
     expect(component.text()).toBe('Length: 3')
@@ -216,7 +216,7 @@ it('component can provide additional arguments dynamically', async () => {
         </DataProvider>,
     )
 
-    await new Promise(resolve => setTimeout(resolve))
+    await act(() => new Promise(resolve => setTimeout(resolve)))
 
     let component = wrapper.update().find(TestComponentWithData)
     expect(component.text()).toBe('Length: 6')
@@ -231,7 +231,7 @@ it('component can provide additional arguments dynamically', async () => {
     act(() => {
         updateMultiplier(3)
     })
-    await new Promise(resolve => setTimeout(resolve))
+    await act(() => new Promise(resolve => setTimeout(resolve)))
 
     component = wrapper.update().find(TestComponentWithData)
     expect(component.text()).toBe('Length: 9')
