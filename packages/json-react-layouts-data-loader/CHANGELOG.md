@@ -1,5 +1,13 @@
 # json-react-layouts-data-loader
 
+## 4.0.0-beta.8
+
+### Patch Changes
+
+-   de1994c: Fixed crash when using hooks inside useRuntimeParams
+-   Updated dependencies [de1994c]
+    -   json-react-layouts@3.0.0-beta.8
+
 ## 4.0.0-beta.7
 
 ### Patch Changes
