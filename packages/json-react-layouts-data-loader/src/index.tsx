@@ -67,6 +67,56 @@ export function init<Services extends object>(
         ['dataDefinitionArgs'],
     )
 
+    function DataLoaderWithRuntimeParams({
+        dataDefinition,
+        componentProps,
+        services,
+        next,
+        middlewareProps,
+    }: {
+        dataDefinition: DataDefinition<any, any, Services, any>
+        componentProps: any
+        services: MiddlwareServices<Services>
+        next: MiddlwareHandler<any, {}, Services>
+        middlewareProps: {}
+    }) {
+        const dataDefinitionArgs = {
+            ...componentProps.dataDefinitionArgs,
+            ...dataDefinition.useRuntimeParams!(
+                componentProps.dataDefinitionArgs,
+                services.services,
+            ),
+        }
+
+        componentProps = { ...componentProps, dataDefinitionArgs }
+
+        const renderProps = useComponentData({
+            dataDefinition,
+            dataDefinitionArgs,
+            layout: services.layout,
+        })
+
+        if (!renderProps.lastAction.success) {
+            // We have failed to load data, use error boundaries
+            // to send error back up and render error page
+            throw renderProps.lastAction.error
+        }
+
+        const data: ComponentState<any> = renderProps.data.hasData
+            ? { data: { loaded: true, result: renderProps.data.result } }
+            : { data: { loaded: false } }
+        return (
+            next(
+                {
+                    ...componentProps,
+                    ...data,
+                },
+                middlewareProps,
+                services,
+            ) || null
+        )
+    }
+
     function WithDataLoad({
         dataDefinition,
         componentProps,
@@ -80,19 +130,7 @@ export function init<Services extends object>(
         next: MiddlwareHandler<any, {}, Services>
         middlewareProps: {}
     }) {
-        const dataDefinitionArgs = dataDefinition.useRuntimeParams
-            ? {
-                  ...componentProps.dataDefinitionArgs,
-                  ...dataDefinition.useRuntimeParams(
-                      componentProps.dataDefinitionArgs,
-                      services.services,
-                  ),
-              }
-            : componentProps.dataDefinitionArgs
-
-        if (dataDefinition.useRuntimeParams) {
-            componentProps = { ...componentProps, dataDefinitionArgs }
-        }
+        const dataDefinitionArgs = componentProps.dataDefinitionArgs
 
         const renderProps = useComponentData({
             dataDefinition,
@@ -175,6 +213,18 @@ export function init<Services extends object>(
             )
 
             if (dataDefinition) {
+                if (dataDefinition.useRuntimeParams) {
+                    return (
+                        <DataLoaderWithRuntimeParams
+                            dataDefinition={dataDefinition}
+                            componentProps={componentProps}
+                            services={services}
+                            next={next}
+                            middlewareProps={middlewareProps}
+                        />
+                    )
+                }
+
                 return (
                     <WithDataLoad
                         dataDefinition={dataDefinition}
