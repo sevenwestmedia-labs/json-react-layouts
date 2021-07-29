@@ -1,6 +1,6 @@
 import React from 'react'
 import { act } from 'react-dom/test-utils'
-import Adapter from 'enzyme-adapter-react-16'
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17'
 import { init } from '.'
 import { DataDefinition } from './DataLoading'
 import { DataLoaderResources, DataProvider } from 'react-ssr-data-loader'
