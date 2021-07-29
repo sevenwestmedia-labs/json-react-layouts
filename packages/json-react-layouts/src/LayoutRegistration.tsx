@@ -11,7 +11,6 @@ import {
     CompositionRegistrations,
     CompositionRegistration,
 } from './CompositionRegistrar'
-import { Logger, noopLogger } from 'typescript-log'
 import { RendererMiddleware, getRegistrationCreators, LayoutApi } from '.'
 import { CompositionRenderer } from './renderers/composition-renderer'
 import { CompositionsRenderer } from './renderers/compositions-renderer'
@@ -26,7 +25,6 @@ interface RegisterComponentsStep<Services extends {}> {
         registerCallback: (
             registrar: ComponentRegistrationBuilderStart<Services>,
         ) => ComponentRegistrationBuilder<Services, Components, ComponentMiddlewares>,
-        log?: Logger,
     ): RegisterCompositionsStep<Components, ComponentMiddlewares, Services>
 }
 
@@ -147,8 +145,6 @@ export function LayoutRegistration<Services extends {}>(): RegisterComponentsSte
                 },
             })
 
-            let log: Logger = noopLogger()
-
             // the following exposes registerCompositions
             return {
                 registerCompositions<
@@ -189,7 +185,7 @@ export function LayoutRegistration<Services extends {}>(): RegisterComponentsSte
                             if (!foundComponent && process.env.NODE_ENV !== 'production') {
                                 // continue rendering in production only. otherwise throw, this is so the site does not crash
                                 // empty area will be rendered instead
-                                log.warn({ type }, `Component has not been registered`)
+                                console.warn({ type }, `Component has not been registered`)
                             }
                             return foundComponent
                         },
@@ -199,7 +195,7 @@ export function LayoutRegistration<Services extends {}>(): RegisterComponentsSte
                             const foundComposition = registeredCompositions[type]
                             if (!foundComposition && process.env.NODE_ENV !== 'production') {
                                 // Warn a component is missing if not in production
-                                log.warn({ type }, `Composition has not been registered`)
+                                console.warn({ type }, `Composition has not been registered`)
                             }
                             return foundComposition
                         },
@@ -231,9 +227,7 @@ export function LayoutRegistration<Services extends {}>(): RegisterComponentsSte
                             } as any
                         },
 
-                        createRenderers({ services, log: userLog = noopLogger() }) {
-                            log = userLog
-
+                        createRenderers({ services }) {
                             return {
                                 renderComponents(...components) {
                                     return (
@@ -252,7 +246,6 @@ export function LayoutRegistration<Services extends {}>(): RegisterComponentsSte
                                 renderCompositions(...compositions) {
                                     return (
                                         <CompositionsRenderer
-                                            log={log}
                                             layoutApi={layout}
                                             componentMiddleware={middlewares.component}
                                             compositionMiddleware={middlewares.composition}
@@ -295,7 +288,6 @@ export function LayoutRegistration<Services extends {}>(): RegisterComponentsSte
                                         componentMiddleware={middlewares.component}
                                         compositionMiddleware={middlewares.composition}
                                         additionalComponentProps={additionalComponentProps}
-                                        log={log}
                                     />
                                 )
                             },

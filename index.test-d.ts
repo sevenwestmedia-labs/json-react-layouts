@@ -64,7 +64,7 @@ it('can create a content area instance', () => {
             registrar.registerComposition(testCompositionRegistration),
         )
 
-    const components = layout.components(
+    const components = [
         layout.component({
             type: 'test',
             props: {},
@@ -73,7 +73,7 @@ it('can create a content area instance', () => {
             type: 'test2',
             props: {},
         }),
-    )
+    ]
 
     expectType<
         Array<
@@ -99,7 +99,7 @@ it('can create a composition instance', () => {
         type: 'test-composition',
         props: {},
         contentAreas: {
-            main: layout.components(
+            main: [
                 layout.component({
                     type: 'test',
                     props: {},
@@ -108,18 +108,11 @@ it('can create a composition instance', () => {
                     type: 'test2',
                     props: {},
                 }),
-            ),
+            ],
         },
     })
 
-    expectType<
-        CompositionInformation<
-            'test-composition',
-            ComponentInformation<'test', {}> | ComponentInformation<'test2', {}>,
-            'main',
-            {}
-        >
-    >(composition)
+    expectType<CompositionInformation<'test-composition', 'main', {}>>(composition)
 })
 
 it('can create a page instance', () => {
@@ -156,18 +149,8 @@ it('can create a page instance', () => {
 
     expectType<
         Array<
-            | CompositionInformation<
-                  'test-composition',
-                  ComponentInformation<'test', {}> | ComponentInformation<'test2', {}>,
-                  'main',
-                  {}
-              >
-            | CompositionInformation<
-                  'test-composition-with-props',
-                  ComponentInformation<'test', {}> | ComponentInformation<'test2', {}>,
-                  'main',
-                  {}
-              >
+            | CompositionInformation<'test-composition', 'main', {}>
+            | CompositionInformation<'test-composition-with-props', 'main', {}>
         >
     >(compositions)
 })

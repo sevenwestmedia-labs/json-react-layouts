@@ -1,5 +1,4 @@
 import { ComponentInformation, CompositionInformation } from '.'
-import { Logger } from 'typescript-log'
 import { ComponentRegistrations } from './ComponentRegistrar'
 import { CompositionRegistrations } from './CompositionRegistrar'
 import { ComponentCheckedMessage, CompositionCheckedMessage } from './LayoutRegistration'
@@ -31,7 +30,7 @@ export interface LayoutApi<
     componentRegistrations: ComponentRegistrations
     compositionRegistrations: CompositionRegistrations
 
-    createRenderers(options: { services: Services; log?: Logger }): RenderLayouts
+    createRenderers(options: { services: Services }): RenderLayouts
     // TODO Test out compositions not having the list of components in their types
     // and just using these helpers to put components in the content areas
 }

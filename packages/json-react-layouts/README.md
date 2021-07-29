@@ -214,3 +214,22 @@ LayoutRegistration().registerComponents(registrar =>
         ),
 )
 ```
+
+## Debug Logging
+
+JSON React Layouts has debug logging available if you want it. We use the NPM package [debug](https://www.npmjs.com/package/debug) for this.
+
+### In browser
+
+Set `localStorage.debug = 'jrl:*'` for instance. Then refresh
+
+### In node
+
+Set DEBUG="jrl.\*"
+
+### Available debug scopes
+
+`jrl:compositions`
+`jrl:composition`
+`jrl:component`
+`jrl:middleware`

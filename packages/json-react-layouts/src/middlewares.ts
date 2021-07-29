@@ -1,10 +1,13 @@
 import { LayoutApi } from './LayoutApi'
+import { jrlDebug } from './log'
 import { ComponentProps } from './renderers/component-renderer'
 
 export interface MiddlwareServices<Services extends {}> {
     layout: LayoutApi<any, any, any, any, Services>
     services: Services
 }
+
+export const middlewareDebug = jrlDebug.extend('middleware')
 
 /** The render function for components, converts the route props into a react component */
 export type MiddlwareHandler<TProps, TMiddlewareProps extends {}, LoadDataServices extends {}> = (
@@ -30,6 +33,8 @@ export function composeMiddleware<Services extends {}, MiddlewareProps extends {
         ...steps: Array<RendererMiddleware<Services, MiddlewareProps>>
     ): React.ReactElement<any> | false | null => {
         const [step, ...next] = steps
+        middlewareDebug('Executing', { name: step.name, props, middlewareProps })
+
         return step
             ? step(
                   props,
