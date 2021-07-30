@@ -1,0 +1,12 @@
+{
+    "name": "json-react-layouts",
+    "version": "3.0.0-beta.8",
+    "main": "dist/cjs/index.js",
+    "module": "dist/esm/index.js",
+    "sideEffects": false,
+    "license": "MIT",
+    "repository": "github:sevenwestmedia-labs/json-react-layouts",
+    "dependencies": {
+        "debug": "^4.0.0"
+    }
+}

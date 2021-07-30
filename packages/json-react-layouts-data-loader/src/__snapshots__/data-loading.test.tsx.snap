@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`can load data for component 1`] = `
+Object {
+  "componentRenderPath": "[0]test-composition/main/[0]",
+  "componentType": "test-with-data",
+  "dataProps": Object {
+    "data": Object {
+      "dataDefinitionArgs": Object {
+        "dataArg": "Foo",
+      },
+      "loaded": true,
+      "result": 3,
+    },
+  },
+  "length": 3,
+}
+`;

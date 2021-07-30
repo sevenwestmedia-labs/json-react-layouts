@@ -1,0 +1,12 @@
+{
+    "extends": "./tsconfig.settings.json",
+    "compilerOptions": {
+        "target": "es2018",
+        "rootDir": "./",
+        "baseUrl": ".",
+        "paths": {
+            "json-react-layouts": ["./packages/json-react-layouts/src/index.ts"]
+        }
+    },
+    "exclude": ["dist"]
+}

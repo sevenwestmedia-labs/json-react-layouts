@@ -1,10 +1,8 @@
 # JSON React layouts
 
-[![npm](https://img.shields.io/npm/v/json-react-layouts)](https://www.npmjs.com/package/json-react-layouts)
-
 JSON React layouts enables registration of components and layouts (called compositions) to open up the possibilities of pages where the layout is driven by data.
 
-This can be used to create dynamic pages/user configurable dashboards and a whole range of other scenarios where the layout is defined by the data.
+Ever wanted to allow your users to customise the layout of a page? This library solves that type of problem.
 
 ## Why
 
@@ -27,39 +25,38 @@ const definition = layout.compositions([
     {
         type: '50-50-layout',
         contentAreas: {
-
             left: [
                 {
                     type: 'header',
                     props: {
-                        text: 'My page header'
-                    }
+                        text: 'My page header',
+                    },
                 },
                 {
                     type: 'blog-entry',
                     props: {
-                        id: 1
-                    }
-                }
+                        id: 1,
+                    },
+                },
             ],
 
             right: [
                 {
                     type: 'ad',
                     props: {
-                        size: 'mrec'
-                    }
-                }
-            ]
-        }
-    }
+                        size: 'mrec',
+                    },
+                },
+            ],
+        },
+    },
 ])
+
+const renderer = layout.createRenderer({ services: {} })
 
 // Now we can get json-react-layouts to render that definition:
 
-<layout.CompositionsRenderer
-    compositions={definition}
-/>
+renderer.renderCompositions(definition)
 ```
 
 ## Terminology
@@ -96,7 +93,7 @@ export const testCompositionRegistration = createRegisterableComposition<
 ))
 
 // Create your `LayoutRegistration` then register your components
-const layout = new LayoutRegistration()
+const layout = LayoutRegistration()
     .registerComponents(registrar =>
         registrar
             .registerComponent(myComponentRegistration)
@@ -122,7 +119,7 @@ These two examples are the same
 
 ```ts
 // Example 1
-const definition = layout.compositions([ // This is where your compilation error will be
+const definition = layout.compositions( // This is where your compilation error will be
     {
         type: '50-50-layout',
         contentAreas: {
@@ -140,7 +137,7 @@ const definition = layout.compositions([ // This is where your compilation error
             ]
         }
     }
-])
+)
 
 // Example 2
 const definition = layout.compositions([
@@ -161,7 +158,7 @@ const definition = layout.compositions([
             ]
         }
     }
-])
+)
 ```
 
 As you can see, you can use the helper functions to narrow type errors. They are also handy for extracting components into multiple variables.
@@ -203,7 +200,7 @@ JSON React Layouts allows you to add middlewares around component rendering, thi
 For example, if you wanted to expose a skip render property on all components you could write a middleware which looked like this:
 
 ```ts
-new LayoutRegistration().registerComponents(registrar =>
+LayoutRegistration().registerComponents(registrar =>
     registrar
         .registerComponent(myComponentRegistration)
         .registerMiddleware(
@@ -218,18 +215,21 @@ new LayoutRegistration().registerComponents(registrar =>
 )
 ```
 
-## FAQ
+## Debug Logging
 
-### What happens if I just want to render components (without compositions)
+JSON React Layouts has debug logging available if you want it. We use the NPM package [debug](https://www.npmjs.com/package/debug) for this.
 
-You can create a renderer which just renders components from the component registrar.
+### In browser
 
-```tsx
-const ComponentsRenderer = new LayoutRegistration()
-    .registerComponents(registrar => registrar.registerComponent(myComponentRegistration))
-    .createComponentsRenderer()
+Set `localStorage.debug = 'json-react-layout:*'` for instance. Then refresh
 
-const wrapper = mount(
-    <ComponentsRenderer components={[{ type: '...', props: {} }]} services={{}} />,
-)
-```
+### In node
+
+Set DEBUG="json-react-layout:\*"
+
+### Available debug scopes
+
+`json-react-layout:compositions`
+`json-react-layout:composition`
+`json-react-layout:component`
+`json-react-layout:middleware`
