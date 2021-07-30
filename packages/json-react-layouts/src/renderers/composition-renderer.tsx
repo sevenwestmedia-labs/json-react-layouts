@@ -1,8 +1,8 @@
 import React from 'react'
 import { ComponentRegistrations } from '../ComponentRegistrar'
 import { CompositionInformation, CompositionRegistrations } from '../CompositionRegistrar'
-import { Logger } from 'typescript-log'
 import { LayoutApi } from '../LayoutApi'
+import { jrlDebug } from '../log'
 import { MiddlwareServices, RendererMiddleware } from '../middlewares'
 import { ComponentsRenderer } from './components-renderer'
 
@@ -16,8 +16,9 @@ export interface CompositionRendererProps {
     additionalComponentProps: {}
     layoutApi: LayoutApi<any, any, any, any, any>
     services: any
-    log: Logger
 }
+
+const compositionDebug = jrlDebug.extend('composition')
 
 export const CompositionRenderer: React.FunctionComponent<CompositionRendererProps> = ({
     services,
@@ -29,19 +30,15 @@ export const CompositionRenderer: React.FunctionComponent<CompositionRendererPro
     componentMiddleware,
     compositionRegistrations,
     additionalComponentProps,
-    log,
 }): React.ReactElement<any> | null => {
     /**
      * The ContentAreaRenderer componentRenderPaths need to append `/[contentArea key]'
      * key as this logic is duped outside of react for the ssr
      */
-    log.debug(
-        {
-            componentRenderPath: componentRenderPath,
-            type: composition.type,
-        },
-        'Rendering composition',
-    )
+    compositionDebug('Rendering: %o', {
+        componentRenderPath: componentRenderPath,
+        type: composition.type,
+    })
 
     const { contentAreas, props: compositionProps, ...middlewareProps } = composition
 
@@ -67,15 +64,12 @@ export const CompositionRenderer: React.FunctionComponent<CompositionRendererPro
             [key: string]: React.ReactElement<any>
         }>((acc, contentAreaName) => {
             const componentsRenderPath = `${componentRenderPath}/${contentAreaName}`
-            log.debug(
-                {
-                    componentsRenderPath,
-                    components: composition.contentAreas[contentAreaName].map(component => ({
-                        type: component.type,
-                    })),
-                },
-                'Rendering content area',
-            )
+            compositionDebug('Rendering content area: %o', {
+                componentsRenderPath,
+                components: composition.contentAreas[contentAreaName].map(component => ({
+                    type: component.type,
+                })),
+            })
 
             const additionalProps = compositionRegistration?.componentProps
                 ? compositionRegistration?.componentProps(contentAreaName, compositionRenderProps)

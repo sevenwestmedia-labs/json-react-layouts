@@ -3,10 +3,10 @@ import React from 'react'
 import { getComponentPath } from '../helpers'
 import { CompositionInformation, CompositionRegistrations } from '../CompositionRegistrar'
 import { LayoutApi } from '../LayoutApi'
-import { Logger } from 'typescript-log'
 import { CompositionRenderer } from './composition-renderer'
 import { ComponentRegistrations } from '../ComponentRegistrar'
 import { RendererMiddleware } from '../middlewares'
+import { jrlDebug } from '../log'
 
 export interface CompositionsRendererProps {
     layoutApi: LayoutApi<any, any, any, any, any>
@@ -17,8 +17,9 @@ export interface CompositionsRendererProps {
     compositionMiddleware: RendererMiddleware<any, any>
     renderPathPrefix?: string
     services: any
-    log: Logger
 }
+
+const compositionDebug = jrlDebug.extend('compositions')
 
 export const CompositionsRenderer: React.FC<CompositionsRendererProps> = ({
     services,
@@ -29,17 +30,13 @@ export const CompositionsRenderer: React.FC<CompositionsRendererProps> = ({
     compositionMiddleware,
     compositions,
     layoutApi,
-    log,
 }) => {
-    log.debug(
-        {
-            renderPathPrefix,
-            compositions: compositions.map(composition => ({
-                type: composition.type,
-            })),
-        },
-        'Rendering compositions',
-    )
+    compositionDebug('Rendering compositions: %o', {
+        renderPathPrefix,
+        compositions: compositions.map(composition => ({
+            type: composition.type,
+        })),
+    })
 
     return (
         <React.Fragment>
@@ -59,7 +56,6 @@ export const CompositionsRenderer: React.FC<CompositionsRendererProps> = ({
                         composition={composition}
                         layoutApi={layoutApi}
                         services={services}
-                        log={log}
                         componentMiddleware={componentMiddleware}
                         compositionMiddleware={compositionMiddleware}
                         additionalComponentProps={{}}

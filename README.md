@@ -1,10 +1,10 @@
 # JSON React layouts
 
-[![Build Status](https://travis-ci.com/sevenwestmedia-labs/json-react-layouts.svg?branch=master)](https://travis-ci.com/sevenwestmedia-labs/json-react-layouts)
 [![npm](https://img.shields.io/npm/v/json-react-layouts)](https://www.npmjs.com/package/json-react-layouts)
-[![Greenkeeper badge](https://badges.greenkeeper.io/sevenwestmedia-labs/json-react-layouts.svg)](https://greenkeeper.io/)
 
 JSON React layouts enables registration of components and layouts (called compositions) to open up the possibilities of pages where the layout is driven by data.
+
+This can be used to create dynamic pages/user configurable dashboards and a whole range of other scenarios where the layout is defined by the data.
 
 ## Why
 
@@ -89,12 +89,11 @@ export const myComponentRegistration = createRegisterableComponent('component-ke
     <MyComponent />
 ))
 
-export const testCompositionRegistration = createRegisterableComposition<'main'>()(
-    'test-composition-with-props',
-    (contentAreas, props: { myProp: string }) => (
-        <TestComposition main={contentAreas.main} myProp={props.myProp} />
-    ),
-)
+export const testCompositionRegistration = createRegisterableComposition<
+    'main'
+>()('test-composition-with-props', (contentAreas, props: { myProp: string }) => (
+    <TestComposition main={contentAreas.main} myProp={props.myProp} />
+))
 
 // Create your `LayoutRegistration` then register your components
 const layout = new LayoutRegistration()

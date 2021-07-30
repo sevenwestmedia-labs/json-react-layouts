@@ -2,6 +2,7 @@ import React from 'react'
 import { ComponentRegistrations } from '../ComponentRegistrar'
 import { LayoutApi } from '../LayoutApi'
 import { RendererMiddleware, MiddlwareServices, MiddlwareHandler } from '../middlewares'
+import { jrlDebug } from '../log'
 
 export interface ComponentProps {
     componentType: string
@@ -18,6 +19,8 @@ export interface ComponentRendererProps {
     services: any
     componentMiddleware: RendererMiddleware<any, any>
 }
+
+const componentDebug = jrlDebug.extend('component')
 
 export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
     type,
@@ -44,10 +47,9 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
         _,
         services,
     ) => {
-        // component! because we have checked if it's undefined above
-        // We are just in a callback here so TypeScript does not maintain the narrowing
-        const rendered =
-            component!.render(middlewareComponentProps || componentProps, services.services) || null
+        const props = middlewareComponentProps || componentProps
+        componentDebug('Rendering: %o', { type: component.type, props })
+        const rendered = component.render(props, services.services) || null
 
         return rendered
     }
