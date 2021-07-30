@@ -1,5 +1,16 @@
 # json-react-layouts-data-loader
 
+## 4.0.0-beta.9
+
+### Minor Changes
+
+-   c3d964b: Switched typescript-log to use debug package, see readme for how to enable debug logging
+
+### Patch Changes
+
+-   Updated dependencies [c3d964b]
+    -   json-react-layouts@3.0.0-beta.9
+
 ## 4.0.0-beta.8
 
 ### Patch Changes
