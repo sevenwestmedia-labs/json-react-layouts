@@ -2003,18 +2003,6 @@ eslint-config-prettier@^8.3.0:
   resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-8.3.0.tgz#f7471b20b6fe8a9a9254cc684454202886a2dd7a"
   integrity sha512-BgZuLUSeKzvlL/VUjx/Yb787VQ26RU3gGjA3iiFvdsp/2bMfVIWUVP7tjxtjS0e+HP409cPlPvNkQloz8C91ew==
 
-eslint-config-wanews-base@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-wanews-base/-/eslint-config-wanews-base-2.2.0.tgz#77508ae63a71329467609b82fd27108305e6f7c9"
-  integrity sha512-S8ebnWiWMAeAr0YdgG+iIYqni+YTM/tfab4eo2E/oXvL8VrOFjk/1fnOOY46XC1ODqeVX3htvgz1O3Q19bRarw==
-
-eslint-config-wanews@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-wanews/-/eslint-config-wanews-2.2.0.tgz#8afaa9d31cf8a180179b98e1ed5ccfa3feaf5071"
-  integrity sha512-q6eDY8O0HAiag6pd35qX6ne3axoV5XW8GNq4PAhN0RuqAyT8XjdQL0FHpK2+zoJKX03LtwxkKdOEoRFS9bjp8w==
-  dependencies:
-    eslint-config-wanews-base "^2.2.0"
-
 eslint-formatter-pretty@^4.0.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/eslint-formatter-pretty/-/eslint-formatter-pretty-4.1.0.tgz#7a6877c14ffe2672066c853587d89603e97c7708"
