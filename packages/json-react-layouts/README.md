@@ -221,15 +221,15 @@ JSON React Layouts has debug logging available if you want it. We use the NPM pa
 
 ### In browser
 
-Set `localStorage.debug = 'jrl:*'` for instance. Then refresh
+Set `localStorage.debug = 'json-react-layout:*'` for instance. Then refresh
 
 ### In node
 
-Set DEBUG="jrl.\*"
+Set DEBUG="json-react-layout:\*"
 
 ### Available debug scopes
 
-`jrl:compositions`
-`jrl:composition`
-`jrl:component`
-`jrl:middleware`
+`json-react-layout:compositions`
+`json-react-layout:composition`
+`json-react-layout:component`
+`json-react-layout:middleware`
