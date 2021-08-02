@@ -7,7 +7,7 @@
     "sideEffects": false,
     "main": "out-tsc/index.js",
     "publishConfig": {
-        "main": "dist/cjs/index.js",
+        "main": "dist/index.js",
         "module": "dist/esm/index.js"
     },
     "dependencies": {

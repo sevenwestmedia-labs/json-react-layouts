@@ -3,7 +3,7 @@
     "version": "3.0.0",
     "main": "out-tsc/index.js",
     "publishConfig": {
-        "main": "dist/cjs/index.js",
+        "main": "dist/index.js",
         "module": "dist/esm/index.js"
     },
     "sideEffects": false,
