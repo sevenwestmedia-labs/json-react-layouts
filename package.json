@@ -6,7 +6,7 @@
     ],
     "scripts": {
         "build": "yarn tsc -b",
-        "package": "yarn tsup packages/json-react-layouts/src/index.ts --external debug --external react --target node14 --format cjs,esm --legacy-output -d packages/json-react-layouts/dist && yarn tsc -p packages/json-react-layouts --declaration --outDir packages/json-react-layouts/dist --emitDeclarationOnly && yarn tsup packages/json-react-layouts-data-loader/src/index.tsx --external debug --external react --target node14 --format cjs,esm --legacy-output -d packages/json-react-layouts-data-loader/dist && yarn tsc -p packages/json-react-layouts-data-loader --declaration --outDir packages/json-react-layouts-data-loader/dist --emitDeclarationOnly",
+        "package": "yarn tsup packages/json-react-layouts/src/index.ts --sourcemap --external debug --external react --target node14 --format cjs,esm --legacy-output -d packages/json-react-layouts/dist && yarn tsc -p packages/json-react-layouts --declaration --outDir packages/json-react-layouts/dist --emitDeclarationOnly && yarn tsup packages/json-react-layouts-data-loader/src/index.tsx --sourcemap --external debug --external react --target node14 --format cjs,esm --legacy-output -d packages/json-react-layouts-data-loader/dist && yarn tsc -p packages/json-react-layouts-data-loader --declaration --outDir packages/json-react-layouts-data-loader/dist --emitDeclarationOnly",
         "lint": "eslint --ext .js,.ts .",
         "test-types": "tsd",
         "test": "jest",
