@@ -1,7 +1,7 @@
 {
     "extends": "../../tsconfig.settings.json",
     "compilerOptions": {
-        "outDir": "./dist/cjs" /* Redirect output structure to the directory. */,
+        "outDir": "./out-tsc" /* Redirect output structure to the directory. */,
         "rootDir": "./src" /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */,
         "baseUrl": ".",
         "paths": {
@@ -13,5 +13,5 @@
             "path": "../json-react-layouts"
         }
     ],
-    "exclude": ["dist"]
+    "exclude": ["dist", "out-tsc"]
 }

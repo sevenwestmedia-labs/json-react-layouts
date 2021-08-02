@@ -6,12 +6,13 @@
     ],
     "scripts": {
         "build": "yarn tsc -b",
+        "package": "yarn tsup packages/json-react-layouts/src/index.ts --external debug --external react --target node14 --format cjs,esm --legacy-output -d packages/json-react-layouts/dist && yarn tsc -p packages/json-react-layouts --declaration --outDir packages/json-react-layouts/dist --emitDeclarationOnly && yarn tsup packages/json-react-layouts-data-loader/src/index.tsx --external debug --external react --target node14 --format cjs,esm --legacy-output -d packages/json-react-layouts-data-loader/dist && yarn tsc -p packages/json-react-layouts-data-loader --declaration --outDir packages/json-react-layouts-data-loader/dist --emitDeclarationOnly",
         "lint": "eslint --ext .js,.ts .",
         "test-types": "tsd",
         "test": "jest",
         "verify": "yarn build && yarn test && yarn lint",
         "changeset": "changeset",
-        "release": "yarn verify && changeset publish"
+        "release": "yarn verify && yarn package && changeset publish"
     },
     "devDependencies": {
         "@changesets/cli": "^2.16.0",
@@ -38,7 +39,7 @@
         "react-ssr-data-loader": "^2.0.0-next.4",
         "ts-jest": "^27.0.4",
         "tsd": "^0.17.0",
-        "tslib": "^2.3.0",
+        "tsup": "^4.12.5",
         "typescript": "4.3.5"
     }
 }

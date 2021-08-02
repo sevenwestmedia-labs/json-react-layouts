@@ -5,9 +5,11 @@
     "author": "Seven West Media WA",
     "license": "MIT",
     "sideEffects": false,
-    "main": "dist/cjs/index.js",
-    "module": "dist/esm/index.js",
-    "devDependencies": {},
+    "main": "out-tsc/index.js",
+    "publishConfig": {
+        "main": "dist/cjs/index.js",
+        "module": "dist/esm/index.js"
+    },
     "dependencies": {
         "json-react-layouts": "^3.0.0"
     },
