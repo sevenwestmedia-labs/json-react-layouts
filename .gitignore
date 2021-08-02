@@ -49,3 +49,6 @@ tests/**/*.js
 tests/**/*.js.map
 
 .DS_Store
+
+out-tsc
+tsconfig.tsbuildinfo
