@@ -1,5 +1,13 @@
 # json-react-layouts-data-loader
 
+## 4.0.1
+
+### Patch Changes
+
+-   3a3c67a: Fixed packaging issues where can throw depending on the tslib version of target project
+-   Updated dependencies [3a3c67a]
+    -   json-react-layouts@3.0.1
+
 ## 4.0.0
 
 ### Major Changes

@@ -1,5 +1,11 @@
 # json-react-layouts
 
+## 3.0.1
+
+### Patch Changes
+
+-   3a3c67a: Fixed packaging issues where can throw depending on the tslib version of target project
+
 ## 3.0.0
 
 ### Major Changes
