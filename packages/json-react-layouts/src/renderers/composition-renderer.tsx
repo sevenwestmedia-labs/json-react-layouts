@@ -36,8 +36,8 @@ export const CompositionRenderer: React.FunctionComponent<CompositionRendererPro
      * key as this logic is duped outside of react for the ssr
      */
     compositionDebug('Rendering: %o', {
-        componentRenderPath: componentRenderPath,
         type: composition.type,
+        componentRenderPath: componentRenderPath,
     })
 
     const { contentAreas, props: compositionProps, ...middlewareProps } = composition
@@ -95,7 +95,15 @@ export const CompositionRenderer: React.FunctionComponent<CompositionRendererPro
     }
 
     const middlewareRender =
-        compositionMiddleware(composition.props, middlewareProps, componentServices, render) || null
+        compositionMiddleware(
+            {
+                layoutType: composition.type,
+                ...composition.props,
+            },
+            middlewareProps,
+            componentServices,
+            render,
+        ) || null
 
     return middlewareRender
 }

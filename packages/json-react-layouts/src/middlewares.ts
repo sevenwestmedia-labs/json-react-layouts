@@ -1,6 +1,5 @@
 import { LayoutApi } from './LayoutApi'
 import { jrlDebug } from './log'
-import { ComponentProps } from './renderers/component-renderer'
 
 export interface MiddlwareServices<Services extends {}> {
     layout: LayoutApi<any, any, any, any, Services>
@@ -16,18 +15,23 @@ export type MiddlwareHandler<TProps, TMiddlewareProps extends {}, LoadDataServic
     services: MiddlwareServices<LoadDataServices>,
 ) => React.ReactElement<any> | false | null
 
+interface ComponentOrCompositionProps {
+    layoutType: string
+    [props: string]: any
+}
+
 export type RendererMiddleware<Services extends {}, MiddlewareProps extends {}> = (
-    props: ComponentProps,
+    props: ComponentOrCompositionProps,
     middlewareProps: MiddlewareProps,
     services: MiddlwareServices<Services>,
-    next: MiddlwareHandler<ComponentProps, MiddlewareProps, Services>,
+    next: MiddlwareHandler<ComponentOrCompositionProps, MiddlewareProps, Services>,
 ) => React.ReactElement<any> | false | null
 
 export function composeMiddleware<Services extends {}, MiddlewareProps extends {}>(
     componentMiddlewares: Array<RendererMiddleware<Services, MiddlewareProps>>,
 ): RendererMiddleware<Services, MiddlewareProps> {
     const pipeline = (
-        props: ComponentProps,
+        props: ComponentOrCompositionProps,
         middlewareProps: MiddlewareProps,
         services: MiddlwareServices<Services>,
         ...steps: Array<RendererMiddleware<Services, MiddlewareProps>>
