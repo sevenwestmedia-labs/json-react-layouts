@@ -3,7 +3,6 @@
 exports[`can load data for component 1`] = `
 Object {
   "componentRenderPath": "[0]test-composition/main/[0]",
-  "componentType": "test-with-data",
   "dataProps": Object {
     "data": Object {
       "dataDefinitionArgs": Object {
@@ -13,6 +12,58 @@ Object {
       "result": 3,
     },
   },
+  "layoutType": "test-with-data",
   "length": 3,
+}
+`;
+
+exports[`can load data for composition 1`] = `
+Object {
+  "dataProps": Object {
+    "data": Object {
+      "dataDefinitionArgs": Object {
+        "dataArg": "Foo",
+      },
+      "loaded": true,
+      "result": 3,
+    },
+  },
+  "layoutType": "test-with-data",
+  "length": 3,
+  "main": <ComponentsRenderer
+    additionalComponentProps={Object {}}
+    componentMiddleware={[Function]}
+    componentRegistrations={
+      Object {
+        "get": [Function],
+        "isRegistered": [Function],
+      }
+    }
+    componentRenderPath="[0]test-with-data/main"
+    components={
+      Array [
+        Object {
+          "props": Object {},
+          "type": "test-component",
+        },
+      ]
+    }
+    layoutApi={
+      Object {
+        "component": [Function],
+        "componentRegistrations": Object {
+          "get": [Function],
+          "isRegistered": [Function],
+        },
+        "composition": [Function],
+        "compositionRegistrations": Object {
+          "get": [Function],
+        },
+        "createRenderers": [Function],
+        "nestedComposition": [Function],
+      }
+    }
+    services={Object {}}
+  />,
 }
 `;
