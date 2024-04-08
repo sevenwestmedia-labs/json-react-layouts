@@ -1,17 +1,21 @@
-import { LayoutApi } from 'json-react-layouts'
 import { DataDefinition } from './DataLoading'
+import { ComponentRegistration } from '../../json-react-layouts/src/ComponentRegistrar'
+import { CompositionRegistration } from '../../json-react-layouts/src/CompositionRegistrar'
 
-export function getComponentDataArgs<Services extends {}>(
-    layout: LayoutApi<any, any, any, any, Services>,
-    componentType: string,
+type PotentialDataDefinition<Services extends {}> = (
+    | ComponentRegistration<any, any, any>
+    | CompositionRegistration<any, any, any, any>
+) & {
+    dataDefinition?: DataDefinition<any, any, Services, any>
+}
+
+export function getDataArgs<Services extends {}>(
+    registration:
+        | ComponentRegistration<any, any, any>
+        | CompositionRegistration<any, any, any, any>,
 ): DataDefinition<any, any, Services, any> | undefined {
-    const componentDataDefinition = layout.componentRegistrations.get(componentType)
-
-    // This can be undefined
-    if (!componentDataDefinition) {
-        return
-    }
-    const dataDefinition = (componentDataDefinition as any).dataDefinition
-
+    // Registration may or may not have a dataDefinition.
+    // Assertion to undefined | DataDefinition should be safe.
+    const dataDefinition = (registration as PotentialDataDefinition<Services>)?.dataDefinition
     return dataDefinition
 }
