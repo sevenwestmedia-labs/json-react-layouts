@@ -4,15 +4,9 @@
 
 ### Major Changes
 
--   94a9773: ## Breaking Changes
-
-    ### `json-react-layouts`
-
+-   94a9773:
     -   `RendererMiddleware` does not depend on `ComponentProps` anymore and will contain a `{ layoutType: string }` value instead to represent the component/composition type.
 
-    ### `json-react-layouts-data-loader`
-
-    -   `middleware` converted to `getMiddleware(type: 'composition' | 'component')` method to support composition middleware.
 
 ## 3.0.1
 
