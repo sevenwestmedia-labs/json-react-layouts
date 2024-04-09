@@ -15,12 +15,25 @@ interface MyServices {
 }
 
 const resources = new DataLoaderResources<MyServices>()
-const { middleware, createRegisterableComponentWithData } = init<MyServices>(resources)
+const {
+    getMiddleware,
+    createRegisterableComponentWithData,
+    createRegisterableCompositionWithData,
+} = init<MyServices>(resources)
 
-const componentRegistrar = new ComponentRegistrar()
-    // Register your components, then register the component data loading middleware
-    .registerMiddleware(middleware)
+const layout = LayoutRegistration()
+    .registerComponents(registrar =>
+        registrar
+            // Register your components, then register the component data loading middleware
+            .registerMiddleware(getMiddleware('component')),
+    )
+    .registerCompositions(registrar =>
+        registrar
+            // Register your compositions, then register the composition data loading middleware
+            .registerMiddleware(getMiddleware('composition')),
+    )
 
+// Data-loading component.
 export const testComponentWithDataRegistration = createRegisterableComponentWithData(
     'test-with-data',
     {
@@ -33,6 +46,28 @@ export const testComponentWithDataRegistration = createRegisterableComponentWith
         }
 
         return <TestComponentWithData data={data.result} />
+    },
+)
+
+// Data-loading composition.
+const testCompositionWithDataRegistration = createRegisterableCompositionWithData<'main'>()(
+    'test-with-data', //                                Composition content areas ^^^^^^
+    {
+        // You provide this function to load the data
+        loadData: props => {},
+    },
+    ({ main }, props, data) => {
+    // ^^^^ Receive content areas here.
+        if (!data.loaded) {
+            return <div>Loading...</div>
+        }
+
+        return (
+            <>
+                <TestComponentWithData data={data.result} />
+                {main}
+            </>
+        )
     },
 )
 ```

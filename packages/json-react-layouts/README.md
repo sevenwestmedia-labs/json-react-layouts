@@ -215,6 +215,8 @@ LayoutRegistration().registerComponents(registrar =>
 )
 ```
 
+Middlewares can also be applied to compositions.
+
 ## Debug Logging
 
 JSON React Layouts has debug logging available if you want it. We use the NPM package [debug](https://www.npmjs.com/package/debug) for this.
