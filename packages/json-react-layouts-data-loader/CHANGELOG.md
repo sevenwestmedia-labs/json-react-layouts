@@ -1,5 +1,17 @@
 # json-react-layouts-data-loader
 
+## 5.0.0
+
+### Major Changes
+
+-   94a9773:
+    -   `middleware` converted to `getMiddleware(type: 'composition' | 'component')` method to support composition middleware.
+
+### Patch Changes
+
+-   Updated dependencies [94a9773]
+    -   json-react-layouts@4.0.0
+
 ## 4.0.1
 
 ### Patch Changes

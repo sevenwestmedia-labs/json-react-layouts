@@ -1,6 +1,6 @@
 {
     "name": "json-react-layouts",
-    "version": "3.0.1",
+    "version": "4.0.0",
     "main": "out-tsc/index.js",
     "publishConfig": {
         "main": "dist/index.js",
