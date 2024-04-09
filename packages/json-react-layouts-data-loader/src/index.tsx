@@ -310,7 +310,7 @@ export function init<Services extends object>(
                 return next(props, middlewareProps, services)
             }
 
-            const dataDefinition = getDataArgs<Services>(registration)
+            const dataDefinition = getDataArgs(registration)
 
             // dataDefinition does not exist on all components.
             if (!dataDefinition) {
