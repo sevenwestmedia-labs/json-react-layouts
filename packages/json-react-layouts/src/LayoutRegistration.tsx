@@ -31,9 +31,9 @@ interface RegisterComponentsStep<Services extends {}> {
 export interface CompositionRegistrationBuilderStart<
     Components extends ComponentInformation<any, any>,
     ComponentMiddlewaresProps extends {},
-    Services
+    Services extends {} = {}
 > {
-    registerComposition<TType extends string, TContentAreas extends string, TProps>(
+    registerComposition<TType extends string, TContentAreas extends string, TProps extends {} = {}>(
         registration: CompositionRegistration<TType, TContentAreas, Services, TProps>,
     ): CompositionRegistrationBuilder<
         Components,
@@ -49,9 +49,9 @@ export interface CompositionRegistrationBuilder<
     ComponentMiddlewaresProps extends {},
     Compositions extends CompositionInformation<any, any, any>,
     CompositionMiddlewaresProps extends {},
-    Services
+    Services extends {} = {}
 > {
-    registerComposition<TType extends string, TContentAreas extends string, TProps>(
+    registerComposition<TType extends string, TContentAreas extends string, TProps extends {} = {}>(
         registration: CompositionRegistration<TType, TContentAreas, Services, TProps>,
     ): CompositionRegistrationBuilder<
         Components,
