@@ -1,5 +1,18 @@
 # json-react-layouts
 
+## 4.1.0
+
+### Minor Changes
+
+-   184edea: Reintroduce render path for middlewares. Refine types.
+
+## 4.0.0
+
+### Major Changes
+
+-   94a9773:
+    -   `RendererMiddleware` does not depend on `ComponentProps` anymore and will contain a `{ layoutType: string }` value instead to represent the component/composition type.
+
 ## 3.0.1
 
 ### Patch Changes
