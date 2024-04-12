@@ -98,6 +98,7 @@ export const CompositionRenderer: React.FunctionComponent<CompositionRendererPro
         compositionMiddleware(
             {
                 layoutType: composition.type,
+                renderPath: componentRenderPath,
                 ...composition.props,
             },
             middlewareProps,

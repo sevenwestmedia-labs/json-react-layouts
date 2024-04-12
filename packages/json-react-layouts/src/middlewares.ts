@@ -17,7 +17,8 @@ export type MiddlwareHandler<TProps, TMiddlewareProps extends {}, LoadDataServic
 
 interface ComponentOrCompositionProps {
     layoutType: string
-    [props: string]: any
+    renderPath: string
+    [props: string]: unknown
 }
 
 export type RendererMiddleware<Services extends {}, MiddlewareProps extends {}> = (
