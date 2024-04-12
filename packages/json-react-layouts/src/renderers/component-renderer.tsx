@@ -54,11 +54,11 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
         return rendered
     }
 
-    const { componentType, ...rest } = componentProps
+    const { componentType, componentRenderPath, ...rest } = componentProps
 
     const middlewareRender =
         componentMiddleware(
-            { layoutType: componentType, ...rest },
+            { layoutType: componentType, renderPath: componentRenderPath, ...rest },
             middlewareProps,
             componentServices,
             render,
