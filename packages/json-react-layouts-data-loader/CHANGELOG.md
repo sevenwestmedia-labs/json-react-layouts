@@ -1,5 +1,11 @@
 # json-react-layouts-data-loader
 
+## 5.0.1
+
+### Patch Changes
+
+-   1b94456: Bump dependency version for json-react-layouts
+
 ## 5.0.0
 
 ### Major Changes
